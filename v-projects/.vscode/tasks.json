@@ -10,8 +10,6 @@
             },
             "command": "v",
             "args": [
-                "-user_mod_path",
-                "/Users/desaro/v_mine/modules",
                 "run",
                 "${file}"
             ],
@@ -30,8 +28,6 @@
             "command": "v",
             "args": [
                 "-g",
-                "-user_mod_path",
-                "/Users/desaro/v_mine/modules",
                 "run",
                 "${file}"
             ],
@@ -46,8 +42,6 @@
             },
             "command": "v",
             "args": [
-                "-user_mod_path",
-                "/Users/desaro/v_mine/modules",
                 "-g",
                 "-live",
                 "${file}"
@@ -67,6 +61,21 @@
                 "${file}"
             ],
             "group": "none",
+            "problemMatcher": []
+        },
+        {
+            "label": "v generate c",
+            "type": "shell",
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "command": "v",
+            "args": [
+                "-o",
+                "out.c",
+                "${file}"
+            ],
+            "group": "build",
             "problemMatcher": []
         }
     ]

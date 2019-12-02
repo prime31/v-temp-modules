@@ -20,6 +20,4 @@ pub:
     url byteptr         /**< URL related to this archive */
     supportsSymlinks int    /**< non-zero if archive offers symbolic links. */
 }
-
-type ArchiveInfo C.PHYSFS_ArchiveInfo
-fn (i ArchiveInfo) str() string { return 'ext=$i.extension, desc=$i.description, author=$i.author, url=$i.url, symlinks=$i.supportsSymlinks' }
+fn (i C.PHYSFS_ArchiveInfo) str() string { return 'ext=$i.extension, desc=$i.description, author=$i.author, url=$i.url, symlinks=$i.supportsSymlinks' }

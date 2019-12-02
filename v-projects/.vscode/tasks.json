@@ -1,0 +1,73 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "v run",
+            "type": "shell",
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "command": "v",
+            "args": [
+                "-user_mod_path",
+                "/Users/desaro/v_mine/modules",
+                "run",
+                "${file}"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "v run debug",
+            "type": "shell",
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "command": "v",
+            "args": [
+                "-g",
+                "-user_mod_path",
+                "/Users/desaro/v_mine/modules",
+                "run",
+                "${file}"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "v live",
+            "type": "shell",
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "command": "v",
+            "args": [
+                "-user_mod_path",
+                "/Users/desaro/v_mine/modules",
+                "-g",
+                "-live",
+                "${file}"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "v format",
+            "type": "shell",
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "command": "v",
+            "args": [
+                "fmt",
+                "${file}"
+            ],
+            "group": "none",
+            "problemMatcher": []
+        }
+    ]
+}

@@ -2,3 +2,9 @@ flecs/flecs_git
 imgui/cimgui
 imgui/thirdparty
 physfs/physfs_hg
+*.dSYM
+v-projects/projects/sdl2_tester/sdl_tester
+v-projects/projects/imgui_tester/imgui.ini
+v-projects/projects/imgui_tester/imgui_tester
+v-projects/projects/flecs_tester/flecs_tester
+v-projects/projects/physfs_tester/physfs_tester

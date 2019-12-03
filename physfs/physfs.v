@@ -25,11 +25,10 @@ pub fn supported_archive_types() []PHYSFS_ArchiveInfo {
 	mut arr := []PHYSFS_ArchiveInfo
 	info_ptr_array := **PHYSFS_ArchiveInfo(ptr)
 
-	mut i := 0
-	for voidptr(info_ptr_array[i]) != voidptr(0) {
+	// iterate until we find a null element
+	for i := 0; info_ptr_array[i]; i++ {
 		info := *PHYSFS_ArchiveInfo(info_ptr_array[i])
 		arr << *info
-		i++
 	}
 
 	return arr

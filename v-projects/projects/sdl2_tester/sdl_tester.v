@@ -21,6 +21,11 @@ fn main() {
 	wave := C.Mix_LoadWAV('sounds/triple.wav')
 	C.Mix_PlayChannel(0, wave, 0)
 
+	defer {
+		C.Mix_FreeChunk(wave)
+		C.Mix_FreeMusic(music)
+	}
+
 	C.IMG_Init(C.IMG_INIT_PNG)
 	v_logo := C.IMG_Load('images/v-logo_30_30.png')
 
@@ -90,7 +95,4 @@ fn main() {
 
 		C.SDL_RenderPresent(renderer)
 	}
-
-	C.Mix_FreeChunk(wave)
-	C.Mix_FreeMusic(music)
 }

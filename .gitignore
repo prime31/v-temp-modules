@@ -8,3 +8,5 @@ v-projects/projects/imgui_tester/imgui.ini
 v-projects/projects/imgui_tester/imgui_tester
 v-projects/projects/flecs_tester/flecs_tester
 v-projects/projects/physfs_tester/physfs_tester
+imgui/Generator/bin
+imgui/Generator/obj

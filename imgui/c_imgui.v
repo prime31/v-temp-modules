@@ -12,7 +12,7 @@ module imgui
 #flag @VMOD/prime31/imgui/thirdparty/imgui_impl_opengl3.o
 #flag @VMOD/prime31/imgui/thirdparty/gl3w.o
 
-// both static and shared will work. if you use dynamic uncomment both lines below
+// both static and shared will work. if you use dynamic uncomment both lines below and comment this one out
 #flag darwin @VMOD/prime31/imgui/thirdparty/cimgui.a
 
 // rpath is required for shared. for proper installs, -rpath should be relative to @executable_path/

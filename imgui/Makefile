@@ -1,5 +1,5 @@
 TARGET :=
-# use either a dylib or static lib
+# use can either a dylib or static lib, so we will generate both and let the c_imgui.v file decide
 TARGET += cimgui.dylib
 TARGET += cimgui.a
 TARGET += gl3w.o
@@ -81,6 +81,9 @@ imgui_impl_opengl3.o: $(IMGUI)/examples/imgui_impl_opengl3.cpp
 	$(CXX) -fPIC -c -o $(MODULE_FOLDER)/$@ $^ -I$(IMGUI) $(CFLAGS) $(LIBS) -DIMGUI_IMPL_API=extern\ \"C\" -fno-threadsafe-statics
 	$(CP) $(IMGUI)/examples/imgui_impl_opengl3.h $(MODULE_FOLDER)/imgui_impl_opengl3.h
 	sed -i '' "s/glsl_version = NULL/glsl_version/g" $(MODULE_FOLDER)/imgui_impl_opengl3.h
+
+generate_v_bindings:
+	dotnet run --project Generator
 
 clean:
 	$(RM) *.o *.so *.h $(TARGET)

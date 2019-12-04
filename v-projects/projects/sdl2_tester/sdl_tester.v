@@ -82,7 +82,7 @@ fn main() {
 		C.SDL_SetRenderDrawColor(renderer, 55, 55, 55, 255)
 		C.SDL_RenderClear(renderer)
 
-		mut rect := C.SDL_FRect {0, 0, 50, 30}
+		mut rect := SDL_FRect {0, 0, 50, 30}
 		C.SDL_SetRenderDrawColor(renderer, 155, 155, 55, 255)
 		C.SDL_RenderDrawRectF(renderer, &rect)
 
@@ -90,7 +90,7 @@ fn main() {
 		rect.y = 100
 		C.SDL_RenderFillRectF(renderer, &rect)
 
-		dstrect := sdl2.Rect { 200, 200, 30, 30 }
+		dstrect := SDL_Rect { 200, 200, 30, 30 }
 		C.SDL_RenderCopy(renderer, tv_logo, voidptr(0), voidptr(&dstrect))
 
 		C.SDL_RenderPresent(renderer)

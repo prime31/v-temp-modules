@@ -6,7 +6,7 @@
             "label": "v run",
             "type": "shell",
             "options": {
-                "cwd": "../../../v" // wtf: ${fileDirname}
+                "cwd": "${fileDirname}"
             },
             "command": "v",
             "args": [

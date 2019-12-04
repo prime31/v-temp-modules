@@ -4,6 +4,12 @@ module physfs
 // - commented out methods are not implemented
 // - some methods are not wrapped in physfs.v
 
+fn C.PHYSFSRWOPS_openRead(fname byteptr) &C.SDL_RWops
+fn C.PHYSFSRWOPS_openWrite(fname byteptr) &C.SDL_RWops
+fn C.PHYSFSRWOPS_openAppend(fname byteptr) &C.SDL_RWops
+fn C.PHYSFSRWOPS_makeRWops(handle C.PHYSFS_File) &C.SDL_RWops
+
+
 fn C.PHYSFS_getLinkedVersion(version &C.PHYSFS_Version)
 fn C.PHYSFS_init(argv0 byteptr) int
 fn C.PHYSFS_deinit() int

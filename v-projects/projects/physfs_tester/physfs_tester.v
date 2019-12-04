@@ -1,4 +1,5 @@
 import prime31.physfs
+import prime31.sdl2
 import os
 
 
@@ -35,6 +36,17 @@ fn main() {
 	println('enum_res=$enum_res')
 
 	println('is init: ${physfs.is_init()}')
+
+	C.IMG_Init(C.IMG_INIT_PNG)
+	rwops := C.PHYSFSRWOPS_openRead('assets/beach.png')
+	println('rwops=$rwops')
+
+	is_png := C.IMG_isPNG(rwops)
+	surface := C.IMG_Load_RW(rwops, 0)
+	println('surface=$surface, is_png=$is_png')
+
+	out_file := os.home_dir() + 'Desktop/shit.png'
+	C.IMG_SavePNG(surface, out_file.str)
 
 	physfs.unmount(os.getwd())
 

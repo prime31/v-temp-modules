@@ -6,7 +6,7 @@ struct C.ecs_world_t {}
 struct C.ecs_type_t {}
 fn (t &C.ecs_type_t) str() string { return '$&t' }
 
-pub struct C.ecs_rows_t {
+struct C.ecs_rows_t {
 pub:
     world voidptr //ecs_world_t *world;          /* Current world */
     system u64 //ecs_entity_t system;         /* Handle to current system */

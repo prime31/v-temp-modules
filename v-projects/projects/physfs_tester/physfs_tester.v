@@ -38,12 +38,8 @@ fn main() {
 	println('is init: ${physfs.is_init()}')
 
 	C.IMG_Init(C.IMG_INIT_PNG)
-	rwops := C.PHYSFSRWOPS_openRead('assets/beach.png')
-	println('rwops=$rwops')
-
-	is_png := C.IMG_isPNG(rwops)
-	surface := C.IMG_Load_RW(rwops, 0)
-	println('surface=$surface, is_png=$is_png')
+	surface := physfs.load_surface('assets/beach.png'.str)
+	println('surface=$surface')
 
 	out_file := os.home_dir() + 'Desktop/shit.png'
 	C.IMG_SavePNG(surface, out_file.str)

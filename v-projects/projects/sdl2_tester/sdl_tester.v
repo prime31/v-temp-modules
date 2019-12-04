@@ -5,7 +5,7 @@ fn main() {
 
 	window := voidptr(0)
 	renderer := voidptr(0)
-	sdl2.create_window_and_renderer(500, 300, 0, &window, &renderer)
+	C.SDL_CreateWindowAndRenderer(500, 300, 0, &window, &renderer)
 	C.SDL_SetWindowTitle(window, 'V + SDL2')
 
 	if C.Mix_OpenAudio(48000, C.MIX_DEFAULT_FORMAT, 2, 1024) < 0 {
@@ -27,13 +27,7 @@ fn main() {
 	}
 
 	C.IMG_Init(C.IMG_INIT_PNG)
-	v_logo := C.IMG_Load('images/v-logo_30_30.png')
-
-	mut tv_logo := voidptr(0)
-	if !isnil(v_logo) {
-		println('got v_logo=$v_logo')
-		tv_logo = sdl2.create_texture_from_surface(renderer, v_logo)
-	}
+	tv_logo := C.IMG_LoadTexture(renderer, 'images/v-logo_30_30.png')
 
 	mut should_close := false
 
@@ -41,7 +35,7 @@ fn main() {
 		start_ticks := C.SDL_GetPerformanceCounter()
 
 		ev := sdl2.Event{}
-		for 0 < sdl2.poll_event(&ev) {
+		for 0 < C.SDL_PollEvent(&ev) {
 			match int(ev._type) {
 				C.SDL_QUIT { should_close = true }
 				C.SDL_KEYDOWN {

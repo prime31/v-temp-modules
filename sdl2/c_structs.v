@@ -27,6 +27,12 @@ pub mut:
 	h f32
 }
 
+pub struct C.SDL_Window {}
+
+pub struct C.SDL_Renderer {}
+
+pub struct C.SDL_Texture {}
+
 pub struct C.SDL_Surface {
 pub:
 	flags u32
@@ -42,8 +48,6 @@ pub:
 	map voidptr
 	refcount int
 }
-//type Surface C.SDL_Surface
-//type Surface Surface
 
 /////////////////////////////////////////////////////////
 
@@ -130,18 +134,17 @@ pub:
 
 pub union Event {
 pub:
-        _type u32
-		window WindowEvent
-        quit QuitEvent
-        key KeyboardEvent
-        jbutton JoyButtonEvent
-        jhat JoyHatEvent
-        _pad56 [56]byte
+	_type u32
+	window WindowEvent
+	quit QuitEvent
+	key KeyboardEvent
+	jbutton JoyButtonEvent
+	jhat JoyHatEvent
+	_pad56 [56]byte
 }
 
 pub struct C.SDL_AudioSpec {
-pub:
-mut:
+pub mut:
         freq int                           /**< DSP frequency -- samples per second */
         format u16                         /**< Audio data format */
         channels byte                      /**< Number of channels: 1 mono, 2 stereo */
@@ -152,14 +155,13 @@ mut:
         userdata voidptr
 }
 
-// pub struct RwOps {
-// pub:
-// mut:
-//         seek voidptr
-//         read voidptr
-//         write voidptr
-//         close voidptr
-//         type_ u32
-//         hidden voidptr
-// }
-//type AudioSpec C.voidptrioSpec
+
+// MIX TODO: get this working as a return type
+pub struct C.Mix_Chunk {
+    allocated int
+    abuf &byte // *UInt8
+    alen u32
+    volume byte       /* Per-sample volume, 0-128 */
+}
+
+pub struct C.Mix_Music {}

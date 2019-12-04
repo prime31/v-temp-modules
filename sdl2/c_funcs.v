@@ -1,7 +1,6 @@
 module sdl2
 
-type atexit_func_t fn ()
-fn C.atexit(atexit_func_t)
+fn C.atexit(func fn ())
 
 ///////////////////////////////////////////////////
 fn C.SDL_MapRGB(fmt voidptr byte, g byte, b byte) u32
@@ -9,16 +8,17 @@ fn C.SDL_CreateRGBSurface(flags u32, width int, height int, depth int, Rmask u32
 fn C.SDL_PollEvent(&Event) int
 fn C.SDL_NumJoysticks() int
 fn C.SDL_JoystickNameForIndex(device_index int) voidptr
-fn C.SDL_RenderCopy(renderer voidptr, texture voidptr, srcrect voidptr, dstrect voidptr) int
+fn C.SDL_RenderCopy(renderer &SDL_Renderer, texture voidptr, srcrect voidptr, dstrect voidptr) int
 fn C.SDL_CreateWindow(title byteptr, x int, y int, w int, h int, flags u32) voidptr
-fn C.SDL_CreateWindowAndRenderer(width int, height int, window_flags u32, window &voidptr, renderer &voidptr) int
+fn C.SDL_CreateWindowAndRenderer(width int, height int, window_flags u32, window &SDL_Window, renderer &SDL_Renderer) int
 fn C.SDL_DestroyWindow(window voidptr)
-fn C.SDL_GetWindowSize(window voidptr, w voidptr, h voidptr)
+fn C.SDL_GetWindowSize(window voidptr, w &int, h &int)
 fn C.SDL_SetHint(name byteptr, value byteptr) C.SDL_bool
 //fn C.SDL_RWFromFile(byteptr, byteptr) &RwOps
 //fn C.SDL_CreateTextureFromSurface(renderer &C.SDL_Renderer, surface &C.SDL_Surface) &C.SDL_Texture
 fn C.SDL_CreateTextureFromSurface(renderer voidptr, surface voidptr) voidptr
-fn C.SDL_CreateTexture(renderer voidptr, format u32, access int, w int, h int) voidptr
+fn C.SDL_CreateTexture(renderer &SDL_Renderer, format u32, access int, w int, h int) voidptr
+fn C.SDL_SetRenderTarget(renderer &SDL_Renderer, texture &SDL_Texture) int
 fn C.SDL_FillRect(dst voidptr, dstrect voidptr, color u32) int
 fn C.SDL_SetRenderDrawColor(renderer voidptr, r byte, g byte, b byte, a byte)
 fn C.SDL_RenderPresent(renderer voidptr)
@@ -34,7 +34,6 @@ fn C.SDL_FreeSurface(surface voidptr)
 fn C.SDL_Init(flags u32) int
 fn C.SDL_Quit()
 fn C.SDL_SetWindowTitle(window voidptr, title byteptr)
-//fn C.SDL_GetWindowSize(window voidptr, &w int, &h int)
 
 // following is wrong : SDL_Zero is a macro accepting an argument
 fn C.SDL_zero()
@@ -43,48 +42,45 @@ fn C.SDL_FreeWAV(audio_buf voidptr)
 fn C.SDL_OpenAudio(desired voidptr, obtained voidptr) int
 fn C.SDL_CloseAudio()
 fn C.SDL_PauseAudio(pause_on int)
+
 fn C.SDL_JoystickOpen(device_index int) int
 fn C.SDL_JoystickEventState(state int) int
 
-//////////////////////////////////////////////////////////
 // SDL_Timer.h
-//////////////////////////////////////////////////////////
 fn C.SDL_GetTicks() u32
 fn C.SDL_TICKS_PASSED(a,b u32) bool
 fn C.SDL_GetPerformanceCounter() u64
 fn C.SDL_GetPerformanceFrequency() u64
 fn C.SDL_Delay(ms u32)
 
-//////////////////////////////////////////////////////////
+
 // TTF
-//////////////////////////////////////////////////////////
 fn C.TTF_Init() int
 fn C.TTF_Quit()
 fn C.TTF_OpenFont(file byteptr, ptsize int) voidptr
 fn C.TTF_CloseFont(font voidptr)
 //fn C.TTF_RenderText_Solid(voidptr, voidptr, SdlColor) voidptr
 fn C.TTF_RenderText_Solid(voidptr, voidptr, C.SDL_Color) voidptr
-//////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////
+
 // MIX
-//////////////////////////////////////////////////////////
 fn C.Mix_Init(flags int) int
 fn C.Mix_OpenAudio(frequency int, format u16, channels int, chunksize int) int
-fn C.Mix_LoadMUS(file byteptr) voidptr
-fn C.Mix_LoadWAV(file byteptr) voidptr
-fn C.Mix_PlayMusic(music voidptr, loops int) int
+fn C.Mix_LoadMUS(file byteptr) voidptr // *Mix_Music
+fn C.Mix_LoadWAV(file byteptr) voidptr // *Mix_Chunk
+fn C.Mix_LoadWAV_RW(src &SDL_RWops, freesrc int) voidptr // *Mix_Chunk
+fn C.Mix_PlayMusic(music &SDL_AudioSpec, loops int) int
+fn C.Mix_PlayChannel(channel int, chunk &Mix_Chunk, loops int) int
 fn C.Mix_VolumeMusic(volume int) int
-fn C.Mix_FreeMusic(music voidptr)
+fn C.Mix_VolumeChunk(chunk &Mix_Chunk, volume int) int
+fn C.Mix_FreeMusic(music &Mix_Music) //Mix_Music
 fn C.Mix_CloseAudio()
-fn C.Mix_FreeChunk(chunk voidptr)
+fn C.Mix_FreeChunk(chunk &Mix_Chunk)
 fn C.Mix_PauseMusic()
 fn C.Mix_ResumeMusic()
-fn C.Mix_PlayChannel(channel int, chunk voidptr, loops int) int
 
-//////////////////////////////////////////////////////////
+
 // GL
-//////////////////////////////////////////////////////////
 fn C.SDL_GL_SetAttribute(attr int, value int) int
 fn C.SDL_GL_CreateContext(window voidptr) voidptr
 fn C.SDL_GL_MakeCurrent(window voidptr, context voidptr) int

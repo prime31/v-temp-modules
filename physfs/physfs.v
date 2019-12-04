@@ -94,7 +94,7 @@ pub fn get_search_path_callback(cb fn(voidptr, byteptr), d voidptr) {
 	C.PHYSFS_getSearchPathCallback(cb, d)
 }
 
-// typedef PHYSFS_EnumerateCallbackResult (*PHYSFS_EnumerateCallback)(void *data, const char *origdir, const char *fname)
+// (*PHYSFS_EnumerateCallback)(void *data, const char *origdir, const char *fname)
 [inline]
 pub fn enumerate(dir string, cb fn(voidptr, byteptr, byteptr) int, d voidptr) int {
 	return C.PHYSFS_enumerate(dir.str, cb, d)

@@ -38,7 +38,8 @@ fn main() {
 	println('is init: ${physfs.is_init()}')
 
 	C.IMG_Init(C.IMG_INIT_PNG)
-	surface := physfs.load_surface('assets/beach.png'.str)
+	surface := physfs.load_surface(voidptr(c'assets/beach.png'))
+	// surface := physfs.load_surface('assets/beach.png'.str)
 	println('surface=$surface')
 
 	out_file := os.home_dir() + 'Desktop/shit.png'

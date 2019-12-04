@@ -14,16 +14,20 @@ fn main() {
 
 	music := C.Mix_LoadMUS('sounds/TwintrisThosenine.mod')
 	println('mus $music')
-	if C.Mix_PlayMusic(music, 1) != -1 {
-		C.Mix_VolumeMusic(C.SDL_MIX_MAXVOLUME)
-	}
+	C.Mix_FadeInMusic(music, -1, 5000)
+	// if C.Mix_PlayMusic(music, 1) != -1 {
+	// 	C.Mix_VolumeMusic(C.SDL_MIX_MAXVOLUME)
+	// }
 
 	wave := C.Mix_LoadWAV('sounds/triple.wav')
-	C.Mix_PlayChannel(0, wave, 0)
+	// C.Mix_PlayChannel(0, wave, 0)
+	C.Mix_FadeInChannel(0, wave, 2, 3000)
+	C.Mix_ChannelFinished(channel_finished)
 
 	defer {
 		C.Mix_FreeChunk(wave)
 		C.Mix_FreeMusic(music)
+		C.Mix_CloseAudio()
 	}
 
 	C.IMG_Init(C.IMG_INIT_PNG)
@@ -89,4 +93,8 @@ fn main() {
 
 		C.SDL_RenderPresent(renderer)
 	}
+}
+
+fn channel_finished(channel int) {
+	println('channel_finished $channel')
 }

@@ -72,7 +72,7 @@
             "command": "v",
             "args": [
                 "-o",
-                "out.c",
+                "${fileBasenameNoExtension}.c",
                 "${file}"
             ],
             "group": "build",

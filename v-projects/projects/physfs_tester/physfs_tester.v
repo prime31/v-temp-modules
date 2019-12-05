@@ -10,7 +10,7 @@ fn main() {
 	version := physfs.get_linked_version()
 	println('physfs version=$version')
 
-	physfs.mount(os.getwd(), '', 1)
+	physfs.mount(os.dir(os.realpath(os.executable())), '', 1)
 
 	types := physfs.supported_archive_types()
 	println('physfs supported types:')

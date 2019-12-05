@@ -2,7 +2,6 @@ TARGET :=
 # use can either a dylib or static lib, so we will generate both and let the c_imgui.v file decide
 TARGET += cimgui.dylib
 TARGET += cimgui.a
-TARGET += gl3w.o
 TARGET += imgui_impl_sdl.o
 TARGET += imgui_impl_opengl3.o
 
@@ -21,7 +20,7 @@ CFLAGS += -DIMGUI_IMPL_API=
 CFLAGS += `sdl2-config --cflags`
 
 ## Using OpenGL loader: gl3w
-CFLAGS += -Icimgui/imgui/examples/libs/gl3w
+CFLAGS += -I cimgui/imgui/examples/libs/gl3w
 
 
 ##---------------------------------------------------------------------
@@ -67,10 +66,6 @@ cimgui.a: cimgui/build/cimgui.a
 cimgui/build/cimgui.a:
 	[ -d cimgui ] || git clone --recursive --depth 1 https://github.com/cimgui/cimgui.git
 	(export CFLAGS= CXXFLAGS= ; cd cimgui ; mkdir build ; cd build ; cmake -DIMGUI_STATIC=ON .. ; make)
-
-gl3w.o: cimgui/imgui/examples/libs/gl3w/GL/gl3w.c
-	$(CC) $(CFLAGS) -c -o $(MODULE_FOLDER)/$@ $<
-	rsync -rupE cimgui/imgui/examples/libs/gl3w $(MODULE_FOLDER)
 
 imgui_impl_sdl.o: $(IMGUI)/examples/imgui_impl_sdl.cpp
 	$(CXX) -fPIC -c -o $(MODULE_FOLDER)/$@ $^ -I$(IMGUI) `sdl2-config --cflags` -DIMGUI_IMPL_API=extern\ \"C\" -fno-threadsafe-statics

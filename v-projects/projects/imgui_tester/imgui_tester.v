@@ -1,13 +1,14 @@
 import prime31.imgui
 import prime31.sdl2 as sdl2
+import prime31.gl3w
 
 
 struct AppState {
 	show_demo_window bool
-	clear_color imgui.ImVec4
-	size0 imgui.ImVec2
+	clear_color ImVec4
+	size0 ImVec2
 	f f32
-	mut:
+mut:
 	done bool
 	show_another_window bool
 	counter int
@@ -19,11 +20,12 @@ fn new_app_state() AppState {
 	return AppState {
 		show_demo_window: false,
 		show_another_window: false,
-		clear_color: imgui.ImVec4{0.45, 0.55, 0.60, 1.00},
-		size0: imgui.ImVec2 {0, 0},
+		clear_color: ImVec4{0.45, 0.55, 0.60, 1.00},
+		size0: ImVec2 {0, 0},
 		f: 0.0,
 		counter: 0,
 		done: false,
+		window: voidptr(0)
 	}
 }
 
@@ -31,7 +33,6 @@ fn setup_main_loop() {
 	mut state := new_app_state()
 	C.SDL_Init(C.SDL_INIT_VIDEO | C.SDL_INIT_AUDIO)
 
-	glsl_version := "#version 150"
     C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_FLAGS, C.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG)
     C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_PROFILE_MASK, C.SDL_GL_CONTEXT_PROFILE_CORE)
     C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_MAJOR_VERSION, 3)
@@ -48,8 +49,7 @@ fn setup_main_loop() {
 	C.SDL_GL_MakeCurrent(state.window, gl_context)
 	C.SDL_GL_SetSwapInterval(1) // Enable vsync
 
-	imgui.init_for_gl(glsl_version.str, state.window, gl_context)
-
+	imgui.init_for_gl('#version 150'.str, state.window, gl_context)
 	C.igStyleColorsDark(C.NULL)
 
 	state.io = imgui.get_io()

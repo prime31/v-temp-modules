@@ -1,5 +1,10 @@
-# imgui + gl3w + sdl implementation
-Dear ImGui V module -- ImGui wrapper
+# imgui + sdl + opengl3 implementation
+Dear ImGui V module - ImGui wrapper
 
 # Installation
-- run `make` in the imgui/install folder to build cimgui, gl3w and the GL/SDL ImGui implementation
+- first install the `prime31.gl3w` module and run `make` in the `prime31.gl3w` folder
+- run `make` in the `prime31/imgui` folder to build cimgui and the GL/SDL ImGui implementation
+
+
+# Requirements
+The `prime31.gl3w` module is required. You must have `import prime31.gl3w` in your main module.

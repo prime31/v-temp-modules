@@ -15,8 +15,6 @@ fn main() {
 
 	window := C.SDL_CreateWindow('V + SDL2', 300, 300, 500, 300, 0)
 	renderer := C.SDL_CreateRenderer(window, -1, C.SDL_RENDERER_ACCELERATED | C.SDL_RENDERER_PRESENTVSYNC)
-	// C.SDL_CreateWindowAndRenderer(500, 300, 0, &window, &renderer)
-	// C.SDL_SetWindowTitle(window, 'V + SDL2')
 
 	C.Mix_Init(0)
 	if C.Mix_OpenAudio(48000, mixer.MIX_DEFAULT_FORMAT, 2, 1024) < 0 {

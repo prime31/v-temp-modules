@@ -1,6 +1,6 @@
 module sdl2
 
-struct C.SDL_RWops {}
+pub struct C.SDL_RWops {}
 
 pub struct C.SDL_Color {
 pub mut:
@@ -154,14 +154,3 @@ pub mut:
         callback voidptr
         userdata voidptr
 }
-
-
-// MIX TODO: get this working as a return type
-pub struct C.Mix_Chunk {
-    allocated int
-    abuf &byte // *UInt8
-    alen u32
-    volume byte       /* Per-sample volume, 0-128 */
-}
-
-pub struct C.Mix_Music {}

@@ -1,4 +1,4 @@
-module sdl2_ttf
+module ttf
 
 #flag darwin -L /usr/local/lib -lSDL2 -lSDL2_TTF
 #flag darwin -I /usr/local/opt/sdl2_ttf/include/SDL2

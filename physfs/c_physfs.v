@@ -1,6 +1,5 @@
 module physfs
 
-
 #flag -I @VMOD/prime31/physfs/physfs_hg/src
 
 #flag darwin -L /usr/local/lib -lSDL2

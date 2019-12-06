@@ -1,4 +1,4 @@
-module sdl2_mixer
+module mixer
 import prime31.sdl2
 
 #flag darwin -L /usr/local/lib -lSDL2_MIXER

@@ -1,4 +1,4 @@
-module sdl2_image
+module image
 
 #flag linux -lSDL2_image
 #include <SDL_image.h>

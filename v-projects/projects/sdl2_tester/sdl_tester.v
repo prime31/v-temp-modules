@@ -1,7 +1,7 @@
 import prime31.sdl2
 import prime31.sdl2.image
 import prime31.sdl2.mixer as mixer
-import prime31.sdl2_ttf as ttf
+import prime31.sdl2.ttf as ttf
 
 struct FpsCounter {
 mut:

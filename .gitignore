@@ -12,3 +12,5 @@ imgui/Generator/bin
 imgui/Generator/obj
 gl3w/thirdparty
 v-projects/projects/gl3w_tester/gl3w_tester
+gl3w/generator/bin
+gl3w/generator/obj

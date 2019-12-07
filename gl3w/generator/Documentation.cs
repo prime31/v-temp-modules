@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
-namespace generator
+namespace Generator
 {
 	public class Documentation : Dictionary<string, string>
 	{
@@ -64,6 +64,7 @@ namespace generator
 			catch (Exception e)
 			{
                 Console.WriteLine("bad xml: " + file);
+				Console.WriteLine(e);
 			}
 
 			writer.Dispose();

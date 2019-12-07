@@ -6,7 +6,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Octokit;
 
-namespace generator
+namespace Generator
 {
 	class Program
 	{
@@ -147,95 +147,100 @@ namespace generator
 
 		static void PrepareSpecsAndGenerateCode(string api, Version ver, string profile, string xmlDir, string outDir)
 		{
-			var specs = ParseSpecs(xmlDir);
-			var docs = new Documentation(Path.Combine(xmlDir, "doc"));
+			var spec = ParseSpec(xmlDir, api, ver);
+			// TODO: add docs
+			//var docs = new Documentation(Path.Combine(xmlDir, "doc"));
 
-			foreach (var spec in specs)
+			// Select the commands and enums relevant to the specified API version
+			foreach (var feature in spec.Features)
 			{
-				if (SpecValid(spec, ver, api))
+				// actually generate the file here
+				GenerateCode(spec, feature, ver, outDir);
+			}
+		}
+
+		static void GenerateCode(Specification spec, Specification.Feature feature, Version version, string outDir)
+		{
+			// if we want one module per version the module would need the version name
+			//var moduleDecl = $"module gl" + feature.Version.ToString().Replace(".", "");
+			var moduleDecl = "module gl3w";
+
+			var filename = "gl" + feature.Version.ToString().Replace(".", "") + ".v";
+			var stream = File.Open(Path.Combine(outDir, filename), System.IO.FileMode.Create);
+			var writer = new StreamWriter(stream);
+
+			writer.WriteLine(moduleDecl);
+			writer.WriteLine();
+
+			var groupedEnums = new List<Specification.Enum>();
+			writer.WriteLine("const (");
+			foreach (var e in feature.Enums)
+			{
+				var en = spec.GetEnum(e);
+				if (!string.IsNullOrEmpty(en.Group))
 				{
-					// Select the commands and enums relevant to the specified API version
-					foreach (var feature in spec.Features.Where(f => FeatureValid(f, ver, api)))
+					groupedEnums.Add(en);
+					continue;
+				}
+				writer.WriteLine($"\t{en.Name} = {en.Value}");
+			}
+			writer.WriteLine(")");
+
+			var t = groupedEnums.GroupBy(e => e.Group, e => e, (g, all) => new { Group = g, Enums = all.ToArray() });
+			foreach (var grouping in t)
+			{
+				writer.WriteLine();
+				writer.WriteLine($"// {grouping.Group}");
+				writer.WriteLine("const (");
+
+				foreach (var e in grouping.Enums)
+					writer.WriteLine($"\t{e.Name} = {e.Value}");
+
+				writer.WriteLine(")");
+			}
+
+			writer.WriteLine(); writer.WriteLine();
+
+
+			// function declarations
+			foreach (var c in feature.Commands.Select(c => spec.GetCommand(c)))
+			{
+				var ret = string.IsNullOrEmpty(c.Ret) ? "" : $" {Statics.GetVTypeForCType(c.Ret, true)}";
+				if (c.Parameters.Length == 0)
+				{
+					writer.WriteLine($"fn C.{c.Name}(){ret}");
+				}
+				else
+				{
+					writer.Write($"fn C.{c.Name}(");
+
+					for (var i = 0; i < c.Parameters.Length; i++)
 					{
-						if (AddRemValid(feature.AddRem, profile))
-						{
-							if (feature.AddRem.AddedCommands != null)
-							foreach (var c in feature.AddRem.AddedCommands)
-							{
-								if (!feature.HasCommand(c))
-									Console.WriteLine("wtf command");
-							}
+						var p = c.Parameters[i];
+						var type = Statics.GetVTypeForCType(p.Type, false);
+						writer.Write($"{p.Name} {type}");
 
-							if (feature.AddRem.AddedEnums != null)
-							foreach (var e in feature.AddRem.AddedEnums)
-							{
-								if (!feature.HasEnum(e))
-									Console.WriteLine("wtf enum");
-							}
-
-							if (feature.AddRem.RemovedCommands != null)
-							foreach (var c in feature.AddRem.RemovedCommands)
-							{
-								if (feature.HasCommand(c))
-									Console.WriteLine("wtf ftw command");
-							}
-
-							if (feature.AddRem.RemovedEnums != null)
-							foreach (var e in feature.AddRem.RemovedEnums)
-							{
-								if (feature.HasEnum(e))
-									Console.WriteLine("wtf ftw enum");
-							}
-						}
-
-						// actually generate the file here
-						GenerateCode(feature, ver);
+						if (i < c.Parameters.Length - 1)
+							writer.Write(", ");
 					}
+
+					writer.WriteLine($"){ret}");
 				}
 			}
+
+			writer.Dispose();
 		}
 
-		static void GenerateCode(Specification.Feature feature, Version version)
+		static Specification ParseSpec(string xmlDir, string api, Version ver)
 		{
-
-		}
-
-		static bool SpecValid(Specification specification, Version version, string api)
-		{
-			foreach (var feature in specification.Features)
-			{
-				if (feature.Api == api && feature.Version.CompareTo(version) < 0)
-					return true;
-			}
-
-			return false;
-		}
-
-		static bool FeatureValid(Specification.Feature feature, Version version, string api)
-		{
-			if (feature.Api == api && feature.Version.CompareTo(version) < 0)
-				return true;
-
-			return false;
-		}
-
-		static bool AddRemValid(Specification.AddRem addRem, string profile)
-		{
-			if (addRem.Profile != profile && !string.IsNullOrEmpty(addRem.Profile))
-				return false;
-
-			return true;
-		}
-
-		static List<Specification> ParseSpecs(string xmlDir)
-		{
-			var specs = new List<Specification>();
-
 			var specDir = Path.Combine(xmlDir, "spec");
 			foreach (var file in Directory.GetFiles(specDir))
-				specs.Add(new Specification(file));
+			{
+				if (Path.GetFileNameWithoutExtension(file) == api)
+					return new Specification(file, api, ver);
+			}
 
-			return specs;
+			throw new Exception($"Invalid api {api}!");
 		}
 	}
 }

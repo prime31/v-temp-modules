@@ -19,7 +19,7 @@ pub fn get_program_link_status(program u32) int {
 }
 
 pub fn program_info_log(program u32) string {
-	if C.glIsProgram(program) != 1 {
+	if !C.glIsProgram(program) {
 		println('program $program is not a shader program')
 		exit(1)
 	}

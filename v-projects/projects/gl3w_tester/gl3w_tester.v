@@ -49,7 +49,7 @@ fn main() {
 			}
 		}
 
-		C.glClearColor(0.5, 0.0, 0.3, 1.0)
+		C.glClearColor(0.0, 0.0, 0.0, 1.0)
 		C.glClear(C.GL_COLOR_BUFFER_BIT | C.GL_DEPTH_BUFFER_BIT | C.GL_STENCIL_BUFFER_BIT)
 		state.draw_quad()
 		state.draw_triangle()
@@ -76,7 +76,7 @@ fn (state mut AppState) create_shader() {
 
 	// fragment shader
 	frag := C.glCreateShader(C.GL_FRAGMENT_SHADER)
-	frag_src := '#version 150\nout vec4 LFragment; void main() { LFragment = vec4(0.4, 0.4, 0.5, 1.0); }'
+	frag_src := '#version 150\nout vec4 LFragment; void main() { LFragment = vec4(0.9, 0.1, 0.1, 1.0); }'
 	C.glShaderSource(frag, 1, &frag_src.str, 0)
 	C.glCompileShader(frag)
 	if gl.shader_compile_status(frag) == 0 {
@@ -155,9 +155,9 @@ fn (state AppState) draw_quad() {
 
 fn (state mut AppState) draw_triangle() {
 	vertices := [
-		-1.0, 0.0,
+		-1.0, -0.1,
 		-1.0, 1.0,
-		0.3,  1.0
+		-0.1,  1.0
 	]
 	index_data := [
 		u32(0), 1, 2

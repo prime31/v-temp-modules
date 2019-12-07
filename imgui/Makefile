@@ -78,7 +78,7 @@ imgui_impl_opengl3.o: $(IMGUI)/examples/imgui_impl_opengl3.cpp
 	sed -i '' "s/glsl_version = NULL/glsl_version/g" $(MODULE_FOLDER)/imgui_impl_opengl3.h
 
 generate_v_bindings:
-	dotnet run --project Generator
+	dotnet run --project generator
 
 clean:
 	$(RM) *.o *.so *.h $(TARGET)

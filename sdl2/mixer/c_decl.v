@@ -9,7 +9,7 @@ import prime31.sdl2
 #include <SDL_mixer.h>
 
 
-const (
+pub const (
 	MIX_CHANNEL_POST = C.MIX_CHANNEL_POST
 	MIX_MAX_VOLUME = C.MIX_MAX_VOLUME
 	MIX_CHANNELS = C.MIX_CHANNELS
@@ -77,8 +77,17 @@ fn C.Mix_Playing(channel int) int
 fn C.Mix_Paused(channel int) int
 fn C.Mix_GetChunk(channel int) voidptr //Mix_Chunk
 fn C.Mix_FreeChunk(chunk &Mix_Chunk)
+fn C.Mix_ReserveChannels(num int) int
 
-// TODO: Groups
+// Groups
+fn C.Mix_GroupChannel(which int, tag int) int
+fn C.Mix_GroupChannels(from int, to int, tag int) int
+fn C.Mix_GroupAvailable(tag int) int
+fn C.Mix_GroupCount(tag int) int
+fn C.Mix_GroupOldest(tag int) int
+fn C.Mix_GroupNewer(tag int) int
+fn C.Mix_FadeOutGroup(tag int, ms int) int
+fn C.Mix_HaltGroup(tag int) int
 
 // Effects
 type EffectFunc fn (int, voidptr, int, voidptr) // int chan, void *stream, int len, void *udata

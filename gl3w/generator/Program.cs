@@ -172,7 +172,7 @@ namespace Generator
 			writer.WriteLine();
 
 			var groupedEnums = new List<Specification.Enum>();
-			writer.WriteLine("const (");
+			writer.WriteLine("pub const (");
 			foreach (var e in feature.Enums)
 			{
 				var en = spec.GetEnum(e);

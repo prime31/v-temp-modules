@@ -45,8 +45,6 @@ fn main() {
 	fps.init()
 
 	for {
-		start_ticks := C.SDL_GetPerformanceCounter()
-
 		ev := sdl2.Event{}
 		for 0 < C.SDL_PollEvent(&ev) {
 			match int(ev._type) {

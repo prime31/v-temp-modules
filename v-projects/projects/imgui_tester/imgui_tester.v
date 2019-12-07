@@ -64,6 +64,7 @@ fn setup_main_loop() {
 					state.done = true
 					break
 				}
+				else {}
 			}
 		}
 

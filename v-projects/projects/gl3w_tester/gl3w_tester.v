@@ -46,6 +46,7 @@ fn main() {
 					alive = false
 					break
 				}
+				else {}
 			}
 		}
 

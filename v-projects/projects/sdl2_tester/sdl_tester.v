@@ -50,7 +50,7 @@ fn main() {
 			match int(ev._type) {
 				C.SDL_QUIT { should_close = true }
 				C.SDL_KEYDOWN {
-					key := int(ev.key.keysym.sym)
+					key := ev.key.keysym.sym
 					if key == C.SDLK_ESCAPE {
 					        should_close = true
 					        break
@@ -60,24 +60,24 @@ fn main() {
 				}
 				C.SDL_JOYBUTTONDOWN {
 					jb := int(ev.jbutton.button)
-					joyid := int(ev.jbutton.which)
+					joyid := ev.jbutton.which
 					println('JOY BUTTON $jb $joyid')
 					//game.handle_jbutton(jb, joyid)
 				}
 				C.SDL_JOYHATMOTION {
 					jh := int(ev.jhat.hat)
 					jv := int(ev.jhat.value)
-					joyid := int(ev.jhat.which)
+					joyid := ev.jhat.which
 					println('JOY HAT $jh $jv $joyid')
 					//game.handle_jhat(jh, jv, joyid)
 				}
-
 				C.SDL_WINDOWEVENT {
 					println('win=$ev.window.window_event')
 					if ev.window.window_event == C.SDL_WINDOWEVENT_MOVED {
 						println('moved da win')
 					}
 				}
+				else {}
 			}
 		}
 		if should_close {

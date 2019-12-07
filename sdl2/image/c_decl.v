@@ -3,13 +3,13 @@ module image
 #flag linux -lSDL2_image
 #include <SDL_image.h>
 
-#flag darwin -L/usr/local/lib -lSDL2_IMAGE
+#flag darwin -L /usr/local/lib -lSDL2_IMAGE
 #flag darwin -I /usr/local/opt/sdl2_image/include/SDL2
 
-#flag windows -I/msys64/mingw64/include/SDL2
-#flag windows -L/mingw64/lib -lSDL2_image
+#flag windows -I /msys64/mingw64/include/SDL2
+#flag windows -L /mingw64/lib -lSDL2_image
 
-const (
+pub const (
 	IMG_INIT_JPG = 0x00000001
     IMG_INIT_PNG = 0x00000002
     IMG_INIT_TIF = 0x00000004

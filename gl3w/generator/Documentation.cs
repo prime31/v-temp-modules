@@ -58,7 +58,7 @@ namespace Generator
 
 				foreach (var xName in xDiv.Descendants("refname"))
 				{
-					this[xName.Value] = purpose;
+					this[xName.Value] = purpose.Replace(Environment.NewLine, "");
 				}
 			}
 			catch (Exception e)

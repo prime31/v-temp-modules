@@ -148,18 +148,17 @@ namespace Generator
 		static void PrepareSpecsAndGenerateCode(string api, Version ver, string profile, string xmlDir, string outDir)
 		{
 			var spec = ParseSpec(xmlDir, api, ver);
-			// TODO: add docs
-			//var docs = new Documentation(Path.Combine(xmlDir, "doc"));
+			var docs = new Documentation(Path.Combine(xmlDir, "doc"));
 
 			// Select the commands and enums relevant to the specified API version
 			foreach (var feature in spec.Features)
 			{
 				// actually generate the file here
-				GenerateCode(spec, feature, ver, outDir);
+				GenerateCode(spec, feature, docs, ver, outDir);
 			}
 		}
 
-		static void GenerateCode(Specification spec, Specification.Feature feature, Version version, string outDir)
+		static void GenerateCode(Specification spec, Specification.Feature feature, Documentation docs, Version version, string outDir)
 		{
 			// if we want one module per version the module would need the version name
 			//var moduleDecl = $"module gl" + feature.Version.ToString().Replace(".", "");
@@ -212,6 +211,12 @@ namespace Generator
 				}
 				else
 				{
+					if (docs.TryGetValue(c.Name, out var d))
+					{
+						writer.WriteLine();
+						writer.WriteLine($"// {d}");
+					}
+
 					writer.Write($"fn C.{c.Name}(");
 
 					for (var i = 0; i < c.Parameters.Length; i++)

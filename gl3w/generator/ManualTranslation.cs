@@ -24,8 +24,9 @@ namespace Generator
 				writer.WriteLine("\t\texit(1)");
 				writer.WriteLine("\t}");
 				writer.WriteLine();
+                writer.WriteLine("\tlength := 0");
 				writer.WriteLine("\tinfo_log := [512]byte");
-				writer.WriteLine("\tC.glGetProgramInfoLog(program, 512, 0, info_log)");
+				writer.WriteLine("\tC.glGetProgramInfoLog(program, 512, &length, info_log)");
 				writer.WriteLine("\treturn tos_clone(info_log)");
 				writer.WriteLine("}");
 			}
@@ -37,8 +38,9 @@ namespace Generator
 				writer.WriteLine("\t\texit(1)");
 				writer.WriteLine("\t}");
 				writer.WriteLine();
+                writer.WriteLine("\tlength := 0");
 				writer.WriteLine("\tinfo_log := [512]byte");
-				writer.WriteLine("\tC.glGetShaderInfoLog(shader, 512, 0, info_log)");
+				writer.WriteLine("\tC.glGetShaderInfoLog(shader, 512, &length, info_log)");
 				writer.WriteLine("\treturn tos_clone(info_log)");
 				writer.WriteLine("}");
 			}
@@ -73,11 +75,11 @@ namespace Generator
 			else if (name == "glGetActiveUniform")
 			{
 				writer.WriteLine("// returns name, size, type");
-				writer.WriteLine("pub fn get_active_uniform(program u32, index u32) (string, u32, u32) {");
+				writer.WriteLine("pub fn get_active_uniform(program u32, index u32) (string, int, int) {");
 				writer.WriteLine("\tbuffer := [100]byte");
 				writer.WriteLine("\tlength := 0");
-				writer.WriteLine("\ttyp := u32(0)");
-				writer.WriteLine("\tsize := u32(0)");
+				writer.WriteLine("\ttyp := 0");
+				writer.WriteLine("\tsize := 0");
 				writer.WriteLine("\tC.glGetActiveUniform(program, index, 100, &length, &size, &typ, buffer)");
 				writer.WriteLine("\treturn tos_clone(buffer), size, typ");
 				writer.WriteLine("}");
@@ -85,11 +87,11 @@ namespace Generator
 			else if (name == "glGetActiveAttrib")
 			{
 				writer.WriteLine("// returns name, size, type");
-				writer.WriteLine("pub fn get_active_attrib(program u32, index u32) (string, u32, u32) {");
+				writer.WriteLine("pub fn get_active_attrib(program u32, index u32) (string, int, int) {");
 				writer.WriteLine("\tbuffer := [100]byte");
 				writer.WriteLine("\tlength := 0");
-				writer.WriteLine("\ttyp := u32(0)");
-				writer.WriteLine("\tsize := u32(0)");
+				writer.WriteLine("\ttyp := 0");
+				writer.WriteLine("\tsize := 0");
 				writer.WriteLine("\tC.glGetActiveAttrib(program, index, 100, &length, &size, &typ, buffer)");
 				writer.WriteLine("\treturn tos_clone(buffer), size, typ");
 				writer.WriteLine("}");
@@ -111,13 +113,13 @@ namespace Generator
 			else if (name == "glGetString")
 			{
 				writer.WriteLine("pub fn get_string(name int) string {");
-				writer.WriteLine("\treturn tos2(C.glGetString(name))");
+				writer.WriteLine("\treturn tos2(glGetString(name))");
 				writer.WriteLine("}");
 			}
 			else if (name == "glGetStringi")
 			{
-				writer.WriteLine("pub fn get_stringi(index int) string {");
-				writer.WriteLine("\treturn tos2(C.glGetStringi(C.GL_EXTENSIONS, index))");
+				writer.WriteLine("pub fn get_stringi(index u32) string {");
+				writer.WriteLine("\treturn tos2(glGetStringi(GL_EXTENSIONS, index))");
 				writer.WriteLine("}");
 			}
 			else if (name == "glGenBuffers")

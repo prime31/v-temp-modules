@@ -210,57 +210,57 @@ namespace Generator
 
 
 			// function declarations
-			foreach (var c in feature.Commands.Select(c => spec.GetCommand(c)))
+			foreach (var com in feature.Commands.Select(c => spec.GetCommand(c)))
 			{
-				if (UncompileableFunctions.Contains(c.Name))
+				if (UncompileableFunctions.Contains(com.Name))
 				{
-					Console.WriteLine($"Skipping {c.Name}");
+					Console.WriteLine($"Skipping {com.Name}");
 					continue;
 				}
 
-				var ret = string.IsNullOrEmpty(c.Ret) ? "" : $" {Statics.GetVTypeForCType(c.Ret, true)}";
-				var vRet = string.IsNullOrEmpty(c.Ret) ? "" : $" {Statics.GetVTypeForCType(c.Ret, true, true)}";
-				if (c.Parameters.Length == 0)
+				var ret = string.IsNullOrEmpty(com.Ret) ? "" : $" {Statics.GetVTypeForCType(com.Ret, true)}";
+				var vRet = string.IsNullOrEmpty(com.Ret) ? "" : $" {Statics.GetVTypeForCType(com.Ret, true, true)}";
+				if (com.Parameters.Length == 0)
 				{
-					writer.WriteLine($"fn C.{c.Name}(){ret}");
+					writer.WriteLine($"fn C.{com.Name}(){ret}");
 
-					vWriter.WriteLine($"fn {GlToSnakeCase(c.Name.Substring(2))}(){vRet} {{");
+					vWriter.WriteLine($"pub fn {GlToSnakeCase(com.Name.Substring(2))}(){vRet} {{");
 					vWriter.Write($"\t");
 					if (vRet != "")
 						vWriter.Write("return ");
-					vWriter.Write($"C.{c.Name}()");
+					vWriter.Write($"C.{com.Name}()");
 					vWriter.WriteLine();
 					vWriter.WriteLine("}");
 				}
 				else
 				{
-					if (docs.TryGetValue(c.Name, out var d))
+					if (docs.TryGetValue(com.Name, out var d))
 					{
 						writer.WriteLine();
 						writer.WriteLine($"// {d}");
 					}
 
-					writer.Write($"fn C.{c.Name}(");
+					writer.Write($"fn C.{com.Name}(");
 
 					// we hand-write some methods that can be tricky and make the vWriter null for them
 					var originalVWriter = vWriter;
-					if (ManualTranslation.HasManualVImplementation(c.Name))
+					if (ManualTranslation.HasManualVImplementation(com.Name))
 					{
-						ManualTranslation.WriteVMethod(vWriter, c.Name);
+						ManualTranslation.WriteVMethod(vWriter, com.Name);
 						vWriter = StreamWriter.Null;
 					}
 
-					vWriter.Write($"pub fn {GlToSnakeCase(c.Name.Substring(2))}(");
+					vWriter.Write($"pub fn {GlToSnakeCase(com.Name.Substring(2))}(");
 
 					var vParams = new StringBuilder();
-					for (var i = 0; i < c.Parameters.Length; i++)
+					for (var i = 0; i < com.Parameters.Length; i++)
 					{
-						var p = c.Parameters[i];
+						var p = com.Parameters[i];
 						var type = Statics.GetVTypeForCType(p.Type, false);
 						var vType = Statics.GetVTypeForCType(p.Type, false, true);
 						var vName = GlToSnakeCase(p.Name);
 
-						if (vType.Contains("[]") && (c.Name.StartsWith("glGet") || MethodsWithRefParam.Contains(c.Name)))
+						if (vType.Contains("[]") && (com.Name.StartsWith("glGet") || MethodsWithRefParam.Contains(com.Name)))
 							vType = vType.Replace("[]", "&");
 
 						writer.Write($"{p.Name} {type}");
@@ -273,7 +273,7 @@ namespace Generator
 						else
 							vParams.Append(vName);
 
-						if (i < c.Parameters.Length - 1)
+						if (i < com.Parameters.Length - 1)
 						{
 							writer.Write(", ");
 							vWriter.Write(", ");
@@ -288,7 +288,7 @@ namespace Generator
 						vWriter.Write("return ");
 
 					// params to call C method (first, second, third)
-					vWriter.Write($"C.{c.Name}(");
+					vWriter.Write($"C.{com.Name}(");
 					vWriter.Write(vParams.ToString());
 					vWriter.Write($")");
 

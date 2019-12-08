@@ -32,7 +32,7 @@ fn main() {
 	C.SDL_GL_MakeCurrent(window, gl_context)
 	C.SDL_GL_SetSwapInterval(1) // Enable vsync
 
-	C.gl3wInit()
+	gl.initialize()
 
 	state.create_shader()
 	state.create_buffers()

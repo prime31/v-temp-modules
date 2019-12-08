@@ -118,10 +118,10 @@ fn (state mut AppState) create_buffers() {
 		0.5, -0.5,
 		0.5,  0.5,
 		-0.5,  0.5
-	]
+	]!
 	index_data := [
 		u32(0), 1, 2, 3
-	]
+	]!
 
 	state.vbo = gl.gen_buffer()
 	C.glBindBuffer(C.GL_ARRAY_BUFFER, state.vbo)
@@ -159,10 +159,7 @@ fn (state mut AppState) draw_triangle() {
 		-1.0, -0.1,
 		-1.0, 1.0,
 		-0.1,  1.0
-	]
-	index_data := [
-		u32(0), 1, 2
-	]
+	]!
 
 	if state.vao == 0 {
 		state.vao = gl.gen_vertex_array()

@@ -1,10 +1,6 @@
 module ttf
 
-#flag darwin -L /usr/local/lib -lSDL2 -lSDL2_TTF
-#flag darwin -I /usr/local/opt/sdl2_ttf/include/SDL2
-#flag linux `sdl2-config --cflags --libs` -lSDL2_ttf
-#flag windows -L/mingw64/lib -lmingw32 -lSDL2_ttf
-
+#flag -lSDL2_ttf
 #include <SDL_ttf.h>
 
 [typedef]

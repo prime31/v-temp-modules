@@ -1,7 +1,7 @@
 module sdl2
 
-#flag darwin -L /usr/local/lib -lSDL2
-#flag darwin -I /usr/local/opt/sdl2/include/SDL2
+#flag linux  `sdl2-config --cflags --libs`
+#flag darwin `sdl2-config --cflags --libs`
 
 #flag windows -I/msys64/mingw64/include/SDL2
 #flag windows -Dmain=SDL_main

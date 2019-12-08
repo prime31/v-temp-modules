@@ -13,6 +13,7 @@ fn C.SDL_CreateWindow(title byteptr, x int, y int, w int, h int, flags u32) void
 fn C.SDL_CreateWindowAndRenderer(width int, height int, window_flags u32, window &SDL_Window, renderer &SDL_Renderer) int
 fn C.SDL_CreateRenderer(window &SDL_Window, index int, flags u32) voidptr
 fn C.SDL_DestroyWindow(window voidptr)
+fn C.SDL_DestroyRenderer(renderer voidptr)
 fn C.SDL_GetWindowSize(window voidptr, w &int, h &int)
 fn C.SDL_SetHint(name byteptr, value byteptr) C.SDL_bool
 //fn C.SDL_RWFromFile(byteptr, byteptr) &RwOps

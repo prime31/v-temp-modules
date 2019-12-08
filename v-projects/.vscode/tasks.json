@@ -44,6 +44,7 @@
             "args": [
                 "-g",
                 "-live",
+                "run",
                 "${file}"
             ],
             "group": "build",

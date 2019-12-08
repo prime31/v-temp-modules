@@ -64,7 +64,7 @@ fn main() {
 
 fn (state mut AppState) create_shader() {
 	// vertex shader
-	vert := C.glCreateShader(C.GL_VERTEX_SHADER)
+	vert := gl.create_shader(C.GL_VERTEX_SHADER)
 	vert_src := '#version 150\nin vec2 LVertexPos2D;\nuniform vec2 fff = vec2(0); void main() { gl_Position = vec4(LVertexPos2D.x, LVertexPos2D.y, fff.x, 1); }'
 	C.glShaderSource(vert, 1, &vert_src.str, 0)
 	C.glCompileShader(vert)
@@ -76,7 +76,7 @@ fn (state mut AppState) create_shader() {
 	}
 
 	// fragment shader
-	frag := C.glCreateShader(C.GL_FRAGMENT_SHADER)
+	frag := gl.create_shader(C.GL_FRAGMENT_SHADER)
 	frag_src := '#version 150\nout vec4 LFragment; void main() { LFragment = vec4(0.9, 0.1, 0.1, 1.0); }'
 	C.glShaderSource(frag, 1, &frag_src.str, 0)
 	C.glCompileShader(frag)
@@ -88,7 +88,7 @@ fn (state mut AppState) create_shader() {
 	}
 
 	// link shaders
-	shader_program := C.glCreateProgram()
+	shader_program := gl.create_program()
 	C.glAttachShader(shader_program, vert)
 	C.glAttachShader(shader_program, frag)
 	C.glLinkProgram(shader_program)

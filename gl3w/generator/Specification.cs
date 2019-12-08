@@ -45,12 +45,14 @@ namespace Generator
 		public class Command
 		{
 			public string Name, Ret, Group;
+			public bool IsRetConst;
 			public Parameter[] Parameters;
 		}
 
 		public class Parameter
 		{
 			public string Name, Type, Group, Len;
+			public bool IsConst;
 		}
 
 		#endregion
@@ -64,14 +66,17 @@ namespace Generator
 		public Command GetCommand(string name) => Commands.Where(e => e.Name == name).First();
 		public Group GetGroupForEnum(string enu) => Groups.Where(g => g.Enums.Contains(enu)).FirstOrDefault();
 
+		bool HasEnum(string name) => Enums.Where(e => e.Name == name).FirstOrDefault() != null;
+		bool HasCommand(string name) => Commands.Where(e => e.Name == name).FirstOrDefault() != null;
+
 		public Specification(string file, string api, Version ver)
 		{
 			var xml = XElement.Load(file);
 
 			Groups = ParseGroups(xml);
 			Enums = ParseEnums(xml);
-			Features = ParseFeatures(xml, api, ver);
 			Commands = ParseCommands(xml);
+			Features = ParseFeatures(xml, api, ver);
 		}
 
 		Group[] ParseGroups(XElement xml)
@@ -153,8 +158,16 @@ namespace Generator
                 feature.Enums = addRem.AddedEnums.Where(e => !addRem.RemovedEnums.Contains(e)).ToArray();
                 feature.Commands = addRem.AddedCommands.Where(e => !addRem.RemovedCommands.Contains(e)).ToArray();
 
+				foreach (var f in features)
+				{
+					f.Enums = f.Enums.Where(e => !addRem.RemovedEnums.Contains(e)).ToArray();
+					f.Commands = f.Commands.Where(e => !addRem.RemovedCommands.Contains(e)).ToArray();
+				}
+
 				features.Add(feature);
 			}
+
+			features.Add(HandleExtensions(xml, requestedApi, features));
 
 			return features.ToArray();
 		}
@@ -169,6 +182,7 @@ namespace Generator
 				var xName = xProto.Element("name");
 
 				command.Name = xName.Value;
+				command.IsRetConst = xProto.Value.Contains("const");
 				command.Ret = InnerXml(xProto).Replace(xName.ToString(), "")
                     .Replace("const", "").Replace("<ptype>", "").Replace("</ptype>", "").Replace(" ", "").Trim();
                 if (command.Ret == "void")
@@ -177,6 +191,7 @@ namespace Generator
 				var parameters = new List<Parameter>();
 				foreach (var xParam in xCommand.Descendants("param"))
 				{
+					var isConst = xParam.Value.Contains("const");
 					var rawType = InnerXml(xParam).Replace(xParam.Element("name").ToString(), "")
 						.Replace("const", "").Replace("<ptype>", "").Replace("</ptype>", "").Replace(" ", "");
 
@@ -185,7 +200,8 @@ namespace Generator
 						Group = (string)xParam.Attribute("group"),
 						Len = (string)xParam.Attribute("len"),
 						Type = rawType,
-						Name = xParam.Element("name").Value
+						Name = xParam.Element("name").Value,
+						IsConst = isConst
 					};
 
                     if (p.Name == "type")
@@ -198,6 +214,47 @@ namespace Generator
 			}
 
 			return commands.ToArray();
+		}
+
+		Feature HandleExtensions(XElement xml, string api, List<Feature> currentFeatures)
+		{
+			var includedExtensions = new string[] { "GL_ARB_vertex_array_object", "GL_ARB_pixel_buffer_object", "GL_ARB_framebuffer_object", "GL_ARB_uniform_buffer_object" };
+
+			var enums = new List<string>();
+			var commands = new List<string>();
+			foreach (var xExtension in xml.Descendants("extensions").Descendants("extension"))
+			{
+				var supported = ((string)xExtension.Attribute("supported")).Split('|');
+				if (!supported.Contains(api))
+					continue;
+
+				var name = (string)xExtension.Attribute("name");
+				if (!includedExtensions.Contains(name))
+					continue;
+
+				foreach (var xRequire in xExtension.Descendants("require"))
+				{
+					commands.AddRange(xRequire.Descendants("command").Select(x => (string)x.Attribute("name")));
+					enums.AddRange(xRequire.Descendants("enum").Select(x => (string)x.Attribute("name")));
+				}
+			}
+
+			// only add those that arent already defined elsewhere
+			foreach (var f in currentFeatures)
+			{
+				enums.RemoveAll(e => f.Enums.Contains(e));
+				commands.RemoveAll(c => f.Commands.Contains(c));
+			}
+
+			var feature = new Feature
+			{
+				Name = "Extensions",
+				Api = "EXT",
+				Version = new Version(0, 0),
+				Enums = enums.ToArray(),
+				Commands = commands.ToArray()
+			};
+			return feature;
 		}
 
 

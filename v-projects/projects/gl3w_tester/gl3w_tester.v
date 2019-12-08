@@ -65,11 +65,11 @@ fn main() {
 fn (state mut AppState) create_shader() {
 	// vertex shader
 	vert := C.glCreateShader(C.GL_VERTEX_SHADER)
-	vert_src := '#version 150\nin vec2 LVertexPos2D; void main() { gl_Position = vec4(LVertexPos2D.x, LVertexPos2D.y, 0, 1); }'
+	vert_src := '#version 150\nin vec2 LVertexPos2D;\nuniform vec2 fff = vec2(0); void main() { gl_Position = vec4(LVertexPos2D.x, LVertexPos2D.y, fff.x, 1); }'
 	C.glShaderSource(vert, 1, &vert_src.str, 0)
 	C.glCompileShader(vert)
-	if gl.shader_compile_status(vert) == 0 {
-		log := gl.shader_info_log(vert)
+	if gl.get_shader_compile_status(vert) == 0 {
+		log := gl.get_shader_info_log(vert)
 		println('shader $vert compilation failed')
 		println(log)
 		exit(1)
@@ -80,8 +80,8 @@ fn (state mut AppState) create_shader() {
 	frag_src := '#version 150\nout vec4 LFragment; void main() { LFragment = vec4(0.9, 0.1, 0.1, 1.0); }'
 	C.glShaderSource(frag, 1, &frag_src.str, 0)
 	C.glCompileShader(frag)
-	if gl.shader_compile_status(frag) == 0 {
-		log := gl.shader_info_log(frag)
+	if gl.get_shader_compile_status(frag) == 0 {
+		log := gl.get_shader_info_log(frag)
 		println('fragment $frag shader compilation failed')
 		println(log)
 		exit(1)
@@ -96,7 +96,7 @@ fn (state mut AppState) create_shader() {
 	// check for linking errors
 	success := gl.get_program_link_status(shader_program)
 	if success == 0 {
-		log := gl.program_info_log(shader_program)
+		log := gl.get_program_info_log(shader_program)
 		println('shader compilation failed')
 		println('vertex source = $vert_src')
 		println('fragment source = $frag_src')
@@ -110,6 +110,18 @@ fn (state mut AppState) create_shader() {
 		println('LVertexPos2D is not a valid glsl program variable!')
 		exit(1)
 	}
+
+	name, size, typ := gl.get_active_attrib(state.program, 0)
+	println('att: $name')
+
+	prog_res := gl.get_programiv(state.program, C.GL_LINK_STATUS)
+	println('prog_res=$prog_res')
+
+	gl_ver := gl.get_string(C.GL_VERSION)
+	println('gl ver=$gl_ver, vendor=${gl.get_string(C.GL_VENDOR)}, renderer=${gl.get_string(C.GL_RENDERER)}')
+
+	ver := gl.get_string(C.GL_SHADING_LANGUAGE_VERSION)
+	println('glsl ver=$ver')
 }
 
 fn (state mut AppState) create_buffers() {
@@ -123,9 +135,11 @@ fn (state mut AppState) create_buffers() {
 		u32(0), 1, 2, 3
 	]!
 
-	state.vbo = gl.gen_buffer()
+	// state.vbo = gl.gen_buffer()
+	C.glGenBuffers(1, &state.vbo)
 	C.glBindBuffer(C.GL_ARRAY_BUFFER, state.vbo)
-	C.glBufferData(C.GL_ARRAY_BUFFER, vertex_data.len * sizeof(f32), vertex_data.data, C.GL_STATIC_DRAW)
+	gl.buffer_data_f32(C.GL_ARRAY_BUFFER, vertex_data, C.GL_STATIC_DRAW)
+	// C.glBufferData(C.GL_ARRAY_BUFFER, vertex_data.len * sizeof(f32), vertex_data.data, C.GL_STATIC_DRAW)
 
 	state.ibo = gl.gen_buffer()
 	C.glBindBuffer(C.GL_ELEMENT_ARRAY_BUFFER, state.ibo)

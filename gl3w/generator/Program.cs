@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using Octokit;
 
@@ -158,18 +159,25 @@ namespace Generator
 			}
 		}
 
+		static string[] UncompileableFunctions = new string[] {};
+
+		static string[] MethodsWithRefParam = new string[] { "glGenBuffers", "glDeleteBuffers" };
+
 		static void GenerateCode(Specification spec, Specification.Feature feature, Documentation docs, Version version, string outDir)
 		{
 			// if we want one module per version the module would need the version name
 			//var moduleDecl = $"module gl" + feature.Version.ToString().Replace(".", "");
 			var moduleDecl = "module gl3w";
 
-			var filename = "gl" + feature.Version.ToString().Replace(".", "") + ".v";
-			var stream = File.Open(Path.Combine(outDir, filename), System.IO.FileMode.Create);
-			var writer = new StreamWriter(stream);
+			var baseName = feature.Version.Major > 0 ? feature.Version.ToString().Replace(".", "") : "ext";
+			var filename = "gl" + baseName + "_c.v";
+			var writer = new StreamWriter(File.Open(Path.Combine(outDir, filename), System.IO.FileMode.Create));
 
-			writer.WriteLine(moduleDecl);
-			writer.WriteLine();
+			var vFilename = "gl" + baseName + ".v";
+			var vWriter = new StreamWriter(File.Open(Path.Combine(outDir, vFilename), System.IO.FileMode.Create));
+
+			writer.WriteLine(moduleDecl); writer.WriteLine();
+			vWriter.WriteLine(moduleDecl); vWriter.WriteLine();
 
 			var groupedEnums = new List<Specification.Enum>();
 			writer.WriteLine("pub const (");
@@ -204,10 +212,25 @@ namespace Generator
 			// function declarations
 			foreach (var c in feature.Commands.Select(c => spec.GetCommand(c)))
 			{
+				if (UncompileableFunctions.Contains(c.Name))
+				{
+					Console.WriteLine($"Skipping {c.Name}");
+					continue;
+				}
+
 				var ret = string.IsNullOrEmpty(c.Ret) ? "" : $" {Statics.GetVTypeForCType(c.Ret, true)}";
+				var vRet = string.IsNullOrEmpty(c.Ret) ? "" : $" {Statics.GetVTypeForCType(c.Ret, true, true)}";
 				if (c.Parameters.Length == 0)
 				{
 					writer.WriteLine($"fn C.{c.Name}(){ret}");
+
+					vWriter.WriteLine($"fn {GlToSnakeCase(c.Name.Substring(2))}(){vRet} {{");
+					vWriter.Write($"\t");
+					if (vRet != "")
+						vWriter.Write("return ");
+					vWriter.Write($"C.{c.Name}()");
+					vWriter.WriteLine();
+					vWriter.WriteLine("}");
 				}
 				else
 				{
@@ -219,21 +242,83 @@ namespace Generator
 
 					writer.Write($"fn C.{c.Name}(");
 
+					// we hand-write some methods that can be tricky and make the vWriter null for them
+					var originalVWriter = vWriter;
+					if (ManualTranslation.HasManualVImplementation(c.Name))
+					{
+						ManualTranslation.WriteVMethod(vWriter, c.Name);
+						vWriter = StreamWriter.Null;
+					}
+
+					vWriter.Write($"pub fn {GlToSnakeCase(c.Name.Substring(2))}(");
+
+					var vParams = new StringBuilder();
 					for (var i = 0; i < c.Parameters.Length; i++)
 					{
 						var p = c.Parameters[i];
 						var type = Statics.GetVTypeForCType(p.Type, false);
+						var vType = Statics.GetVTypeForCType(p.Type, false, true);
+						var vName = GlToSnakeCase(p.Name);
+
+						if (vType.Contains("[]") && (c.Name.StartsWith("glGet") || MethodsWithRefParam.Contains(c.Name)))
+							vType = vType.Replace("[]", "&");
+
 						writer.Write($"{p.Name} {type}");
+						vWriter.Write($"{vName} {vType}");
+
+						if (vType.Contains("[]"))
+							vParams.Append($"{vName}.data");
+						else if (vType == "string")
+							vParams.Append($"{vName}.str");
+						else
+							vParams.Append(vName);
 
 						if (i < c.Parameters.Length - 1)
+						{
 							writer.Write(", ");
+							vWriter.Write(", ");
+							vParams.Append(", ");
+						}
 					}
 
 					writer.WriteLine($"){ret}");
+					vWriter.WriteLine($"){vRet} {{");
+					vWriter.Write($"\t");
+					if (vRet != "")
+						vWriter.Write("return ");
+
+					// params to call C method (first, second, third)
+					vWriter.Write($"C.{c.Name}(");
+					vWriter.Write(vParams.ToString());
+					vWriter.Write($")");
+
+					vWriter.WriteLine();
+					vWriter.WriteLine("}");
+
+					// retore the vWriter in case it is nulled out
+					vWriter = originalVWriter;
 				}
+
+				vWriter.WriteLine();
 			}
 
 			writer.Dispose();
+			vWriter.Dispose();
+		}
+
+		static string GlToSnakeCase(string name)
+		{
+			name = string.Concat(name.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
+			return EscapeReservedWords(name);
+		}
+
+		static string EscapeReservedWords(string name)
+		{
+			if (name == "map")
+				return "map";
+			if (name == "string")
+				return "str";
+			return name;
 		}
 
 		static Specification ParseSpec(string xmlDir, string api, Version ver)

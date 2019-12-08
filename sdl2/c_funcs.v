@@ -30,6 +30,7 @@ fn C.SDL_QueryTexture(texture voidptr, format voidptr, access voidptr, w voidptr
 fn C.SDL_DestroyTexture(texture voidptr)
 
 fn C.SDL_RenderDrawRectF(renderer voidptr, rect voidptr)
+fn C.SDL_RenderFillRect(renderer voidptr, rect voidptr)
 fn C.SDL_RenderFillRectF(renderer voidptr, rect voidptr)
 
 fn C.SDL_FreeSurface(surface voidptr)

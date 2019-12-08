@@ -1,5 +1,7 @@
 import prime31.sdl2
 import prime31.gl3w as gl
+import time
+import os
 
 struct AppState {
 mut:
@@ -115,13 +117,12 @@ fn (state mut AppState) create_shader() {
 	println('att: $name')
 
 	prog_res := gl.get_programiv(state.program, C.GL_LINK_STATUS)
-	println('prog_res=$prog_res')
+	println('prog link res=$prog_res')
 
-	gl_ver := gl.get_string(C.GL_VERSION)
-	println('gl ver=$gl_ver, vendor=${gl.get_string(C.GL_VENDOR)}, renderer=${gl.get_string(C.GL_RENDERER)}')
-
-	ver := gl.get_string(C.GL_SHADING_LANGUAGE_VERSION)
-	println('glsl ver=$ver')
+	println('gl version=${gl.get_string(C.GL_VERSION)}')
+	println('glsl version=${gl.get_string(C.GL_SHADING_LANGUAGE_VERSION)}')
+	println('vendor=${gl.get_string(C.GL_VENDOR)}')
+	println('renderer=${gl.get_string(C.GL_RENDERER)}')
 }
 
 fn (state mut AppState) create_buffers() {
@@ -165,17 +166,16 @@ fn (state AppState) draw_quad() {
 	C.glDisableVertexAttribArray(state.vert_pos_loc)
 
 	// Unbind program
-	C.glUseProgram(C.NULL)
+	C.glUseProgram(0)
 }
 
 fn (state mut AppState) draw_triangle() {
-	vertices := [
-		-1.0, -0.1,
-		-1.0, 1.0,
-		-0.1,  1.0
-	]!
-
 	if state.vao == 0 {
+		vertices := [
+			-1.0, 0.3,
+			-1.0, 1.0,
+			-0.1, 1.0
+		]!
 		state.vao = gl.gen_vertex_array()
 		state.tri_vbo = gl.gen_buffer()
 		C.glBindBuffer(C.GL_ARRAY_BUFFER, state.tri_vbo)
@@ -191,5 +191,5 @@ fn (state mut AppState) draw_triangle() {
 	C.glDrawArrays(C.GL_TRIANGLES, 0, 3)
 
 	C.glDisableVertexAttribArray(0)
-	C.glUseProgram(C.NULL)
+	C.glUseProgram(0)
 }

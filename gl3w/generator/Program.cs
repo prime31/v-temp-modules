@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Octokit;
 
 namespace Generator
@@ -74,43 +75,49 @@ namespace Generator
 
 			// fetch specs
 			var searchResult = github.Repository.Content.GetAllContents("KhronosGroup", "EGL-Registry", "api").Result;
-			foreach (var res in searchResult)
+			Parallel.ForEach(searchResult, res =>
 			{
 				if (Regex.IsMatch(res.Name, @"^(egl)\.xml$"))
 				{
 					Console.WriteLine(res.DownloadUrl);
 					DownloadFile(res.DownloadUrl, Path.Combine(specDir, res.Name));
 				}
-			}
+			});
 
 			searchResult = github.Repository.Content.GetAllContents("KhronosGroup", "OpenGL-Registry", "xml").Result;
-			foreach (var res in searchResult)
+			Parallel.ForEach(searchResult, res =>
 			{
 				if (Regex.IsMatch(res.Name, @"^(gl|glx|wgl)\.xml$"))
 				{
 					Console.WriteLine(res.DownloadUrl);
 					DownloadFile(res.DownloadUrl, Path.Combine(specDir, res.Name));
 				}
-			}
+			});
 
 			// fetch docs
 			var docRepoFolders = new[] { "es1.1", "es2.0", "es3.0", "es3.1", "es3", "gl2.1", "gl4" };
 			foreach (var folder in docRepoFolders)
 			{
 				searchResult = github.Repository.Content.GetAllContents("KhronosGroup", "OpenGL-Refpages", folder).Result;
-				foreach (var res in searchResult)
+				Parallel.ForEach(searchResult, res =>
 				{
 					if (Regex.IsMatch(res.Name, @"^[ew]?gl[^u_].*\.xml$"))
 					{
 						Console.WriteLine(res.DownloadUrl);
 						DownloadFile(res.DownloadUrl, Path.Combine(docDir, res.Name));
 					}
-				}
+				});
 			}
 		}
 
 		static void DownloadFile(string url, string filename)
 		{
+			if (File.Exists(filename))
+			{
+				Console.WriteLine("File already downloaded. Skipping.");
+				return;
+			}
+
 			using (var myWebClient = new WebClient())
 				myWebClient.DownloadFile(url, filename);
 		}

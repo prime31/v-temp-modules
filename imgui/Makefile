@@ -8,7 +8,7 @@ TARGET += imgui_impl_opengl3.o
 CP := cp
 MODULE_FOLDER := thirdparty
 $(shell mkdir -p $(MODULE_FOLDER))
-CIMGUI := cimgui
+CIMGUI := cimgui_git
 IMGUI := $(CIMGUI)/imgui
 
 LIBS :=
@@ -19,8 +19,10 @@ CFLAGS += -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS=1
 CFLAGS += -DIMGUI_IMPL_API=
 CFLAGS += `sdl2-config --cflags`
 
-## Using OpenGL loader: gl3w
-CFLAGS += -I cimgui/imgui/examples/libs/gl3w
+# Using OpenGL loader gl3w. Depending on the Makefile for gl3w (it can build using imgui's libs/gl3w
+# or from gl3w directly) we will require a different header inclusion here
+# CFLAGS += -I cimgui_git/imgui/examples/libs/gl3w
+CFLAGS += -I ../gl3w/thirdparty
 
 
 ##---------------------------------------------------------------------
@@ -51,21 +53,21 @@ endif
 all: $(TARGET)
 	@echo build complete
 
-cimgui.dylib: cimgui/build/cimgui.dylib
-	$(CP) cimgui/cimgui.h $(MODULE_FOLDER)/cimgui.h
-	$(CP) cimgui/build/cimgui.dylib $(MODULE_FOLDER)/cimgui.dylib
+cimgui.dylib: cimgui_git/build/cimgui.dylib
+	$(CP) cimgui_git/cimgui.h $(MODULE_FOLDER)/cimgui.h
+	$(CP) cimgui_git/build/cimgui.dylib $(MODULE_FOLDER)/cimgui.dylib
 
-cimgui/build/cimgui.dylib:
-	[ -d cimgui ] || git clone --recursive --depth 1 https://github.com/cimgui/cimgui.git
-	(export CFLAGS= CXXFLAGS= ; cd cimgui ; mkdir build ; cd build ; cmake -DIMGUI_STATIC=OFF .. ; make)
+cimgui_git/build/cimgui.dylib:
+	[ -d cimgui_git ] || git clone --recursive --depth 1 https://github.com/cimgui/cimgui.git cimgui_git
+	(export CFLAGS= CXXFLAGS= ; cd cimgui_git ; mkdir build ; cd build ; cmake -DIMGUI_STATIC=OFF .. ; make)
 
-cimgui.a: cimgui/build/cimgui.a
-	$(CP) cimgui/cimgui.h $(MODULE_FOLDER)/cimgui.h
-	$(CP) cimgui/build/cimgui.a $(MODULE_FOLDER)/cimgui.a
+cimgui.a: cimgui_git/build/cimgui.a
+	$(CP) cimgui_git/cimgui.h $(MODULE_FOLDER)/cimgui.h
+	$(CP) cimgui_git/build/cimgui.a $(MODULE_FOLDER)/cimgui.a
 
-cimgui/build/cimgui.a:
-	[ -d cimgui ] || git clone --recursive --depth 1 https://github.com/cimgui/cimgui.git
-	(export CFLAGS= CXXFLAGS= ; cd cimgui ; mkdir build ; cd build ; cmake -DIMGUI_STATIC=ON .. ; make)
+cimgui_git/build/cimgui.a:
+	[ -d cimgui_git ] || git clone --recursive --depth 1 https://github.com/cimgui/cimgui.git cimgui_git
+	(export CFLAGS= CXXFLAGS= ; cd cimgui_git ; mkdir build ; cd build ; cmake -DIMGUI_STATIC=ON .. ; make)
 
 imgui_impl_sdl.o: $(IMGUI)/examples/imgui_impl_sdl.cpp
 	$(CXX) -fPIC -c -o $(MODULE_FOLDER)/$@ $^ -I$(IMGUI) `sdl2-config --cflags` -DIMGUI_IMPL_API=extern\ \"C\" -fno-threadsafe-statics
@@ -84,4 +86,4 @@ clean:
 	$(RM) *.o *.so *.h $(TARGET)
 
 clobber: clean
-	$(RM) -Rf cimgui
+	$(RM) -Rf cimgui_git

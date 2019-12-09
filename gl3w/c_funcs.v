@@ -1,6 +1,8 @@
 module gl3w
 
 fn C.gl3wInit()
+fn C.gl3wIsSupported(major int, minor int) int
+fn C.gl3wGetProcAddress(proc byteptr) voidptr
 
 // shaders
 // fn C.glCreateShader(typ int) u32

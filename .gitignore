@@ -17,3 +17,4 @@ gl3w/generator/obj
 gl3w/generator/xml/doc
 *.so
 v-projects/projects/gl3w_tester/gl3w_cube
+imgui/cimgui_git

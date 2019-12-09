@@ -75,14 +75,14 @@ namespace Generator
         bool HasEnum(string name) => Enums.Where(e => e.Name == name).FirstOrDefault() != null;
         bool HasCommand(string name) => Commands.Where(e => e.Name == name).FirstOrDefault() != null;
 
-        public Specification(string file, string api, Version ver)
+        public Specification(string file, string api, Version ver, string[] extensions)
         {
             var xml = XElement.Load(file);
 
             Groups = ParseGroups(xml);
             Enums = ParseEnums(xml);
             Commands = ParseCommands(xml);
-            Features = ParseFeatures(xml, api, ver);
+            Features = ParseFeatures(xml, api, ver, extensions);
         }
 
         Group[] ParseGroups(XElement xml)
@@ -122,7 +122,7 @@ namespace Generator
             return allEnums.ToArray();
         }
 
-        Feature[] ParseFeatures(XElement xml, string requestedApi, Version requestedVersion)
+        Feature[] ParseFeatures(XElement xml, string requestedApi, Version requestedVersion, string[] extensions)
         {
             var features = new List<Feature>();
             foreach (var xFeature in xml.Descendants("feature"))
@@ -173,7 +173,7 @@ namespace Generator
                 features.Add(feature);
             }
 
-            features.Add(HandleExtensions(xml, requestedApi, features));
+            features.Add(HandleExtensions(xml, requestedApi, features, extensions));
 
             return features.ToArray();
         }
@@ -222,10 +222,8 @@ namespace Generator
             return commands.ToArray();
         }
 
-        Feature HandleExtensions(XElement xml, string api, List<Feature> currentFeatures)
+        Feature HandleExtensions(XElement xml, string api, List<Feature> currentFeatures, string[] includedExtensions)
         {
-            var includedExtensions = new string[] { "GL_ARB_vertex_array_object", "GL_ARB_pixel_buffer_object", "GL_ARB_framebuffer_object", "GL_ARB_uniform_buffer_object" };
-
             var enums = new List<string>();
             var commands = new List<string>();
             var commandGroups = new List<Group>();

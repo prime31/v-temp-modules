@@ -150,12 +150,13 @@ namespace Generator
 				return;
 			}
 
-			PrepareSpecsAndGenerateCode(api, new Version(ver), profile, Path.Combine(RootDir, "xml"), Path.GetFullPath(Path.Combine(RootDir, "../")));
+			var extensions = new string[] { "GL_ARB_vertex_array_object", "GL_ARB_pixel_buffer_object", "GL_ARB_framebuffer_object", "GL_ARB_uniform_buffer_object" };
+			PrepareSpecsAndGenerateCode(api, new Version(ver), profile, Path.Combine(RootDir, "xml"), Path.GetFullPath(Path.Combine(RootDir, "../")), extensions);
 		}
 
-		static void PrepareSpecsAndGenerateCode(string api, Version ver, string profile, string xmlDir, string outDir)
+		static void PrepareSpecsAndGenerateCode(string api, Version ver, string profile, string xmlDir, string outDir, string[] extensions)
 		{
-			var spec = ParseSpec(xmlDir, api, ver);
+			var spec = ParseSpec(xmlDir, api, ver, extensions);
 			var docs = new Documentation(Path.Combine(xmlDir, "doc"));
 
 			// Select the commands and enums relevant to the specified API version
@@ -341,13 +342,13 @@ namespace Generator
 			return name;
 		}
 
-		static Specification ParseSpec(string xmlDir, string api, Version ver)
+		static Specification ParseSpec(string xmlDir, string api, Version ver, string[] extensions)
 		{
 			var specDir = Path.Combine(xmlDir, "spec");
 			foreach (var file in Directory.GetFiles(specDir))
 			{
 				if (Path.GetFileNameWithoutExtension(file) == api)
-					return new Specification(file, api, ver);
+					return new Specification(file, api, ver, extensions);
 			}
 
 			throw new Exception($"Invalid api {api}!");

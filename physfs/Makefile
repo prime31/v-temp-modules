@@ -17,7 +17,7 @@ CFLAGS += `sdl2-config --cflags`
 MODULE_FOLDER := thirdparty
 $(shell mkdir -p $(MODULE_FOLDER))
 
-all: physfs_hg/build/libphysfs.a physfsrwops.o
+all: physfs_hg/build/libphysfs.a physfsrwops.o clean
 
 physfs_hg/build/libphysfs.a:
 	[ -d physfs_hg ] || hg clone https://hg.icculus.org/icculus/physfs physfs_hg

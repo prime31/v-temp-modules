@@ -1,6 +1,8 @@
 MODULE_FOLDER := thirdparty
 $(shell mkdir -p $(MODULE_FOLDER))
 
+all: libflecs_shared.dylib flecs_git/build/libflecs_shared.dylib clean
+
 # fix flecs typedef since v has its own to int already
 libflecs_shared.dylib: flecs_git/build/libflecs_shared.dylib
 	sed -i '' "s/typedef char bool;/\/\/typedef char bool;/g" flecs_git/include/flecs.h

@@ -187,7 +187,10 @@ namespace Generator
 			vWriter.WriteLine(moduleDecl); vWriter.WriteLine();
 
 			var groupedEnums = new List<Specification.Enum>();
-			writer.WriteLine("pub const (");
+
+			// Extensions all always have groups so no need to make the unnamed group for them
+			if (!(feature is Specification.EXTFeature))
+				writer.WriteLine("pub const (");
 			foreach (var e in feature.Enums)
 			{
 				var en = spec.GetEnum(e);
@@ -198,14 +201,15 @@ namespace Generator
 				}
 				writer.WriteLine($"\t{en.Name} = {en.Value}");
 			}
-			writer.WriteLine(")");
+			if (!(feature is Specification.EXTFeature))
+				writer.WriteLine(")");
 
 			var t = groupedEnums.GroupBy(e => e.Group, e => e, (g, all) => new { Group = g, Enums = all.ToArray() });
 			foreach (var grouping in t)
 			{
 				writer.WriteLine();
 				writer.WriteLine($"// {grouping.Group}");
-				writer.WriteLine("const (");
+				writer.WriteLine("pub const (");
 
 				foreach (var e in grouping.Enums)
 					writer.WriteLine($"\t{e.Name} = {e.Value}");
@@ -217,12 +221,21 @@ namespace Generator
 
 
 			// function declarations
+			string currentCommandGroup = null;
 			foreach (var com in feature.Commands.Select(c => spec.GetCommand(c)))
 			{
 				if (UncompileableFunctions.Contains(com.Name))
 				{
 					Console.WriteLine($"Skipping {com.Name}");
 					continue;
+				}
+
+				var newCommandGroup = (feature as Specification.EXTFeature)?.GetGroupForCommand(com.Name).Name;
+				if (newCommandGroup != null && currentCommandGroup != newCommandGroup)
+				{
+					currentCommandGroup = newCommandGroup;
+					writer.WriteLine();
+					writer.WriteLine($"// OpenGL Extension: {currentCommandGroup}");
 				}
 
 				var ret = string.IsNullOrEmpty(com.Ret) ? "" : $" {Statics.GetVTypeForCType(com.Ret, true)}";

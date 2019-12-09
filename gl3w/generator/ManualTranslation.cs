@@ -106,6 +106,10 @@ namespace Generator
 				writer.WriteLine("\tC.glBufferData(target, data.len * sizeof(int), data.data, usage)");
 				writer.WriteLine("}");
 				writer.WriteLine();
+				writer.WriteLine("pub fn buffer_data_u32(target int, data []u32, usage int) {");
+				writer.WriteLine("\tC.glBufferData(target, data.len * sizeof(u32), data.data, usage)");
+				writer.WriteLine("}");
+				writer.WriteLine();
 				writer.WriteLine("pub fn buffer_data_f32(target int, data []f32, usage int) {");
 				writer.WriteLine("\tC.glBufferData(target, data.len * sizeof(f32), data.data, usage)");
 				writer.WriteLine("}");

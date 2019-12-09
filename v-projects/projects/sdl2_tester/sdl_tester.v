@@ -112,6 +112,7 @@ fn channel_finished(channel int) {
 	println('channel_finished $channel')
 }
 
+[live]
 fn draw_text(renderer &SDL_Renderer, x int, y int, text string, color SDL_Color) {
 	C.TTF_Init()
 	font := C.TTF_OpenFont('fonts/RobotoMono-Regular.ttf'.str, 16)

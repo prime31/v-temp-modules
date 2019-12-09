@@ -70,7 +70,7 @@ fn move(rows &C.ecs_rows_t) {
 
 	for i := 0; i < int(rows.count); i++ {
 		println('pos[$i]=${positions[i]}')
-		positions[i].x += 1
+		positions[i].x++
 		positions[i].y += 10
 	}
 }

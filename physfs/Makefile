@@ -14,15 +14,21 @@ CFLAGS := -I physfs_hg/src
 CFLAGS += -I /usr/local/opt/sdl2/include/SDL2
 CFLAGS += `sdl2-config --cflags`
 
+MODULE_FOLDER := thirdparty
+$(shell mkdir -p $(MODULE_FOLDER))
 
 all: physfs_hg/build/libphysfs.a physfsrwops.o
 
 physfs_hg/build/libphysfs.a:
 	[ -d physfs_hg ] || hg clone https://hg.icculus.org/icculus/physfs physfs_hg
 	(cd physfs_hg ; mkdir build ; cd build ; cmake $(OPTS) .. ; make)
+	cp physfs_hg/src/physfs.h $(MODULE_FOLDER)
+	cp physfs_hg/build/libphysfs.a $(MODULE_FOLDER)
 
 physfsrwops.o: physfs_hg/extras/physfsrwops.c
 	$(CC) $(CFLAGS) -c -o physfs_hg/build/$@ $<
+	cp physfs_hg/extras/physfsrwops.h $(MODULE_FOLDER)
+	cp physfs_hg/build/physfsrwops.o $(MODULE_FOLDER)
 
 clean:
 	rm -rf physfs_hg

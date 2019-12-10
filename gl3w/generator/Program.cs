@@ -12,6 +12,10 @@ namespace Generator
 {
 	class Program
 	{
+		static string[] UncompileableFunctions = new string[] {};
+
+		static string[] MethodsWithRefParam = new string[] { "glDeleteBuffers" };
+
 		static string RootDir
 		{
 			get
@@ -171,10 +175,6 @@ namespace Generator
 				GenerateCode(spec, feature, docs, ver, outDir);
 			}
 		}
-
-		static string[] UncompileableFunctions = new string[] {};
-
-		static string[] MethodsWithRefParam = new string[] { "glGenBuffers", "glDeleteBuffers" };
 
 		static void GenerateCode(Specification spec, Specification.Feature feature, Documentation docs, Version version, string outDir)
 		{

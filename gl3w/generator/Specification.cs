@@ -96,6 +96,7 @@ namespace Generator
                     Names = xGroup.Descendants("enum").Select(x => (string)x.Attribute("name")).ToArray()
                 };
                 groups.Add(group);
+				// Console.WriteLine($"{group.Name}: {group.Names.Length}");
             }
 
             return groups.ToArray();

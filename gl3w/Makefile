@@ -60,6 +60,9 @@ fetch_gl3w:
 
 build_gl3w:
 	$(RM) -Rf gl3w_git/src
+	# we dont need all of the extensions, so we will limit it by changing a few out
+	# note that these should match what the GL generator gets as input
+	sed -i '' "s/'ARB', 'EXT', 'KHR', 'OVR', 'NV', 'AMD', 'INTEL'/\'ARB', 'EXT', 'KHR'/g" gl3w_git/gl3w_gen.py
 	python gl3w_git/gl3w_gen.py --root gl3w_git
 
 gl3w.o_from_gl3w:

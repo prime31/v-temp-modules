@@ -1,5 +1,6 @@
 import prime31.sdl2
-import prime31.gl3w as gl
+import prime31.gl3w.gl41 as gl
+import prime31.gl3w
 import time
 import os
 
@@ -35,7 +36,7 @@ fn main() {
 	C.SDL_GL_MakeCurrent(window, gl_context)
 	C.SDL_GL_SetSwapInterval(1) // Enable vsync
 
-	gl.initialize()
+	gl3w.initialize()
 
 	state.create_shader()
 	state.create_buffers()

@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/bin/Debug/netcoreapp3.0/generator.dll",
-            "args": ["generate", "-api=gl", "-version=3.3", "-profile=core"],
+            "args": ["generate", "-api=gl", "-version=4.1", "-profile=core"],
             "cwd": "${workspaceFolder}",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole", // "integratedTerminal", // terminal for when we want to test user input

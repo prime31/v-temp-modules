@@ -150,8 +150,13 @@ namespace Generator
 				return;
 			}
 
+			var folder = "gl" + ver.Replace(".", "");
+			var outputFolder = Path.GetFullPath(Path.Combine(RootDir, "../", folder));
+			Directory.CreateDirectory(outputFolder);
+
+			// extensions can be either the full extension name or the 3-5 letter extension type (ARB, EXT, KHR, INTEL, etc)
 			var extensions = new string[] { "GL_ARB_vertex_array_object", "GL_ARB_pixel_buffer_object", "GL_ARB_framebuffer_object", "GL_ARB_uniform_buffer_object" };
-			PrepareSpecsAndGenerateCode(api, new Version(ver), profile, Path.Combine(RootDir, "xml"), Path.GetFullPath(Path.Combine(RootDir, "../")), extensions);
+			PrepareSpecsAndGenerateCode(api, new Version(ver), profile, Path.Combine(RootDir, "xml"), outputFolder, extensions);
 		}
 
 		static void PrepareSpecsAndGenerateCode(string api, Version ver, string profile, string xmlDir, string outDir, string[] extensions)
@@ -174,8 +179,8 @@ namespace Generator
 		static void GenerateCode(Specification spec, Specification.Feature feature, Documentation docs, Version version, string outDir)
 		{
 			// if we want one module per version the module would need the version name
-			//var moduleDecl = $"module gl" + feature.Version.ToString().Replace(".", "");
-			var moduleDecl = "module gl3w";
+			var moduleDecl = $"module gl" + version.ToString().Replace(".", "");
+			// var moduleDecl = "module gl3w";
 
 			var baseName = feature.Version.Major > 0 ? feature.Version.ToString().Replace(".", "") : "ext";
 			var filename = "gl" + baseName + "_c.v";
@@ -329,6 +334,8 @@ namespace Generator
 
 		static string GlToSnakeCase(string name)
 		{
+			if (name.EndsWith("1D") || name.EndsWith("2D") || name.EndsWith("3D"))
+				name = name.Substring(0, name.Length - 2) + "_" + name.Substring(name.Length - 2, 1) + char.ToLower(name[name.Length - 1]);
 			name = string.Concat(name.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
 			return EscapeReservedWords(name);
 		}

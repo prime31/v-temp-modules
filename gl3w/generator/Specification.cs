@@ -224,6 +224,20 @@ namespace Generator
 
         Feature HandleExtensions(XElement xml, string api, List<Feature> currentFeatures, string[] includedExtensions)
         {
+			// includedExtensions can be either a full extension name or the shortcode
+			Func<string, bool> isExtensionRequested = extensionName =>
+			{
+				foreach (var ext in includedExtensions)
+				{
+					if (extensionName == ext)
+						return true;
+
+					if (extensionName.StartsWith("GL_" + ext.ToUpper()))
+						return true;
+				}
+				return false;
+			};
+
             var enums = new List<string>();
             var commands = new List<string>();
             var commandGroups = new List<Group>();
@@ -234,7 +248,7 @@ namespace Generator
                     continue;
 
                 var name = (string)xExtension.Attribute("name");
-                if (!includedExtensions.Contains(name))
+                if (!isExtensionRequested(name))
                     continue;
 
                 foreach (var xRequire in xExtension.Descendants("require"))

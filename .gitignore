@@ -23,3 +23,6 @@ flecs/thirdparty
 fmod/generator/obj
 v-projects/projects/fmod_tester/fmod_tester
 fmod/generator/bin
+gl3w/gl41
+fmod/core
+fmod/studio

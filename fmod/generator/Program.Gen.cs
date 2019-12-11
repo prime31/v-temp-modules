@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Generator
 {
@@ -52,8 +54,11 @@ namespace Generator
             writer.WriteLine();
 
             // writer.WriteLine("pub const (");
-            // foreach (var c in types.Consts)
-            //     writer.WriteLine($"\t{c.Name} = {c.Value}");
+            foreach (var c in types.Consts)
+            {
+                // Console.WriteLine($"skipping const: {c.Name}");
+                // writer.WriteLine($"\t{c.Name} = {c.Value}");
+            }
             // writer.WriteLine(")");
 
             // writer.WriteLine();
@@ -77,14 +82,33 @@ namespace Generator
 
             writer.WriteLine();
 
-            // foreach (var e in types.Enums)
-            // {
-            //     writer.WriteLine($"enum {e.Name} {{");
-            //     foreach (var name in e.Enums)
-            //         writer.WriteLine($"\t{name}");
-            //     writer.WriteLine("}");
-            //     writer.WriteLine();
-            // }
+            foreach (var e in types.Enums)
+            {
+                if (e.HasNegativeValues)
+                {
+                    Console.WriteLine($"skipping enum: {e.Name}");
+                    continue;
+                }
+
+                // we strip this prefix from the enum values
+                var enumPrefix = e.Name + "_";
+                if (e.Name == "FMOD_RESULT")
+                    enumPrefix = "FMOD_";
+                
+                e.Name = e.Name.Replace("FMOD_", "");
+                e.Name = e.Name[0] + e.Name.Substring(1).ToLower();
+
+                writer.WriteLine($"enum {e.Name} {{");
+                foreach (var name in e.Enums)
+                {
+                    var newName = EscapeReservedWords(name.Replace(enumPrefix, "").ToLower());
+                    if (char.IsDigit(newName[0]))
+                        newName = "_" + newName;
+                    writer.WriteLine($"\t{newName}");
+                }
+                writer.WriteLine("}");
+                writer.WriteLine();
+            }
         }
 
 		static string EscapeReservedWords(string name)
@@ -95,6 +119,8 @@ namespace Generator
 				return "str";
             if (name == "type")
                 return "typ";
+            if (name == "none")
+                return "non";
 			return name;
 		}
     }

@@ -13,10 +13,10 @@ pub fn (s &Sound) get_length(unit FmodTimeUnit) u32 {
 	return len
 }
 
-pub fn (s &Sound) release() int {
+pub fn (s &Sound) release() core.Result {
 	return FMOD_Sound_Release(s.sound)
 }
 
-pub fn (s &Sound) play(channelgroup voidptr /* &FMOD_CHANNELGROUP */, paused int, channel mut Channel /* **FMOD_CHANNEL */) int {
+pub fn (s &Sound) play(channelgroup voidptr /* &FMOD_CHANNELGROUP */, paused int, channel mut Channel /* **FMOD_CHANNEL */) core.Result {
 	return s.sys.play_sound(s.sound, channelgroup, paused, mut channel)
 }

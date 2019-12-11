@@ -59,6 +59,7 @@ namespace Generator
     {
         public string Name;
         public List<string> Enums = new List<string>();
+		public bool HasNegativeValues;
     }
 
 	public class TypeDef
@@ -337,6 +338,9 @@ namespace Generator
 
                 if (lines[i] == "")
                     continue;
+
+				if (!e.HasNegativeValues && lines[i].Contains("-"))
+					e.HasNegativeValues = true;
 
                 e.Enums.Add(lines[i].Trim().TrimEnd(','));
             } while (!lines[++i].StartsWith("}"));

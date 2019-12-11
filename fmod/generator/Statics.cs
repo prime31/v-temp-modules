@@ -32,7 +32,7 @@ namespace Generator
             "FMOD_STUDIO_COMMANDREPLAY"
         };
 
-        static Dictionary<string, string> CTypeToVWrapperType = new Dictionary<string, string>
+        static Dictionary<string, string> CTypeToVType = new Dictionary<string, string>
         {
             {"FMOD_BOOL", "int"},
             {"void*", "voidptr"},
@@ -44,13 +44,14 @@ namespace Generator
             {"unsignedint", "u32"},
             {"unsignedlong", "u64"},
             {"unsignedlonglong", "u64"},
-            {"const char *", "byteptr"}
+            {"const char *", "byteptr"},
+            {"FMOD_RESULT", "Result"}
         };
 
         public static string GetVTypeForCType(string cType)
         {
-            if (CTypeToVWrapperType.ContainsKey(cType))
-                return CTypeToVWrapperType[cType];
+            if (CTypeToVType.ContainsKey(cType))
+                return CTypeToVType[cType];
 
             if (cType.Contains("_CALLBACK"))
                 return cType;

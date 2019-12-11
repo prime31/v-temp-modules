@@ -22,3 +22,4 @@ physfs/thirdparty
 flecs/thirdparty
 fmod/generator/obj
 v-projects/projects/fmod_tester/fmod_tester
+fmod/generator/bin

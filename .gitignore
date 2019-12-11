@@ -20,3 +20,5 @@ v-projects/projects/gl3w_tester/gl3w_cube
 imgui/cimgui_git
 physfs/thirdparty
 flecs/thirdparty
+fmod/generator/obj
+v-projects/projects/fmod_tester/fmod_tester

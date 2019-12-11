@@ -1,5 +1,5 @@
 # sdl2
-SDL2 V module -- SDL2 wrapper
+SDL2 V module
 
 Current APIs available/tested in examples :
 - basic graphics (2D drawing)
@@ -11,13 +11,9 @@ Current APIs available/tested in examples :
 - more to come...
 
 # Support
-vsdl2 is supported on :
 - linux (major distros)
-- MacOS (brew)
+- macOS (brew)
 - windows (msys2/mingw64 only for now)
-
-# Installation
-`v install nsauzede.vsdl2`
 
 
 # Dependencies

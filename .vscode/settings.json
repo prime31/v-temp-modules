@@ -1,6 +1,8 @@
 {
     "files.exclude": {
         ".git*": true,
-        "v-projects": true
+        "v-projects": true,
+        "*/generator/bin": true,
+        "*/generator/obj": true
     }
 }

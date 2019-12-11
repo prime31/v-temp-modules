@@ -7,6 +7,19 @@ namespace Generator
 {
 	#region Helper Types
 
+	class MethodBag : Dictionary<string, List<Method>>
+	{
+		public void AddMethod(string lastComment, Method m)
+		{
+			if (!this.TryGetValue(lastComment, out var list))
+			{
+				list = new List<Method>();
+				Add(lastComment, list);
+			}
+			list.Add(m);
+		}
+	}
+
 	class Method
 	{
 		public string Name;
@@ -55,7 +68,7 @@ namespace Generator
 
 	#endregion
 
-	class Program
+	partial class Program
 	{
 		static string RootDir
 		{
@@ -69,37 +82,57 @@ namespace Generator
 		static void Main(string[] args)
 		{
 			var sourceDir = Path.Combine(RootDir, "thirdparty");
-
-			var methods = ExtractMethods(Path.Combine(sourceDir, "core/fmod.h"));
-			using (var writer = new StreamWriter(File.Open(Path.Combine(RootDir, "c_funcs_fmod.v"), System.IO.FileMode.Create)))
-				WriteMethodsToFile(writer, methods);
-
-			var types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_common.h"));
-			using (var writer = new StreamWriter(File.Open(Path.Combine(RootDir, "c_structs_fmod.v"), System.IO.FileMode.Create)))
-				WriteTypesToFile(writer, types);
-
-			types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_dsp_effects.h"));
-			using (var writer = new StreamWriter(File.Open(Path.Combine(RootDir, "c_structs_dsp_effects.v"), System.IO.FileMode.Create)))
-				WriteTypesToFile(writer, types);
-
-			types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_dsp.h"));
-			using (var writer = new StreamWriter(File.Open(Path.Combine(RootDir, "c_structs_dsp.v"), System.IO.FileMode.Create)))
-				WriteTypesToFile(writer, types);
-
-			types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_codec.h"));
-			using (var writer = new StreamWriter(File.Open(Path.Combine(RootDir, "c_structs_codec.v"), System.IO.FileMode.Create)))
-				WriteTypesToFile(writer, types);
-
-			types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_output.h"));
-			using (var writer = new StreamWriter(File.Open(Path.Combine(RootDir, "c_structs_output.v"), System.IO.FileMode.Create)))
-				WriteTypesToFile(writer, types);
+			ProcessCore(sourceDir, Path.Combine(RootDir, "core"), "core");
+			ProcessStudio(sourceDir, Path.Combine(RootDir, "studio"), "studio");
 		}
 
-		#region Method Handling
-
-		static List<Method> ExtractMethods(string src)
+		static void ProcessCore(string sourceDir, string destDir, string module)
 		{
-			var methods = new List<Method>();
+			Directory.CreateDirectory(destDir);
+
+			var methods = ExtractMethods(Path.Combine(sourceDir, "core/fmod.h"));
+			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod.v"), System.IO.FileMode.Create)))
+				WriteMethodBagToFile(writer, methods, module);
+
+			var types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_common.h"));
+			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_common.v"), System.IO.FileMode.Create)))
+				WriteTypesToFile(writer, types, module);
+
+			// types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_dsp_effects.h"));
+			// using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_dsp_effects.v"), System.IO.FileMode.Create)))
+			// 	WriteTypesToFile(writer, types, module);
+
+			// types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_dsp.h"));
+			// using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_dsp.v"), System.IO.FileMode.Create)))
+			// 	WriteTypesToFile(writer, types, module);
+
+			// types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_codec.h"));
+			// using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_codec.v"), System.IO.FileMode.Create)))
+			// 	WriteTypesToFile(writer, types, module);
+
+			// types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_output.h"));
+			// using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_output.v"), System.IO.FileMode.Create)))
+			// 	WriteTypesToFile(writer, types, module);
+		}
+
+		static void ProcessStudio(string sourceDir, string destDir, string module)
+		{
+			Directory.CreateDirectory(destDir);
+
+			var methods = ExtractMethods(Path.Combine(sourceDir, "studio/fmod_studio.h"));
+			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_studio.v"), System.IO.FileMode.Create)))
+				WriteMethodBagToFile(writer, methods, module);
+
+			var types = ExtractStructsAndTypes(Path.Combine(sourceDir, "studio/fmod_studio_common.h"));
+			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_studio_common.v"), System.IO.FileMode.Create)))
+				WriteTypesToFile(writer, types, module);
+		}
+
+		#region Methods
+
+		static MethodBag ExtractMethods(string src)
+		{
+			var methods = new MethodBag();
 			var lastLineWithMethod = 0;
 			string lastComment = null;
 
@@ -117,7 +150,7 @@ namespace Generator
 
 					lastLineWithMethod = i;
 					line = line.Replace("F_API", "");
-					methods.Add(ParseMethod(line));
+					methods.AddMethod(lastComment, ParseMethod(line));
 				}
 			}
 
@@ -164,17 +197,29 @@ namespace Generator
 				var typeName = part.Replace("*", "").Replace("const", "").Replace("unsigned ", "unsigned").Trim().Split(' ');
 				var hasPtr = part.Contains('*');
                 var hasDoublePtr = part.Contains("**");
+				var isConst = part.Contains("const");
 				if (hasPtr && typeName[0] == "void")
 				{
 					hasPtr = false;
 					typeName[0] = hasDoublePtr ? "void**" : "void*";
+				}
+				else if (hasDoublePtr)
+				{
+					typeName[0] += "**";
+				}
+
+				if (part.Contains("const char *"))
+				{
+					typeName[0] = "const char *";
+					hasPtr = false;
+					isConst = false;
 				}
 
 				method.Parameters.Add(new Parameter
 				{
 					Name = EscapeReservedWords(typeName[1].Trim()),
 					Type = typeName[0].Trim(),
-					IsConst = part.Contains("const"),
+					IsConst = isConst,
 					HasPtr = hasPtr,
                     HasDoublePtr = hasDoublePtr
 				});
@@ -188,40 +233,9 @@ namespace Generator
 			return method;
 		}
 
-		static void WriteMethodsToFile(StreamWriter writer, List<Method> methods)
-		{
-			writer.WriteLine("module fmod");
-			writer.WriteLine();
-
-			foreach (var m in methods)
-			{
-                foreach (var p in m.Parameters)
-                {
-                    if (p.Type.Contains("_CALLBACK"))
-                    {
-                        writer.Write("// ");
-                        break;
-                    }
-                }
-				writer.Write($"fn C.{m.Name}(");
-
-				for (var i = 0; i < m.Parameters.Count; i++)
-				{
-					var p = m.Parameters[i];
-					var typePrefix = p.HasPtr ? "&" : "";
-					writer.Write($"{p.Name} {typePrefix}{Statics.GetVTypeForCType(p.Type)}");
-
-					if (i < m.Parameters.Count - 1)
-						writer.Write(", ");
-				}
-
-				writer.WriteLine($") {Statics.GetVTypeForCType(m.ReturnType)}");
-			}
-		}
-
 		#endregion
 
-		#region Type Handling
+		#region Types
 
 		static StructsAndTypes ExtractStructsAndTypes(string src)
 		{
@@ -333,58 +347,6 @@ namespace Generator
             return e;
         }
 
-		static void WriteTypesToFile(StreamWriter writer, StructsAndTypes types)
-		{
-			writer.WriteLine("module fmod");
-			writer.WriteLine();
-
-			writer.WriteLine("pub const (");
-			foreach (var c in types.Consts)
-				writer.WriteLine($"\t{c.Name} = {c.Value}");
-			writer.WriteLine(")");
-
-			writer.WriteLine();
-
-			foreach (var t in types.TypeDefs)
-			{
-				writer.WriteLine($"type {t.FMODType} {Statics.GetVTypeForCType(t.Type)}");
-			}
-
-			writer.WriteLine();
-
-			foreach (var s in types.Structs)
-			{
-				if (s.Parameters.Count == 0)
-				{
-					writer.WriteLine($"struct C.{s.Name} {{}}");
-					continue;
-				}
-                writer.WriteLine();
-			}
-
-            writer.WriteLine();
-
-            // foreach (var e in types.Enums)
-            // {
-            //     writer.WriteLine($"enum {e.Name} {{");
-            //     foreach (var name in e.Enums)
-            //         writer.WriteLine($"\t{name}");
-            //     writer.WriteLine("}");
-            //     writer.WriteLine();
-            // }
-		}
-
 		#endregion
-
-		static string EscapeReservedWords(string name)
-		{
-			if (name == "map")
-				return "map";
-			if (name == "string")
-				return "str";
-            if (name == "type")
-                return "typ";
-			return name;
-		}
 	}
 }

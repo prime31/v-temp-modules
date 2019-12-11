@@ -1,11 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Generator
 {
     public static class Statics
     {
-        public static Dictionary<string, string> CTypeToVWrapperType = new Dictionary<string, string>
+        static string[] Structs = new string[] {
+            "FMOD_SYSTEM",
+            "FMOD_SOUND",
+            "FMOD_CHANNELCONTROL",
+            "FMOD_CHANNEL",
+            "FMOD_CHANNELGROUP",
+            "FMOD_SOUNDGROUP"
+        };
+
+        static Dictionary<string, string> CTypeToVWrapperType = new Dictionary<string, string>
         {
             {"FMOD_BOOL", "int"},
             {"void*", "voidptr"},
@@ -23,6 +33,12 @@ namespace Generator
         {
             if (CTypeToVWrapperType.ContainsKey(cType))
                 return CTypeToVWrapperType[cType];
+
+            if (cType.Contains("_CALLBACK"))
+                return cType;
+
+            if (Structs.Contains(cType))
+                return cType;
 
             if (cType.StartsWith("FMOD") || cType.StartsWith("fn(") || cType.StartsWith("C."))
                 return "int";

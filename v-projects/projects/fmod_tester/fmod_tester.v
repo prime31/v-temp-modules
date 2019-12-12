@@ -1,9 +1,14 @@
 import prime31.fmod
 import time
 
+fn C.set_c_file_system(s FMOD_SYSTEM)
+
 fn main() {
 	sys := fmod.create(32, C.FMOD_INIT_NORMAL)
 	println('fmod version=${sys.get_version()}')
+
+	//sys.set_file_system(file_open_cb, file_close_cb, file_read_cb, file_seek_cb, voidptr(0), voidptr(0), 2048)
+	set_c_file_system(sys.sys)
 
 	snd := sys.create_sound('skid.wav'.str, C.FMOD_DEFAULT)
 	len := snd.get_length(.ms)
@@ -33,8 +38,50 @@ fn main() {
 	res, state, percent_buffered, starving, diskbusy := snd.get_open_state()
 	println('state=$state, res=$res, buff=$percent_buffered')
 
-	println('name=${snd.get_name()}')
+	_, name := snd.get_name()
+	println('name=$name')
 
 	println('tick')
 	time.sleep_ms(5000)
 }
+
+//type FileOpenCallback fn(name byteptr, filesize &u32, handle &voidptr, userdata voidptr) int
+fn file_open_cb(name byteptr, filesize &u32, handle &voidptr, userdata voidptr) int {
+	println('----------- open da file $name')
+	if name != byteptr(0) {
+		fp := C.fopen(name, 'rb')
+		if fp == voidptr(0) {
+			return int(fmod.Result.err_file_notfound)
+		}
+
+		C.fseek(fp, 0, C.SEEK_END)
+		//*filesize = C.ftell(fp)
+		C.fseek(fp, 0, C.SEEK_SET)
+
+		//*userdata = voidptr(0x12345678)
+		//*handle = fp
+		
+		println('fp=$fp, size=${*filesize}')
+	}
+
+	return int(fmod.Result.ok)
+}
+
+//type FileCloseCallback fn(handle voidptr, userdata voidptr) int
+fn file_close_cb(handle voidptr, userdata voidptr) int {
+	println('----------- close da file')
+	return int(fmod.Result.ok)
+}
+
+fn file_read_cb(handle voidptr, buffer voidptr, sizebytes u32, bytesread &int, userdata voidptr) int {
+	println('----------- read_cb')
+	return int(fmod.Result.ok)
+}
+
+fn file_seek_cb(handle voidptr, pos u32, userdata voidptr) int {
+	println('----------- seek_cb')
+	return int(fmod.Result.ok)
+}
+
+
+fn C.ftell() int

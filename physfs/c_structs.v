@@ -2,7 +2,7 @@ module physfs
 
 
 struct C.PHYSFS_File {}
-fn (f &C.PHYSFS_File) str() string { return '$&f' }
+pub fn (f &C.PHYSFS_File) str() string { return '$&f' }
 
 struct C.PHYSFS_Version {
 pub:
@@ -10,7 +10,7 @@ pub:
     minor byte
     patch byte
 }
-fn (v C.PHYSFS_Version) str() string { return '${v.major}.${v.minor}.${v.patch}' }
+pub fn (v C.PHYSFS_Version) str() string { return '${v.major}.${v.minor}.${v.patch}' }
 
 struct C.PHYSFS_ArchiveInfo {
 pub:
@@ -20,4 +20,4 @@ pub:
     url byteptr         /**< URL related to this archive */
     supportsSymlinks int    /**< non-zero if archive offers symbolic links. */
 }
-fn (i C.PHYSFS_ArchiveInfo) str() string { return 'ext=$i.extension, desc=$i.description, author=$i.author, url=$i.url, symlinks=$i.supportsSymlinks' }
+pub fn (i C.PHYSFS_ArchiveInfo) str() string { return 'ext=$i.extension, desc=$i.description, author=$i.author, url=$i.url, symlinks=$i.supportsSymlinks' }

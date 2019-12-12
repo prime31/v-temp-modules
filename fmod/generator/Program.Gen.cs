@@ -27,7 +27,7 @@ namespace Generator
             {
                 foreach (var p in m.Parameters)
                 {
-                    if (p.Type.Contains("_CALLBACK") || p.Type.Contains("DSP") || p.Type.Contains("GEOMETRY"))
+                    if (p.Type.Contains("_CALLBACK") || p.Type.Contains("GEOMETRY"))
                     {
                         writer.Write("// ");
                         break;
@@ -153,6 +153,9 @@ namespace Generator
             if (name.Contains("callback"))
                 name = name.Replace("callback", "Callback");
 
+            if (name.Contains("reverb"))
+                name = name.Replace("reverb", "Reverb");
+
             return name;
         }
 
@@ -166,6 +169,8 @@ namespace Generator
                 return "typ";
             if (name == "none")
                 return "non";
+            if (name == "return")
+                return "returned";
 			return name;
 		}
     }

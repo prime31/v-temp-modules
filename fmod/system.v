@@ -22,12 +22,14 @@ pub fn (s &System) get_version() u32 {
 pub fn (s &System) create_sound(name_or_data byteptr, mode int /* exinfo &FMOD_CREATESOUNDEXINFO */) Sound {
 	mut snd := Sound{}
 	snd.sys = s
-	FMOD_System_CreateSound(s.sys, name_or_data, mode, C.NULL, &snd.sound)
+	res := FMOD_System_CreateSound(s.sys, name_or_data, mode, C.NULL, &snd.sound)
 	return snd
 }
 
-pub fn (s &System) play_sound(sound &FMOD_SOUND, channelgroup voidptr /* &FMOD_CHANNELGROUP */, paused int, channel mut Channel /* **FMOD_CHANNEL */) Result {
-	return FMOD_System_PlaySound(s.sys, sound, channelgroup, paused, &channel.ch)
+pub fn (s &System) play_sound(sound &FMOD_SOUND, channelgroup ChannelGroup /* &FMOD_CHANNELGROUP */, paused int) (Result, Channel) {
+	channel := Channel{}
+	res := FMOD_System_PlaySound(s.sys, sound, channelgroup.group, paused, &channel.ch)
+	return res, channel
 }
 
 pub fn (s &System) update() Result {
@@ -48,4 +50,22 @@ pub fn (s &System) set_user_data(userdata voidptr) Result {
 
 pub fn (s &System) get_user_data(userdata voidptr) Result {
 	return FMOD_System_GetUserData(s.sys, userdata)
+}
+
+pub fn (s &System) get_channel(channelid int, channel mut Channel) Result {
+	return FMOD_System_GetChannel(s.sys, channelid, &channel.ch)
+}
+
+pub fn (s &System) create_channel_group(name string) (Result, ChannelGroup) {
+	group := ChannelGroup{}
+	res := FMOD_System_CreateChannelGroup(s.sys, name.str, &group.group)
+	return res, group
+}
+
+pub fn (s &System) get_master_channel_group(channelgroup mut ChannelGroup) Result {
+	return FMOD_System_GetMasterChannelGroup(s.sys, &channelgroup.group)
+}
+
+pub fn (s &System) create_dsp_by_type(typ DspType, dsp mut Dsp) Result {
+	return FMOD_System_CreateDSPByType(s.sys, typ, &dsp.dsp)
 }

@@ -100,9 +100,10 @@ namespace Generator
 			using (var vWriter = new StreamWriter(File.Open(Path.Combine(RootDir, "common_enums.v"), FileMode.Create)))
                 WriteTypesToFile(writer, vWriter, types, module);
 
-			// types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_dsp_effects.h"));
-			// using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_dsp_effects.v"), System.IO.FileMode.Create)))
-			// 	WriteTypesToFile(writer, types, module);
+			types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_dsp_effects.h"));
+			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "dsp_effects.v"), System.IO.FileMode.Create)))
+            using (var vWriter = new StreamWriter(File.Open(Path.Combine(RootDir, "dsp_enums.v"), FileMode.Create)))
+				WriteTypesToFile(writer, vWriter, types, module);
 
 			// types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_dsp.h"));
 			// using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_dsp.v"), System.IO.FileMode.Create)))

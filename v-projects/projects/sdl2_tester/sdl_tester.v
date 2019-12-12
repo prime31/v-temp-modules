@@ -19,7 +19,7 @@ fn main() {
 	renderer := C.SDL_CreateRenderer(window, -1, C.SDL_RENDERER_ACCELERATED | C.SDL_RENDERER_PRESENTVSYNC)
 
 	C.Mix_Init(0)
-	if C.Mix_OpenAudio(48000, mixer.MIX_DEFAULT_FORMAT, 2, 1024) < 0 {
+	if C.Mix_OpenAudio(C.MIX_DEFAULT_FREQUENCY, C.MIX_DEFAULT_FORMAT, C.MIX_DEFAULT_CHANNELS, 4096) < 0 {
 		println('couldn\'t open audio')
 	}
 
@@ -33,8 +33,12 @@ fn main() {
 	C.Mix_FadeInChannel(0, wave, 2, 3000)
 	C.Mix_ChannelFinished(channel_finished)
 
+	wave2 := C.Mix_LoadWAV('/Users/desaro/.vmodules/prime31/v-projects/projects/fmod_tester/skid.wav')
+	C.Mix_PlayChannel(1, wave2, 3)
+
 	defer {
 		C.Mix_FreeChunk(wave)
+		C.Mix_FreeChunk(wave2)
 		C.Mix_FreeMusic(music)
 		C.Mix_CloseAudio()
 	}

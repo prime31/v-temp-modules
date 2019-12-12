@@ -1,6 +1,7 @@
 module fmod
 
-enum FmodTimeUnit {
+// this is manually translated FMOD_TIMEUNIT, which is not an enum. it is just a #define
+enum TimeUnit {
 	ms = 0x00000001
 	pcm = 0x00000002
 	pcm_bytes = 0x00000004

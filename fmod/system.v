@@ -2,13 +2,14 @@ module fmod
 import prime31.fmod.core
 
 pub struct System {
+pub:
 	sys &FMOD_SYSTEM
 }
 
-pub fn create(maxchannels int, flags int, extradriverdata voidptr) System {
+pub fn create(maxchannels int, flags int) System {
 	fmod := System{}
 	FMOD_System_Create(&fmod.sys)
-	FMOD_System_Init(fmod.sys, maxchannels, flags, extradriverdata)
+	FMOD_System_Init(fmod.sys, maxchannels, flags, C.NULL /*extradriverdata*/)
 	return fmod
 }
 
@@ -25,8 +26,12 @@ pub fn (s &System) create_sound(name_or_data byteptr, mode int /* exinfo &FMOD_C
 	return snd
 }
 
-pub fn (s &System) play_sound(sound &FMOD_SOUND, channelgroup voidptr /* &FMOD_CHANNELGROUP */, paused int, channel mut Channel /* **FMOD_CHANNEL */) core.Result {
+pub fn (s &System) play_sound(sound &FMOD_SOUND, channelgroup voidptr /* &FMOD_CHANNELGROUP */, paused int, channel mut Channel /* **FMOD_CHANNEL */) Result {
 	return FMOD_System_PlaySound(s.sys, sound, channelgroup, paused, &channel.ch)
+}
+
+pub fn (s &System) update() Result {
+	return FMOD_System_Update(s.sys)
 }
 
 /*
@@ -37,10 +42,10 @@ pub fn (s &System) play_sound(sound &FMOD_SOUND, channelgroup voidptr /* &FMOD_C
 	sys.get_user_data(&data)
 	println('received: ${data}')
 */
-pub fn (s &System) set_user_data(userdata voidptr) core.Result {
+pub fn (s &System) set_user_data(userdata voidptr) Result {
 	return FMOD_System_SetUserData(s.sys, userdata)
 }
 
-pub fn (s &System) get_user_data(userdata voidptr) core.Result {
+pub fn (s &System) get_user_data(userdata voidptr) Result {
 	return FMOD_System_GetUserData(s.sys, userdata)
 }

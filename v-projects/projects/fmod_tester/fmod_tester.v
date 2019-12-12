@@ -9,6 +9,9 @@ fn main() {
 	len := snd.get_length(.ms)
 	println('snd len=$len')
 
+	_, snd_group := sys.create_sound_group("snd gruoper")
+	println('snd_group=$snd_group.group')
+
 	_, group := sys.create_channel_group("tester")
 	_, channel := snd.play_in_group(group, 0)
 	_, _ := snd.play(0)
@@ -19,8 +22,9 @@ fn main() {
 	println('master_group=${master_group.group}')
 
 	dsp := fmod.Dsp{}
-	sys.create_dsp_by_type(.echo, mut dsp)
+	sys.create_dsp_by_type(.flange, mut dsp)
 	master_group.add_dsp(0, dsp)
+	// master_group.remove_dsp(dsp)
 
 	active := -1
 	act_res := FMOD_DSP_GetActive(dsp.dsp, &active)

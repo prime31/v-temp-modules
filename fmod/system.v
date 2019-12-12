@@ -62,6 +62,12 @@ pub fn (s &System) create_channel_group(name string) (Result, ChannelGroup) {
 	return res, group
 }
 
+pub fn (s &System) create_sound_group(name string) (Result, SoundGroup) {
+	group := SoundGroup{}
+	res := FMOD_System_CreateSoundGroup(s.sys, name.str, &group.group)
+	return res, group
+}
+
 pub fn (s &System) get_master_channel_group() (Result, ChannelGroup) {
 	group := ChannelGroup{}
 	return FMOD_System_GetMasterChannelGroup(s.sys, &group.group), group

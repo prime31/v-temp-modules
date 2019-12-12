@@ -18,7 +18,11 @@ pub fn (s &Sound) release() Result {
 	return FMOD_Sound_Release(s.sound)
 }
 
-pub fn (s &Sound) play(channelgroup ChannelGroup, paused int) (Result, Channel) {
+pub fn (s &Sound) play(paused int) (Result, Channel) {
+	return s.sys.play_sound(s.sound, ChannelGroup{}, paused)
+}
+
+pub fn (s &Sound) play_in_group(channelgroup ChannelGroup, paused int) (Result, Channel) {
 	return s.sys.play_sound(s.sound, channelgroup, paused)
 }
 

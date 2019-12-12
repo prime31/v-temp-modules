@@ -10,16 +10,17 @@ fn main() {
 	println('snd len=$len')
 
 	_, group := sys.create_channel_group("tester")
-	_, channel := snd.play(group, 0)
+	_, channel := snd.play_in_group(group, 0)
+	_, _ := snd.play(0)
 	channel.set_pitch(1.2)
 	println('group=${group.group}, channel=${channel.ch}')
 
-	sys.get_master_channel_group(mut group)
-	println('group=${group.group}')
+	_, master_group := sys.get_master_channel_group()
+	println('master_group=${master_group.group}')
 
 	dsp := fmod.Dsp{}
 	sys.create_dsp_by_type(.echo, mut dsp)
-	group.add_dsp(0, dsp)
+	master_group.add_dsp(0, dsp)
 
 	active := -1
 	act_res := FMOD_DSP_GetActive(dsp.dsp, &active)

@@ -62,8 +62,9 @@ pub fn (s &System) create_channel_group(name string) (Result, ChannelGroup) {
 	return res, group
 }
 
-pub fn (s &System) get_master_channel_group(channelgroup mut ChannelGroup) Result {
-	return FMOD_System_GetMasterChannelGroup(s.sys, &channelgroup.group)
+pub fn (s &System) get_master_channel_group() (Result, ChannelGroup) {
+	group := ChannelGroup{}
+	return FMOD_System_GetMasterChannelGroup(s.sys, &group.group), group
 }
 
 pub fn (s &System) create_dsp_by_type(typ DspType, dsp mut Dsp) Result {

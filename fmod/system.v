@@ -26,13 +26,13 @@ pub fn (s &System) create_sound(name_or_data byteptr, mode int /* exinfo &FMOD_C
 	return snd
 }
 
-pub fn (s &System) play_sound(sound &FMOD_SOUND, channelgroup ChannelGroup /* &FMOD_CHANNELGROUP */, paused int) (Result, Channel) {
+pub fn (s &System) play_sound(sound &FMOD_SOUND, channelgroup ChannelGroup /* &FMOD_CHANNELGROUP */, paused int) (int, Channel) {
 	channel := Channel{}
 	res := FMOD_System_PlaySound(s.sys, sound, channelgroup.group, paused, &channel.ch)
 	return res, channel
 }
 
-pub fn (s &System) update() Result {
+pub fn (s &System) update() int {
 	return FMOD_System_Update(s.sys)
 }
 
@@ -44,35 +44,39 @@ pub fn (s &System) update() Result {
 	sys.get_user_data(&data)
 	println('received: ${data}')
 */
-pub fn (s &System) set_user_data(userdata voidptr) Result {
+pub fn (s &System) set_user_data(userdata voidptr) int {
 	return FMOD_System_SetUserData(s.sys, userdata)
 }
 
-pub fn (s &System) get_user_data(userdata voidptr) Result {
+pub fn (s &System) get_user_data(userdata voidptr) int {
 	return FMOD_System_GetUserData(s.sys, userdata)
 }
 
-pub fn (s &System) get_channel(channelid int, channel mut Channel) Result {
+pub fn (s &System) get_channel(channelid int, channel mut Channel) int {
 	return FMOD_System_GetChannel(s.sys, channelid, &channel.ch)
 }
 
-pub fn (s &System) create_channel_group(name string) (Result, ChannelGroup) {
+pub fn (s &System) create_channel_group(name string) (int, ChannelGroup) {
 	group := ChannelGroup{}
 	res := FMOD_System_CreateChannelGroup(s.sys, name.str, &group.group)
 	return res, group
 }
 
-pub fn (s &System) create_sound_group(name string) (Result, SoundGroup) {
+pub fn (s &System) create_sound_group(name string) (int, SoundGroup) {
 	group := SoundGroup{}
 	res := FMOD_System_CreateSoundGroup(s.sys, name.str, &group.group)
 	return res, group
 }
 
-pub fn (s &System) get_master_channel_group() (Result, ChannelGroup) {
+pub fn (s &System) get_master_channel_group() (int, ChannelGroup) {
 	group := ChannelGroup{}
 	return FMOD_System_GetMasterChannelGroup(s.sys, &group.group), group
 }
 
-pub fn (s &System) create_dsp_by_type(typ DspType, dsp mut Dsp) Result {
+pub fn (s &System) create_dsp_by_type(typ DspType, dsp mut Dsp) int {
 	return FMOD_System_CreateDSPByType(s.sys, typ, &dsp.dsp)
+}
+
+pub fn (s &System) set_file_system(useropen voidptr, userclose voidptr, userread voidptr, userseek voidptr, userasyncread voidptr, userasynccancel voidptr, blockalign int) int {
+	return FMOD_System_SetFileSystem(s.sys, useropen, userclose, userread, userseek, userasyncread, userasynccancel, blockalign)
 }

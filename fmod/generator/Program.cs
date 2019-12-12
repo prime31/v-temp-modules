@@ -96,7 +96,7 @@ namespace Generator
 				WriteMethodBagToFile(writer, methods, module);
 
 			var types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_common.h"));
-			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_common.v"), FileMode.Create)))
+			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "common.v"), FileMode.Create)))
 			using (var vWriter = new StreamWriter(File.Open(Path.Combine(RootDir, "common_enums.v"), FileMode.Create)))
                 WriteTypesToFile(writer, vWriter, types, module);
 
@@ -106,15 +106,15 @@ namespace Generator
 				WriteTypesToFile(writer, vWriter, types, module);
 
 			// types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_dsp.h"));
-			// using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_dsp.v"), System.IO.FileMode.Create)))
+			// using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "dsp.v"), System.IO.FileMode.Create)))
 			// 	WriteTypesToFile(writer, types, module);
 
 			// types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_codec.h"));
-			// using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_codec.v"), System.IO.FileMode.Create)))
+			// using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "codec.v"), System.IO.FileMode.Create)))
 			// 	WriteTypesToFile(writer, types, module);
 
 			// types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_output.h"));
-			// using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_output.v"), System.IO.FileMode.Create)))
+			// using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "output.v"), System.IO.FileMode.Create)))
 			// 	WriteTypesToFile(writer, types, module);
 		}
 
@@ -123,12 +123,12 @@ namespace Generator
 			Directory.CreateDirectory(destDir);
 
 			var methods = ExtractMethods(Path.Combine(sourceDir, "studio/fmod_studio.h"));
-			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_studio.v"), FileMode.Create)))
+			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "studio.v"), FileMode.Create)))
 				WriteMethodBagToFile(writer, methods, module);
 
 			var types = ExtractStructsAndTypes(Path.Combine(sourceDir, "studio/fmod_studio_common.h"));
-			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_studio_common.v"), FileMode.Create)))
-            using (var vWriter = new StreamWriter(File.Open(Path.Combine(RootDir, "sudio_common_enums.v"), FileMode.Create)))
+			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "common.v"), FileMode.Create)))
+            using (var vWriter = new StreamWriter(File.Open(Path.Combine(RootDir, "studio_common_enums.v"), FileMode.Create)))
 				WriteTypesToFile(writer, vWriter, types, module);
 		}
 

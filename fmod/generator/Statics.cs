@@ -45,7 +45,7 @@ namespace Generator
             {"unsignedlong", "u64"},
             {"unsignedlonglong", "u64"},
             {"const char *", "byteptr"},
-            {"FMOD_RESULT", "fmod.Result"}
+            {"FMOD_RESULT", "int"}
         };
 
         public static string GetVTypeForCType(string cType)
@@ -54,7 +54,14 @@ namespace Generator
                 return CTypeToVType[cType];
 
             if (cType.Contains("_CALLBACK"))
-                return cType;
+            {
+                return "voidptr";
+                // cant have the callbacks declared in the module because they cant be declared pub for now...
+                // var name = Program.GetVEnumName(cType);
+                // if (char.IsDigit(name[0]))
+                //     name = "_" + name;
+                // return name;
+            }
 
             if (Structs.Contains(cType))
                 return cType;

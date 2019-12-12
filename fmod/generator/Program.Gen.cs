@@ -7,10 +7,22 @@ namespace Generator
 {
     partial class Program
     {
+        // a StartsWith on the method name is used to filter if we will include or comment out the method
+        static string[] AllowedMethodsWithCallbacks = new string[] {"FMOD_System_SetFile"};
+
+        static bool ShouldIncludeMethod(string name)
+        {
+            foreach (var prefix in AllowedMethodsWithCallbacks)
+            {
+                if (name.StartsWith(prefix))
+                    return true;
+            }
+            return false;
+        }
+
         static void WriteMethodBagToFile(StreamWriter writer, MethodBag methods, string module)
         {
             writer.WriteLine($"module {module}");
-            writer.WriteLine($"import prime31.fmod");
             writer.WriteLine();
 
             foreach (var kvPair in methods)
@@ -25,12 +37,15 @@ namespace Generator
         {
             foreach (var m in methods)
             {
-                foreach (var p in m.Parameters)
+                if (!ShouldIncludeMethod(m.Name))
                 {
-                    if (p.Type.Contains("_CALLBACK") || p.Type.Contains("GEOMETRY"))
+                    foreach (var p in m.Parameters)
                     {
-                        writer.Write("// ");
-                        break;
+                        if (p.Type.Contains("_CALLBACK") || p.Type.Contains("GEOMETRY"))
+                        {
+                            writer.Write("// ");
+                            break;
+                        }
                     }
                 }
                 writer.Write($"fn C.{m.Name}(");
@@ -90,7 +105,7 @@ namespace Generator
             {
                 if (e.HasNegativeValues)
                 {
-                    Console.WriteLine($"skipping enum: {e.Name}");
+                    Console.WriteLine($"skipping enum with negative values: {e.Name}");
                     continue;
                 }
 
@@ -114,7 +129,7 @@ namespace Generator
             }
         }
 
-        static string GetVEnumName(string name)
+        public static string GetVEnumName(string name)
         {
             name = name.Replace("FMOD_", "");
             name = name[0] + name.Substring(1).ToLower();
@@ -155,6 +170,9 @@ namespace Generator
 
             if (name.Contains("reverb"))
                 name = name.Replace("reverb", "Reverb");
+
+            if (name.Contains("cancel"))
+                name = name.Replace("cancel", "Cancel");
 
             return name;
         }

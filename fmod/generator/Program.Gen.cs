@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
+using System.Text;
 
 namespace Generator
 {
@@ -10,6 +10,7 @@ namespace Generator
         static void WriteMethodBagToFile(StreamWriter writer, MethodBag methods, string module)
         {
             writer.WriteLine($"module {module}");
+            writer.WriteLine($"import prime31.fmod");
             writer.WriteLine();
 
             foreach (var kvPair in methods)
@@ -48,10 +49,13 @@ namespace Generator
             }
         }
 
-        static void WriteTypesToFile(StreamWriter writer, StructsAndTypes types, string module)
+        static void WriteTypesToFile(StreamWriter writer, StreamWriter vWriter, StructsAndTypes types, string module)
         {
             writer.WriteLine($"module {module}");
             writer.WriteLine();
+
+            vWriter.WriteLine("module fmod");
+            vWriter.WriteLine();
 
             // writer.WriteLine("pub const (");
             foreach (var c in types.Consts)
@@ -94,21 +98,62 @@ namespace Generator
                 var enumPrefix = e.Name + "_";
                 if (e.Name == "FMOD_RESULT")
                     enumPrefix = "FMOD_";
-                
-                e.Name = e.Name.Replace("FMOD_", "");
-                e.Name = e.Name[0] + e.Name.Substring(1).ToLower();
 
-                writer.WriteLine($"enum {e.Name} {{");
+                var enumName = GetVEnumName(e.Name);
+
+                vWriter.WriteLine($"pub enum {enumName} {{");
                 foreach (var name in e.Enums)
                 {
                     var newName = EscapeReservedWords(name.Replace(enumPrefix, "").ToLower());
                     if (char.IsDigit(newName[0]))
                         newName = "_" + newName;
-                    writer.WriteLine($"\t{newName}");
+                    vWriter.WriteLine($"\t{newName}");
                 }
-                writer.WriteLine("}");
-                writer.WriteLine();
+                vWriter.WriteLine("}");
+                vWriter.WriteLine();
             }
+        }
+
+        static string GetVEnumName(string name)
+        {
+            name = name.Replace("FMOD_", "");
+            name = name[0] + name.Substring(1).ToLower();
+
+            var sb = new StringBuilder();
+            var nextCharToUpper = false;
+            foreach (var ch in name)
+            {
+                if (ch == '_')
+                {
+                    nextCharToUpper = true;
+                    continue;
+                }
+
+                if (nextCharToUpper)
+                    sb.Append(char.ToUpper(ch));
+                else
+                    sb.Append(ch);
+                nextCharToUpper = false;
+            }
+
+            name = sb.ToString();
+            if (name.EndsWith("type"))
+                name = name.Replace("type", "Type");
+            if (name.EndsWith("state"))
+                name = name.Replace("state", "State");
+            if (name.EndsWith("mode"))
+                name = name.Replace("mode", "Mode");
+
+            if (name.Contains("connection"))
+                name = name.Replace("connection", "Connection");
+            if (name.Contains("group"))
+                name = name.Replace("group", "Group");
+            if (name.Contains("control"))
+                name = name.Replace("control", "Control");
+            if (name.Contains("callback"))
+                name = name.Replace("callback", "Callback");
+
+            return name;
         }
 
 		static string EscapeReservedWords(string name)

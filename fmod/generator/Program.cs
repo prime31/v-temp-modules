@@ -92,12 +92,13 @@ namespace Generator
 			Directory.CreateDirectory(destDir);
 
 			var methods = ExtractMethods(Path.Combine(sourceDir, "core/fmod.h"));
-			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod.v"), System.IO.FileMode.Create)))
+			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod.v"), FileMode.Create)))
 				WriteMethodBagToFile(writer, methods, module);
 
 			var types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_common.h"));
-			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_common.v"), System.IO.FileMode.Create)))
-				WriteTypesToFile(writer, types, module);
+			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_common.v"), FileMode.Create)))
+			using (var vWriter = new StreamWriter(File.Open(Path.Combine(RootDir, "common_enums.v"), FileMode.Create)))
+                WriteTypesToFile(writer, vWriter, types, module);
 
 			// types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_dsp_effects.h"));
 			// using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_dsp_effects.v"), System.IO.FileMode.Create)))
@@ -121,12 +122,13 @@ namespace Generator
 			Directory.CreateDirectory(destDir);
 
 			var methods = ExtractMethods(Path.Combine(sourceDir, "studio/fmod_studio.h"));
-			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_studio.v"), System.IO.FileMode.Create)))
+			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_studio.v"), FileMode.Create)))
 				WriteMethodBagToFile(writer, methods, module);
 
 			var types = ExtractStructsAndTypes(Path.Combine(sourceDir, "studio/fmod_studio_common.h"));
-			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_studio_common.v"), System.IO.FileMode.Create)))
-				WriteTypesToFile(writer, types, module);
+			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_studio_common.v"), FileMode.Create)))
+            using (var vWriter = new StreamWriter(File.Open(Path.Combine(RootDir, "sudio_common_enums.v"), FileMode.Create)))
+				WriteTypesToFile(writer, vWriter, types, module);
 		}
 
 		#region Methods

@@ -45,7 +45,7 @@ namespace Generator
             {"unsignedlong", "u64"},
             {"unsignedlonglong", "u64"},
             {"const char *", "byteptr"},
-            {"FMOD_RESULT", "Result"}
+            {"FMOD_RESULT", "fmod.Result"}
         };
 
         public static string GetVTypeForCType(string cType)
@@ -58,7 +58,7 @@ namespace Generator
 
             if (Structs.Contains(cType))
                 return cType;
-            
+
             if (cType.Contains("**"))
                 return "voidptr";
 

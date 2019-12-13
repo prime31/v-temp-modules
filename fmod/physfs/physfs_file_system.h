@@ -2,7 +2,7 @@
 #include "physfs.h"
 #include <stdio.h>
 
-
+// https://github.com/vovoid/vsxu-module-sound.fmod/blob/master/fmodapi43800linux64/examples/filecallbacks/main.cpp
 FMOD_RESULT F_CALLBACK physfs_file_system_open(const char *name, unsigned int *filesize, void **handle, void *userdata) {
     if (name) {
         PHYSFS_File *fp;
@@ -50,6 +50,6 @@ FMOD_RESULT F_CALLBACK physfs_file_system_seek(void *handle, unsigned int pos, v
     return FMOD_OK;
 }
 
-void set_physfs_file_system(FMOD_SYSTEM *s) {
-    FMOD_System_SetFileSystem(s, physfs_file_system_open, physfs_file_system_close, physfs_file_system_read, physfs_file_system_seek, 0, 0, 2048);
+int set_physfs_file_system(FMOD_SYSTEM *s) {
+    return FMOD_System_SetFileSystem(s, physfs_file_system_open, physfs_file_system_close, physfs_file_system_read, physfs_file_system_seek, 0, 0, 2048);
 }

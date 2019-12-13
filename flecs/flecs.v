@@ -6,4 +6,4 @@ pub struct Entity {
 	world &C.ecs_world_t
 }
 
-fn (e Entity) str() string { return 'id=$e.id, world=$e.world' }
+pub fn (e Entity) str() string { return 'id=$e.id, world=$e.world' }

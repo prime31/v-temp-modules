@@ -1,7 +1,7 @@
 module flecs
 
 
-fn (w &C.ecs_world_t) str() string { return '${&w}' }
+pub fn (w &C.ecs_world_t) str() string { return '${&w}' }
 
 pub fn (w &C.ecs_world_t) new_component(id string, size i64) u64 {
 	return C.ecs_new_component(w, id.str, size)

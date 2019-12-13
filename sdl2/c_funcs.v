@@ -1,5 +1,9 @@
 module sdl2
 
+pub const (
+	version = 1
+)
+
 fn C.atexit(func fn ())
 
 ///////////////////////////////////////////////////

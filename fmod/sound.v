@@ -1,11 +1,16 @@
 module fmod
-import prime31.fmod.core
 
 struct Sound {
 pub:
 	sound &FMOD_SOUND
 mut:
 	sys &System
+}
+
+pub fn create_sound(s &System, name_or_data byteptr, mode int /* exinfo &FMOD_CREATESOUNDEXINFO */) (int, Sound) {
+	snd := Sound{&FMOD_SOUND(0), s}
+	res := FMOD_System_CreateSound(s.sys, name_or_data, mode, C.NULL, &snd.sound)
+	return res, snd
 }
 
 pub fn (s &Sound) get_length(unit TimeUnit) u32 {
@@ -19,7 +24,7 @@ pub fn (s &Sound) release() int {
 }
 
 pub fn (s &Sound) play(paused int) (int, Channel) {
-	return s.sys.play_sound(s.sound, ChannelGroup{}, paused)
+	return s.sys.play_sound(s.sound, ChannelGroup{&FMOD_CHANNELGROUP(0)}, paused)
 }
 
 pub fn (s &Sound) play_in_group(channelgroup ChannelGroup, paused int) (int, Channel) {

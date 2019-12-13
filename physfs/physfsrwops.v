@@ -1,6 +1,10 @@
 module physfs
 import prime31.sdl2.image
 
+pub const (
+	version = image.version
+)
+
 pub fn load_surface(fname byteptr) &SDL_Surface {
 	rwops := C.PHYSFSRWOPS_openRead(fname)
 	return C.IMG_Load_RW(rwops, 0)

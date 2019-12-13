@@ -1,16 +1,11 @@
 import prime31.fmod
 import time
 
-fn C.set_c_file_system(s FMOD_SYSTEM)
-
 fn main() {
 	sys := fmod.create(32, C.FMOD_INIT_NORMAL)
 	println('fmod version=${sys.get_version()}')
 
-	//sys.set_file_system(file_open_cb, file_close_cb, file_read_cb, file_seek_cb, voidptr(0), voidptr(0), 2048)
-	set_c_file_system(sys.sys)
-
-	snd := sys.create_sound('skid.wav'.str, C.FMOD_DEFAULT)
+	_, snd := sys.create_sound('skid.wav'.str, C.FMOD_DEFAULT)
 	len := snd.get_length(.ms)
 	println('snd len=$len')
 
@@ -60,7 +55,7 @@ fn file_open_cb(name byteptr, filesize &u32, handle &voidptr, userdata voidptr) 
 
 		//*userdata = voidptr(0x12345678)
 		//*handle = fp
-		
+
 		println('fp=$fp, size=${*filesize}')
 	}
 

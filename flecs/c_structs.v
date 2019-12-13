@@ -4,7 +4,7 @@ module flecs
 struct C.ecs_world_t {}
 
 struct C.ecs_type_t {}
-fn (t &C.ecs_type_t) str() string { return '$&t' }
+pub fn (t &C.ecs_type_t) str() string { return '$&t' }
 
 struct C.ecs_rows_t {
 pub:

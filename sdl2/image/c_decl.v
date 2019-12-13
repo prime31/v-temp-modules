@@ -1,4 +1,5 @@
 module image
+import prime31.sdl2
 
 #flag -lSDL2_image
 #include <SDL_image.h>
@@ -8,6 +9,7 @@ pub const (
     IMG_INIT_PNG = 0x00000002
     IMG_INIT_TIF = 0x00000004
     IMG_INIT_WEBP = 0x00000008
+    version = sdl2.version
 )
 
 fn C.IMG_Init(flags int) int

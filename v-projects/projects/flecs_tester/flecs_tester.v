@@ -18,11 +18,11 @@ mut:
 	y int
 }
 
-fn (p Pos) str() string {
+pub fn (p Pos) str() string {
 	return 'x=$p.x, y=$p.y'
 }
 
-fn (v Vel) str() string {
+pub fn (v Vel) str() string {
 	return 'x=$v.x, y=$v.y'
 }
 

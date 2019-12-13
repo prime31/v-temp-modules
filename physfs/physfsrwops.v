@@ -1,4 +1,5 @@
 module physfs
+import prime31.sdl2
 import prime31.sdl2.image
 
 pub const (

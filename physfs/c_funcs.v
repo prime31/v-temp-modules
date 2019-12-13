@@ -27,15 +27,16 @@ fn C.PHYSFS_mkdir(dirName byteptr) int // not in physfs.v
 fn C.PHYSFS_delete(filename byteptr) int // not in physfs.v
 fn C.PHYSFS_getRealDir(filename byteptr) byteptr // not in physfs.v
 //char **PHYSFS_enumerateFiles(const char *dir)
-//int PHYSFS_exists(const char *fname)
+fn C.PHYSFS_exists(fname byteptr) int
 //PHYSFS_File *PHYSFS_openWrite(const char *filename)
 //PHYSFS_File *PHYSFS_openAppend(const char *filename)
-//PHYSFS_File *PHYSFS_openRead(const char *filename)
-//int PHYSFS_close(PHYSFS_File *handle)
-//int PHYSFS_eof(PHYSFS_File *handle)
-//PHYSFS_sint64 PHYSFS_tell(PHYSFS_File *handle)
-//int PHYSFS_seek(PHYSFS_File *handle, PHYSFS_uint64 pos)
-//PHYSFS_sint64 PHYSFS_fileLength(PHYSFS_File *handle)
+fn C.PHYSFS_openRead(filename byteptr) voidptr // &C.PHYSFS_File
+fn C.PHYSFS_close(handle &C.PHYSFS_File) int
+fn C.PHYSFS_eof(handle &PHYSFS_File) int
+fn C.PHYSFS_tell(handle &PHYSFS_File) i64
+fn C.PHYSFS_seek(handle &C.PHYSFS_File, pos u64) int
+fn C.PHYSFS_readBytes(handle &PHYSFS_File, buffer voidptr, len u64) i64
+fn C.PHYSFS_fileLength(handle &PHYSFS_File) i64
 //int PHYSFS_setBuffer(PHYSFS_File *handle, PHYSFS_uint64 bufsize)
 //int PHYSFS_flush(PHYSFS_File *handle)
 //PHYSFS_sint16 PHYSFS_swapSLE16(PHYSFS_sint16 val)
@@ -77,7 +78,7 @@ fn C.PHYSFS_getRealDir(filename byteptr) byteptr // not in physfs.v
 //int PHYSFS_writeUBE64(PHYSFS_File *file, PHYSFS_uint64 val)
 
 fn C.PHYSFS_isInit() int
-//int PHYSFS_symbolicLinksPermitted(void)
+fn C.PHYSFS_symbolicLinksPermitted() int
 fn C.PHYSFS_mount(newDir byteptr, mountPoint byteptr, appendToPath int) int
 fn C.PHYSFS_unmount(oldDir byteptr) int
 fn C.PHYSFS_getMountPoint(dir byteptr) byteptr

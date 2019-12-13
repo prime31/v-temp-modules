@@ -5,6 +5,7 @@ fn main() {
 	sys := fmod.create(32, C.FMOD_INIT_NORMAL)
 	println('fmod version=${sys.get_version()}')
 
+
 	_, snd := sys.create_sound('skid.wav'.str, C.FMOD_DEFAULT)
 	len := snd.get_length(.ms)
 	println('snd len=$len')
@@ -40,43 +41,55 @@ fn main() {
 	time.sleep_ms(5000)
 }
 
-//type FileOpenCallback fn(name byteptr, filesize &u32, handle &voidptr, userdata voidptr) int
-fn file_open_cb(name byteptr, filesize &u32, handle &voidptr, userdata voidptr) int {
-	println('----------- open da file $name')
-	if name != byteptr(0) {
-		fp := C.fopen(name, 'rb')
-		if fp == voidptr(0) {
-			return int(fmod.Result.err_file_notfound)
-		}
 
-		C.fseek(fp, 0, C.SEEK_END)
-		//*filesize = C.ftell(fp)
-		C.fseek(fp, 0, C.SEEK_SET)
+// fn file_open_cb(name byteptr, filesize mut &u32, handle mut &voidptr, userdata voidptr) int {
+// 	if name != byteptr(0) {
+// 		fp := C.fopen(name, 'rb')
+// 		if fp == voidptr(0) {
+// 			return int(fmod.Result.err_file_notfound)
+// 		}
 
-		//*userdata = voidptr(0x12345678)
-		//*handle = fp
+// 		C.fseek(fp, 0, C.SEEK_END)
+// 		*filesize = C.ftell(fp)
+// 		C.fseek(fp, 0, C.SEEK_SET)
 
-		println('fp=$fp, size=${*filesize}')
-	}
+// 		*handle = fp
+// 	}
 
-	return int(fmod.Result.ok)
-}
+// 	return int(fmod.Result.ok)
+// }
 
-//type FileCloseCallback fn(handle voidptr, userdata voidptr) int
-fn file_close_cb(handle voidptr, userdata voidptr) int {
-	println('----------- close da file')
-	return int(fmod.Result.ok)
-}
+// fn file_close_cb(handle voidptr, userdata voidptr) int {
+// 	if handle == voidptr(0) {
+// 		return int(fmod.Result.err_invalid_param)
+// 	}
 
-fn file_read_cb(handle voidptr, buffer voidptr, sizebytes u32, bytesread &int, userdata voidptr) int {
-	println('----------- read_cb')
-	return int(fmod.Result.ok)
-}
+// 	C.fclose(handle)
+// 	return int(fmod.Result.ok)
+// }
 
-fn file_seek_cb(handle voidptr, pos u32, userdata voidptr) int {
-	println('----------- seek_cb')
-	return int(fmod.Result.ok)
-}
+// fn file_read_cb(handle voidptr, buffer voidptr, sizebytes u32, bytesread mut &int, userdata voidptr) int {
+// 	if handle == voidptr(0) {
+// 		return int(fmod.Result.err_invalid_param)
+// 	}
 
+// 	if bytesread != 0 {
+// 		*bytesread = C.fread(buffer, 1, sizebytes, handle)
 
-fn C.ftell() int
+// 		if *bytesread < int(sizebytes) {
+// 			return int(fmod.Result.err_file_eof)
+// 		}
+// 	}
+
+// 	return int(fmod.Result.ok)
+// }
+
+// fn file_seek_cb(handle voidptr, pos u32, userdata voidptr) int {
+// 	if handle == voidptr(0) {
+// 		return int(fmod.Result.err_invalid_param)
+// 	}
+
+// 	C.fseek(handle, pos, C.SEEK_SET)
+
+// 	return int(fmod.Result.ok)
+// }

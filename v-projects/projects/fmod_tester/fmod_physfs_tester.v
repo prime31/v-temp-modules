@@ -1,4 +1,4 @@
-import prime31.fmod
+import prime31.fmod.core as fmod
 import prime31.fmod.physfs as fmod_physfs
 import prime31.physfs
 import prime31.sdl2
@@ -12,7 +12,7 @@ fn main() {
 
 	sys := fmod.create(32, C.FMOD_INIT_NORMAL)
 
-	fmod_physfs.enable_physf_filesystem(sys)
+	fmod_physfs.set_physfs_file_system(sys)
 
 	_, snd := sys.create_sound('skid.wav'.str, C.FMOD_DEFAULT)
 	snd.play(0)

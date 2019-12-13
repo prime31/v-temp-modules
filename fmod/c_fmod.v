@@ -11,6 +11,11 @@ module fmod
 #include "fmod_errors.h"
 
 
+pub const (
+	version = 1
+)
+
+
 fn C.FMOD_ErrorString(errcode int) byteptr
 
 pub fn error_string(errcode int) string {

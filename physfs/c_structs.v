@@ -1,7 +1,7 @@
 module physfs
 
 
-struct C.PHYSFS_File {}
+pub struct C.PHYSFS_File {}
 pub fn (f &C.PHYSFS_File) str() string { return '$&f' }
 
 struct C.PHYSFS_Version {
@@ -12,7 +12,7 @@ pub:
 }
 pub fn (v C.PHYSFS_Version) str() string { return '${v.major}.${v.minor}.${v.patch}' }
 
-struct C.PHYSFS_ArchiveInfo {
+pub struct C.PHYSFS_ArchiveInfo {
 pub:
     extension byteptr   /**< Archive file extension: "ZIP", for example. */
     description byteptr /**< Human-readable archive description. */

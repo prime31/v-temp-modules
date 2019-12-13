@@ -1,7 +1,7 @@
 import prime31.sdl2
 import prime31.sdl2.image
-import prime31.sdl2.mixer as mixer
-import prime31.sdl2.ttf as ttf
+import prime31.sdl2.mixer
+import prime31.sdl2.ttf
 
 struct FpsCounter {
 mut:
@@ -50,10 +50,9 @@ fn main() {
 	fps.init()
 
 	for {
-		evt := sdl2.EventWrapper{}
-		for 0 < SDL_PollEvent(&evt.sdl) {
-			ev := evt.evt
-			match int(ev.typ) {
+		ev := SDL_Event{}
+		for 0 < SDL_PollEvent(&ev) {
+			match int(ev.@type) {
 				C.SDL_QUIT { should_close = true }
 				C.SDL_KEYDOWN {
 					key := ev.key.keysym.sym
@@ -78,8 +77,8 @@ fn main() {
 					//game.handle_jhat(jh, jv, joyid)
 				}
 				C.SDL_WINDOWEVENT {
-					println('win=$ev.window.window_event')
-					if ev.window.window_event == C.SDL_WINDOWEVENT_MOVED {
+					println('win=${ev.window.event}')
+					if ev.window.event == C.SDL_WINDOWEVENT_MOVED {
 						println('moved da win')
 					}
 				}

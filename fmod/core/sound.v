@@ -1,4 +1,4 @@
-module fmod
+module core
 
 struct Sound {
 pub:

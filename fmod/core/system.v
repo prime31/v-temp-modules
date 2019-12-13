@@ -1,9 +1,6 @@
-module fmod
-import prime31.fmod.core
-
-pub const (
-	version = core.version
-)
+module core
+import prime31.fmod
+import prime31.fmod.core.internal
 
 pub struct System {
 pub:

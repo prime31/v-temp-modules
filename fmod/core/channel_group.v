@@ -1,4 +1,4 @@
-module fmod
+module core
 
 pub struct ChannelGroup {
 pub:

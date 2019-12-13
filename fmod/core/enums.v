@@ -1,4 +1,4 @@
-module fmod
+module core
 
 // this is manually translated FMOD_TIMEUNIT, which is not an enum. it is just a #define
 enum TimeUnit {

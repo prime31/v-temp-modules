@@ -1,4 +1,4 @@
-import prime31.fmod
+import prime31.fmod.core as fmod
 import time
 
 fn main() {
@@ -9,7 +9,7 @@ fn main() {
 	len := snd.get_length(.ms)
 	println('snd len=$len')
 
-	_, snd_group := sys.create_sound_group("snd gruoper")
+	_, snd_group := sys.create_sound_group("snd grouper")
 	println('snd_group=$snd_group.group')
 
 	_, group := sys.create_channel_group("tester")

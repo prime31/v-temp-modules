@@ -67,7 +67,7 @@ namespace Generator
                 return cType;
 
             if (cType.Contains("**"))
-                return "voidptr";
+                return $"voidptr /* {cType} */";
 
             // TODO: we should filter for FMOD enums here because #defines can be unsigned
             if (cType.StartsWith("FMOD") || cType.StartsWith("C."))

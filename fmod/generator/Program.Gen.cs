@@ -64,12 +64,12 @@ namespace Generator
             }
         }
 
-        static void WriteTypesToFile(StreamWriter writer, StreamWriter vWriter, StructsAndTypes types, string module)
+        static void WriteTypesToFile(StreamWriter writer, StreamWriter vWriter, StructsAndTypes types, string module, string vModule)
         {
             writer.WriteLine($"module {module}");
             writer.WriteLine();
 
-            vWriter.WriteLine("module fmod");
+            vWriter.WriteLine($"module {vModule}");
             vWriter.WriteLine();
 
             // writer.WriteLine("pub const (");

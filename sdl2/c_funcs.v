@@ -9,7 +9,27 @@ fn C.atexit(func fn ())
 ///////////////////////////////////////////////////
 fn C.SDL_MapRGB(fmt voidptr byte, g byte, b byte) u32
 fn C.SDL_CreateRGBSurface(flags u32, width int, height int, depth int, Rmask u32, Gmask u32, Bmask u32, Amask u32) voidptr
-fn C.SDL_PollEvent(&Event) int
+
+// events
+fn C.SDL_PumpEvents()
+fn C.SDL_PeepEvents(events &SDL_Event, numevents int, action int, min_type u32, max_type u32) int
+fn C.SDL_HasEvent(typ u32) int
+fn C.SDL_HasEvents(min_type u32, max_type u32) int
+fn C.SDL_FlushEvent(typ u32)
+fn C.SDL_FlushEvents(minType u32, maxType u32)
+fn C.SDL_PollEvent(event &SDL_Event) int
+fn C.SDL_WaitEvent(event &SDL_Event) int
+fn C.SDL_WaitEventTimeout(event &SDL_Event, timeout int) int
+fn C.SDL_PushEvent(event &SDL_Event) int
+
+pub type EventFilter fn(voidptr, &C.SDL_Event)
+fn C.SDL_SetEventFilter(filter EventFilter, userdata voidptr)
+fn C.SDL_GetEventFilter(filter &EventFilter, userdata &voidptr) int
+fn C.SDL_AddEventWatch(filter EventFilter, userdata voidptr)
+fn C.SDL_DelEventWatch(filter EventFilter, userdata voidptr)
+fn C.SDL_FilterEvents(filter EventFilter, userdata voidptr)
+
+
 fn C.SDL_NumJoysticks() int
 fn C.SDL_JoystickNameForIndex(device_index int) voidptr
 fn C.SDL_RenderCopy(renderer &SDL_Renderer, texture voidptr, srcrect voidptr, dstrect voidptr) int

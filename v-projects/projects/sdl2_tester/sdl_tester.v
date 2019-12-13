@@ -2,8 +2,6 @@ import prime31.sdl2
 import prime31.sdl2.image
 import prime31.sdl2.mixer as mixer
 import prime31.sdl2.ttf as ttf
-import os
-import time
 
 struct FpsCounter {
 mut:
@@ -37,10 +35,11 @@ fn main() {
 	C.Mix_PlayChannel(1, wave2, 3)
 
 	defer {
-		C.Mix_FreeChunk(wave)
-		C.Mix_FreeChunk(wave2)
-		C.Mix_FreeMusic(music)
-		C.Mix_CloseAudio()
+		Mix_HaltMusic()
+		Mix_FreeChunk(wave)
+		Mix_FreeChunk(wave2)
+		Mix_FreeMusic(music)
+		Mix_CloseAudio()
 	}
 
 	C.IMG_Init(C.IMG_INIT_PNG)
@@ -51,9 +50,10 @@ fn main() {
 	fps.init()
 
 	for {
-		ev := sdl2.Event{}
-		for 0 < C.SDL_PollEvent(&ev) {
-			match int(ev._type) {
+		evt := sdl2.EventWrapper{}
+		for 0 < SDL_PollEvent(&evt.sdl) {
+			ev := evt.evt
+			match int(ev.typ) {
 				C.SDL_QUIT { should_close = true }
 				C.SDL_KEYDOWN {
 					key := ev.key.keysym.sym
@@ -82,6 +82,9 @@ fn main() {
 					if ev.window.window_event == C.SDL_WINDOWEVENT_MOVED {
 						println('moved da win')
 					}
+				}
+				C.SDL_DROPFILE {
+					println('dropped file: $ev.drop.file')
 				}
 				else {}
 			}
@@ -151,6 +154,6 @@ fn (fps mut FpsCounter) tick() {
 		fps.fps_lasttime = SDL_GetTicks()
 		fps.fps_current = fps.fps_frames
 		fps.fps_frames = 0
-		println('fps=$fps.fps_current')
+		// println('fps=$fps.fps_current')
 	}
 }

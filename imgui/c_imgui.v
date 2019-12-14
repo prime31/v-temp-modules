@@ -7,6 +7,9 @@ module imgui
 
 #flag -I @VMOD/prime31/imgui
 
+#flag linux @VMOD/prime31/imgui/thirdparty/cimgui.a
+#flag linux -lGL -lstdc++
+
 #flag @VMOD/prime31/imgui/thirdparty/imgui_impl_sdl.o
 #flag @VMOD/prime31/imgui/thirdparty/imgui_impl_opengl3.o
 
@@ -18,7 +21,7 @@ module imgui
 // #flag darwin @VMOD/prime31/imgui/thirdparty/cimgui.dylib
 
 #flag darwin -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo `sdl2-config --libs`
-#flag -lm -lc++
+#flag darwin -lm -lc++
 
 #include "thirdparty/cimgui.h"
 #include "thirdparty/imgui_impl_opengl3.h"

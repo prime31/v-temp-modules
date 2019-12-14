@@ -1,9 +1,4 @@
 TARGET :=
-# use can either a dylib or static lib, so we will generate both and let the c_imgui.v file decide
-TARGET += cimgui.dylib
-TARGET += cimgui.a
-TARGET += imgui_impl_sdl.o
-TARGET += imgui_impl_opengl3.o
 
 CP := cp
 MODULE_FOLDER := thirdparty
@@ -24,6 +19,10 @@ CFLAGS += `sdl2-config --cflags`
 # CFLAGS += -I cimgui_git/imgui/examples/libs/gl3w
 CFLAGS += -I ../gl3w/thirdparty
 
+# use can either a dylib or static lib, so we will generate both and let the c_imgui.v file decide
+TARGET += cimgui.a
+TARGET += imgui_impl_sdl.o
+TARGET += imgui_impl_opengl3.o
 
 ##---------------------------------------------------------------------
 ## BUILD FLAGS PER PLATFORM
@@ -33,6 +32,9 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux) #LINUX
 	LIBS += -lGL -ldl `sdl2-config --libs`
 	CFLAGS += `sdl2-config --cflags`
+
+	SED := sed -i
+	#TARGET += cimgui.so not yet supported
 endif
 
 ifeq ($(UNAME_S), Darwin) #APPLE
@@ -42,6 +44,9 @@ ifeq ($(UNAME_S), Darwin) #APPLE
 	CFLAGS += `sdl2-config --cflags`
 	CFLAGS += -I/usr/local/include
 	CFLAGS += -DIMGUI_IMPL_OPENGL_LOADER_GL3W
+
+	SED := sed -i ''
+	TARGET += cimgui.dylib
 endif
 
 
@@ -72,12 +77,16 @@ cimgui_git/build/cimgui.a:
 imgui_impl_sdl.o: $(IMGUI)/examples/imgui_impl_sdl.cpp
 	$(CXX) -fPIC -c -o $(MODULE_FOLDER)/$@ $^ -I$(IMGUI) `sdl2-config --cflags` -DIMGUI_IMPL_API=extern\ \"C\" -fno-threadsafe-statics
 	$(CP) $(IMGUI)/examples/imgui_impl_sdl.h $(MODULE_FOLDER)/imgui_impl_sdl.h
-	sed -i '' "s/(SDL_Window/(struct SDL_Window/g" $(MODULE_FOLDER)/imgui_impl_sdl.h
+ifdef SED
+	$(SED) "s/(SDL_Window/(struct SDL_Window/g" $(MODULE_FOLDER)/imgui_impl_sdl.h
+endif
 
 imgui_impl_opengl3.o: $(IMGUI)/examples/imgui_impl_opengl3.cpp
 	$(CXX) -fPIC -c -o $(MODULE_FOLDER)/$@ $^ -I$(IMGUI) $(CFLAGS) $(LIBS) -DIMGUI_IMPL_API=extern\ \"C\" -fno-threadsafe-statics
 	$(CP) $(IMGUI)/examples/imgui_impl_opengl3.h $(MODULE_FOLDER)/imgui_impl_opengl3.h
-	sed -i '' "s/glsl_version = NULL/glsl_version/g" $(MODULE_FOLDER)/imgui_impl_opengl3.h
+ifdef SED
+	$(SED) "s/glsl_version = NULL/glsl_version/g" $(MODULE_FOLDER)/imgui_impl_opengl3.h
+endif
 
 generate_v_bindings:
 	dotnet run --project generator

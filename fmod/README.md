@@ -7,6 +7,12 @@ FMOD V module
 - Extract the dmg and put the extracted "FMOD Programmers API" folder in the prime31/fmod folder
 - Run `make` in that folder to have the headers and dylibs copied into the correct folder
 
+# Installation Linux
+- Download FMOD
+- Extract the archive and put the extracted "fmodstudioapi20006linux" folder in the prime31/fmod folder
+- Run `make` in that folder to have the headers and libs copied into the correct folder
+- If the FMOD version differs from the Makefile `copy_files_linux` target (11.6) it will need to be updated to match
+
 
 # Module Structure
 

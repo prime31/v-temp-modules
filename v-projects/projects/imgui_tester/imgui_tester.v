@@ -58,10 +58,10 @@ fn setup_main_loop() {
 
 	// Our state
 	for !state.done {
-		ev := sdl2.Event{}
+		ev := SDL_Event{}
 		for 0 < C.SDL_PollEvent(&ev) {
 			C.ImGui_ImplSDL2_ProcessEvent(&ev)
-			match int(ev._type) {
+			match int(ev.@type) {
 				C.SDL_QUIT {
 					state.done = true
 					break

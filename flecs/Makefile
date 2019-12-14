@@ -1,16 +1,47 @@
 MODULE_FOLDER := thirdparty
 $(shell mkdir -p $(MODULE_FOLDER))
 
-all: libflecs_shared.dylib flecs_git/build/libflecs_shared.dylib clean
+TARGET = build
+TARGET += patch_flecs_bool
+TARGET += copy_static
+
+##---------------------------------------------------------------------
+## BUILD FLAGS PER PLATFORM
+##---------------------------------------------------------------------
+UNAME_S := $(shell uname -s)
+
+ifeq ($(UNAME_S), Linux)
+	SED := sed -i
+	TARGET += copy_linux_shared
+endif
+
+ifeq ($(UNAME_S), Darwin)
+	SED := sed -i ''
+	TARGET += copy_mac_shared
+endif
+
+TARGET += clean
+
+
+all: $(TARGET)
 
 # fix flecs typedef since v has its own to int already
-libflecs_shared.dylib: flecs_git/build/libflecs_shared.dylib
-	sed -i '' "s/typedef char bool;/\/\/typedef char bool;/g" flecs_git/include/flecs.h
-	cp flecs_git/build/libflecs_shared.dylib $(MODULE_FOLDER)
+patch_flecs_bool:
+ifdef SED
+	$(SED) "s/typedef char bool;/\/\/typedef char bool;/g" flecs_git/include/flecs.h
+endif
+
+copy_static:
 	cp flecs_git/build/libflecs_static.a $(MODULE_FOLDER)
 	rsync -rupE flecs_git/include $(MODULE_FOLDER)
 
-flecs_git/build/libflecs_shared.dylib:
+copy_mac_shared:
+	cp flecs_git/build/libflecs_shared.dylib $(MODULE_FOLDER)
+
+copy_linux_shared:
+	cp flecs_git/build/libflecs_shared.so $(MODULE_FOLDER)
+
+build:
 	[ -d flecs_git ] || git clone --depth 1 https://github.com/SanderMertens/flecs flecs_git
 	(cd flecs_git ; mkdir build ; cd build ; cmake .. ; make)
 

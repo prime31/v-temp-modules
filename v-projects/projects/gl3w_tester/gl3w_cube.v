@@ -21,10 +21,10 @@ fn main() {
 	mut state := &AppState{}
 	C.SDL_Init(C.SDL_INIT_VIDEO | C.SDL_INIT_JOYSTICK)
 
-    C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_FLAGS, C.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG)
-    C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_PROFILE_MASK, C.SDL_GL_CONTEXT_PROFILE_CORE)
-    C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_MAJOR_VERSION, 3)
-    C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_MINOR_VERSION, 2)
+	C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_FLAGS, C.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG)
+	C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_PROFILE_MASK, C.SDL_GL_CONTEXT_PROFILE_CORE)
+	C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_MAJOR_VERSION, 3)
+	C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_MINOR_VERSION, 2)
 
 	C.SDL_GL_SetAttribute(C.SDL_GL_DOUBLEBUFFER, 1)
 	C.SDL_GL_SetAttribute(C.SDL_GL_DEPTH_SIZE, 24)
@@ -62,9 +62,9 @@ fn main() {
 		C.SDL_GL_SwapWindow(window)
 	}
 
-    C.SDL_GL_DeleteContext(gl_context)
-    C.SDL_DestroyWindow(window)
-    C.SDL_Quit()
+	C.SDL_GL_DeleteContext(gl_context)
+	C.SDL_DestroyWindow(window)
+	C.SDL_Quit()
 }
 
 fn (state mut AppState) create_shader() {

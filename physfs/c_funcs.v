@@ -32,9 +32,9 @@ fn C.PHYSFS_exists(fname byteptr) int
 //PHYSFS_File *PHYSFS_openAppend(const char *filename)
 fn C.PHYSFS_openRead(filename byteptr) voidptr // &C.PHYSFS_File
 fn C.PHYSFS_close(handle &C.PHYSFS_File) int
-fn C.PHYSFS_eof(handle &PHYSFS_File) int
-fn C.PHYSFS_tell(handle &PHYSFS_File) i64
-fn C.PHYSFS_seek(handle &C.PHYSFS_File, pos u64) int
+fn C.PHYSFS_eof(handle &PHYSFS_File) int // not in physfs.v
+fn C.PHYSFS_tell(handle &PHYSFS_File) i64 // not in physfs.v
+fn C.PHYSFS_seek(handle &C.PHYSFS_File, pos u64) int // not in physfs.v
 fn C.PHYSFS_readBytes(handle &PHYSFS_File, buffer voidptr, len u64) i64
 fn C.PHYSFS_fileLength(handle &PHYSFS_File) i64
 //int PHYSFS_setBuffer(PHYSFS_File *handle, PHYSFS_uint64 bufsize)

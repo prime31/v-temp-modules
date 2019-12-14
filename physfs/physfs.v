@@ -99,3 +99,28 @@ pub fn get_search_path_callback(cb fn(voidptr, byteptr), d voidptr) {
 pub fn enumerate(dir string, cb fn(voidptr, byteptr, byteptr) int, d voidptr) int {
 	return C.PHYSFS_enumerate(dir.str, cb, d)
 }
+
+[inline]
+pub fn exists(fname byteptr) int {
+	return PHYSFS_exists(fname)
+}
+
+[inline]
+pub fn open_read(fname charptr) &C.PHYSFS_File {
+	return PHYSFS_openRead(fname)
+}
+
+[inline]
+pub fn file_length(handle &PHYSFS_File) i64 {
+	return PHYSFS_fileLength(handle)
+}
+
+[inline]
+pub fn file_close(handle &PHYSFS_File) int {
+	return PHYSFS_close(handle)
+}
+
+[inline]
+pub fn read_bytes(handle &PHYSFS_File, buffer voidptr, len u64) i64 {
+	return PHYSFS_readBytes(handle, buffer, len)
+}

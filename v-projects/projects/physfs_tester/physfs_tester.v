@@ -36,6 +36,7 @@ fn main() {
 	println('enum_res=$enum_res')
 
 	println('is init: ${physfs.is_init()}')
+	read_txt_file()
 
 	C.IMG_Init(C.IMG_INIT_PNG)
 	surface := physfs.load_surface('assets/beach.png'.str)
@@ -56,4 +57,16 @@ fn string_callback(data voidptr, str byteptr) {
 fn enum_callback(data voidptr, dir byteptr, fname byteptr) int {
 	println('enum_callback: dir=$dir, fname=$fname')
 	return C.PHYSFS_ENUM_OK
+}
+
+fn read_txt_file() {
+	fp := physfs.open_read(c'assets/json.json')
+	len := physfs.file_length(fp)
+	println('json file len=$len')
+
+	// buf := [len]byte // doesnt work
+	buf := [`0`].repeat(int(len))
+	physfs.read_bytes(fp, buf.data, u64(len))
+	println('file contents: ${tos(buf.data, buf.len)}')
+	physfs.file_close(fp)
 }

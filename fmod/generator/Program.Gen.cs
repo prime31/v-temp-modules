@@ -84,7 +84,8 @@ namespace Generator
 
             foreach (var t in types.TypeDefs)
             {
-                writer.WriteLine($"type {t.FMODType} {Statics.GetVTypeForCType(t.Type)}");
+                // dont write typedefs. it dupes them.
+                //writer.WriteLine($"type {t.FMODType} {Statics.GetVTypeForCType(t.Type)}");
             }
 
             writer.WriteLine();

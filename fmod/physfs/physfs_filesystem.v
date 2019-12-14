@@ -12,12 +12,12 @@ pub fn set_physfs_file_system(s &fmod.System) int {
 fn physfs_open_cb(name byteptr, filesize mut &u32, handle mut &voidptr, userdata voidptr) int {
 	if name != byteptr(0) {
         fp := PHYSFS_openRead(name)
-		if fp == voidptr(0) {
+		if fp == &PHYSFS_File(0) {
 			return int(fmod.Result.err_file_notfound)
 		}
 
         *filesize = u32(PHYSFS_fileLength(fp))
-        *handle = fp
+        *handle = **voidptr(fp)
 	}
 
 	return int(fmod.Result.ok)

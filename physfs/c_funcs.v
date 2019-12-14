@@ -30,7 +30,7 @@ fn C.PHYSFS_getRealDir(filename byteptr) byteptr // not in physfs.v
 fn C.PHYSFS_exists(fname byteptr) int
 //PHYSFS_File *PHYSFS_openWrite(const char *filename)
 //PHYSFS_File *PHYSFS_openAppend(const char *filename)
-fn C.PHYSFS_openRead(filename byteptr) voidptr // &C.PHYSFS_File
+fn C.PHYSFS_openRead(filename byteptr) &C.PHYSFS_File
 fn C.PHYSFS_close(handle &C.PHYSFS_File) int
 fn C.PHYSFS_eof(handle &PHYSFS_File) int // not in physfs.v
 fn C.PHYSFS_tell(handle &PHYSFS_File) i64 // not in physfs.v

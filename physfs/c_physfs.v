@@ -6,5 +6,8 @@ module physfs
 #flag darwin -framework IOKit -framework Foundation
 #flag darwin @VMOD/prime31/physfs/thirdparty/libphysfs.a
 
+#flag linux @VMOD/prime31/physfs/thirdparty/physfsrwops.o
+#flag linux @VMOD/prime31/physfs/thirdparty/libphysfs.a
+
 #include "physfs.h"
 #include "physfsrwops.h"

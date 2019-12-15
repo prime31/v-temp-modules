@@ -7,7 +7,7 @@ module fmod
 #flag darwin -rpath @VMOD/prime31/fmod/thirdparty
 
 #flag linux -L @VMOD/prime31/fmod/thirdparty
-//#flag linux '-Wl,-rpath,@VMOD/prime31/fmod/thirdparty'
+#flag linux -Wl,-rpath,@VMOD/prime31/fmod/thirdparty
 #flag linux -lfmod -lfmodstudio
 
 #include "fmod.h"

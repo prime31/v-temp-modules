@@ -22,8 +22,7 @@ fn main() {
 	_, master_group := sys.get_master_channel_group()
 	println('master_group=${master_group.group}')
 
-	dsp := fmod.Dsp{}
-	sys.create_dsp_by_type(.flange, mut dsp)
+	_, dsp := sys.create_dsp_by_type(.flange)
 	master_group.add_dsp(0, dsp)
 	// master_group.remove_dsp(dsp)
 

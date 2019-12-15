@@ -1,4 +1,4 @@
-module sdl2
+module c
 
 pub const (
 	version = 1

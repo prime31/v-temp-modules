@@ -1,6 +1,7 @@
 module imgui
+import prime31.imgui.c
 
-pub fn get_io() &ImGuiIo {
+pub fn get_io() &ImGuiIO {
 	return C.igGetIO()
 }
 

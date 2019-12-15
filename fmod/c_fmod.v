@@ -1,4 +1,6 @@
 module fmod
+import prime31.fmod.core.c as c_core
+import prime31.fmod.studio.c as c_studio
 
 #flag -I @VMOD/prime31/fmod/thirdparty/core
 #flag -I @VMOD/prime31/fmod/thirdparty/studio

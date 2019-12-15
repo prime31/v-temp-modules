@@ -1,10 +1,9 @@
-module physfs
-
+module c
 
 pub struct C.PHYSFS_File {}
 pub fn (f &C.PHYSFS_File) str() string { return '$&f' }
 
-struct C.PHYSFS_Version {
+pub struct C.PHYSFS_Version {
 pub:
     major byte
     minor byte

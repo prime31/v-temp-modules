@@ -1,5 +1,7 @@
 module physfs
+import prime31.physfs.c
 
+const ( version = c.version )
 
 [inline]
 pub fn initialize() int {

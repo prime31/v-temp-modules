@@ -1,4 +1,4 @@
-module sdl2
+module c
 
 pub struct C.SDL_RWops {}
 
@@ -50,7 +50,7 @@ pub:
 }
 
 /////////////////////////////////////////////////////////
-
+// TODO: should be moved out of c folder
 pub enum WindowEventID {
 	_none
 	shown
@@ -71,7 +71,7 @@ pub enum WindowEventID {
 	hit_test
 }
 
-struct Keysym {
+struct C.SDL_Keysym {
 pub:
 	scancode int  /**< hardware specific scancode */
 	sym int       /**< SDL virtual keysym */

@@ -64,7 +64,7 @@ pub:
 	repeat byte     /**< Non-zero if this is a key repeat */
 	padding2 byte
 	padding3 byte
-	keysym Keysym
+	keysym C.SDL_Keysym
 }
 
 pub struct C.SDL_TextEditingEvent {

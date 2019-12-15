@@ -14,8 +14,11 @@ fn C.erff(x f32) f32
 fn C.erfcf(x f32) f32
 fn C.expf(x f32) f32
 fn C.exp2f(x f32) f32
+fn C.fabsf(f32) f32
 fn C.floorf(x f32) f32
 fn C.fmodf(x f32, y f32) f32
+fn C.fminf(f32, f32) f32
+fn C.fmaxf(f32, f32) f32
 fn C.hypotf(x f32, y f32) f32
 fn C.logf(x f32) f32
 fn C.log2f(x f32) f32
@@ -40,15 +43,11 @@ pub const (
 )
 
 
-pub fn min<T>(x, y T) T {
-	if x < y { return x }
-	return y
-}
+[inline]
+pub fn min(x, y f32) f32 { return C.fminf(x, y) }
 
-pub fn max<T>(x, y T) T {
-	if x > y { return x }
-	return y
-}
+[inline]
+pub fn max(x, y f32) f32 { return C.fmaxf(x, y) }
 
 [inline]
 pub fn lerp(x, y, s f32) f32 { return x + s * (y - x) }
@@ -57,19 +56,21 @@ pub fn lerp(x, y, s f32) f32 { return x + s * (y - x) }
 pub fn unlerp(a, b, x f32) f32 { return (x - a) / (b - a) }
 
 // Returns the result of a non-clamping linear remapping of a value x from [a, b] to [c, d]
+[inline]
 pub fn remap(a, b, c, d, x f32) f32 { return lerp(c, d, unlerp(a, b, x)) }
 
-pub fn clamp(x, a, b f32) f32 { return max(a, min(b, x)) }
+[inline]
+pub fn clamp(x, a, b f32) f32 { return C.fmaxf(a, C.fminf(b, x)) }
+
+[inline]
+pub fn clamp01(val f32) f32 { return clamp(val, 0.0, 1.0) }
 
 // Returns the result of clamping the value x into the interval [0, 1]
 [inline]
 pub fn saturate(x f32) f32 { return clamp(x, 0.0, 1.0) }
 
 [inline]
-pub fn abs(a f32) f32 {
-	if a < 0 { return -a }
-	return a
-}
+pub fn abs(a f32) f32 { return C.fabsf(a) }
 
 [inline]
 pub fn tan(x f32) f32 { return C.tanf(x) }

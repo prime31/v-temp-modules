@@ -1,5 +1,4 @@
-module flecs
-
+module c
 
 fn C.ecs_init() &C.ecs_world_t
 

@@ -1,4 +1,5 @@
 module flecs
+import prime31.flecs.c
 
 #flag -I @VMOD/prime31/flecs/thirdparty
 #flag -I @VMOD/prime31/flecs/thirdparty/include

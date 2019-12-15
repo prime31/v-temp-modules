@@ -1,9 +1,8 @@
-module flecs
+module c
 
+pub struct C.ecs_world_t {}
 
-struct C.ecs_world_t {}
-
-struct C.ecs_type_t {}
+pub struct C.ecs_type_t {}
 pub fn (t &C.ecs_type_t) str() string { return '$&t' }
 
 struct C.ecs_rows_t {

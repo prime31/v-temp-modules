@@ -1,4 +1,7 @@
 module flecs
+import prime31.flecs.c
+
+const ( version = c.version )
 
 pub struct World {
 pub:

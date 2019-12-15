@@ -1,4 +1,4 @@
-module sdl2
+module c
 
 #flag linux  `sdl2-config --cflags --libs`
 #flag darwin `sdl2-config --cflags --libs`

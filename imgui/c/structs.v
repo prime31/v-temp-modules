@@ -1,4 +1,4 @@
-module imgui
+module c
 
 pub struct C.ImVec2 {
 pub mut:
@@ -107,4 +107,3 @@ pub mut:
     ImVector_ImWchar InputQueueCharacters
 */
 }
-type ImGuiIo C.ImGuiIO

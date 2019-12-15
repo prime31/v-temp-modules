@@ -1,4 +1,4 @@
-module physfs
+module c
 
 #flag -I @VMOD/prime31/physfs/thirdparty
 #flag darwin @VMOD/prime31/physfs/thirdparty/physfsrwops.o
@@ -11,3 +11,5 @@ module physfs
 
 #include "physfs.h"
 #include "physfsrwops.h"
+
+pub const ( version = 1 )

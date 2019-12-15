@@ -1,5 +1,4 @@
-module imgui
-
+module c
 
 #flag -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1
 #flag -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS=1

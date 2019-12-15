@@ -1,4 +1,4 @@
-module imgui
+module c
 
 fn C.igCheckbox(label voidptr, p_open voidptr)
 fn C.igGetIO() voidptr

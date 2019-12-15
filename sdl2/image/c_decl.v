@@ -16,14 +16,14 @@ fn C.IMG_Init(flags int) int
 fn C.IMG_Quit()
 
 /* Load an image from an SDL data source. The 'type' may be one of: "BMP", "GIF", "PNG", etc. */
-fn C.IMG_LoadTyped_RW(src &SDL_RWops, freesrc int, _type byteptr) &SDL_Surface
-fn C.IMG_Load(file byteptr) &SDL_Surface
-fn C.IMG_Load_RW(src &SDL_RWops, freesrc int) &SDL_Surface
+fn C.IMG_LoadTyped_RW(src &SDL_RWops, freesrc int, _type byteptr) &C.SDL_Surface
+fn C.IMG_Load(file byteptr) &C.SDL_Surface
+fn C.IMG_Load_RW(src &SDL_RWops, freesrc int) &C.SDL_Surface
 
 /* Load an image directly into a render texture. */
-fn C.IMG_LoadTexture(renderer &SDL_Renderer, file byteptr) &SDL_Texture
-fn C.IMG_LoadTexture_RW(renderer &SDL_Renderer, src &SDL_RWops, freesrc int) &SDL_Texture
-fn C.IMG_LoadTextureTyped_RW(renderer &SDL_Renderer, src &SDL_RWops, freesrc int, _type byteptr) &SDL_Texture
+fn C.IMG_LoadTexture(renderer &SDL_Renderer, file byteptr) &C.SDL_Texture
+fn C.IMG_LoadTexture_RW(renderer &SDL_Renderer, src &SDL_RWops, freesrc int) &C.SDL_Texture
+fn C.IMG_LoadTextureTyped_RW(renderer &SDL_Renderer, src &SDL_RWops, freesrc int, _type byteptr) &C.SDL_Texture
 
 /* Functions to detect a file type, given a seekable source */
 fn C.IMG_isPNG(src &SDL_RWops) int
@@ -32,10 +32,10 @@ fn C.IMG_isJPG(src &SDL_RWops) int
 fn C.IMG_isWEBP(src &SDL_RWops) int
 
 /* Individual loading functions */
-fn C.IMG_LoadPNG_RW(src &SDL_RWops) &SDL_Surface
-fn C.IMG_LoadBMP_RW(src &SDL_RWops) &SDL_Surface
-fn C.IMG_LoadJPG_RW(src &SDL_RWops) &SDL_Surface
-fn C.IMG_LoadWEBP_RW(src &SDL_RWops) &SDL_Surface
+fn C.IMG_LoadPNG_RW(src &SDL_RWops) &C.SDL_Surface
+fn C.IMG_LoadBMP_RW(src &SDL_RWops) &C.SDL_Surface
+fn C.IMG_LoadJPG_RW(src &SDL_RWops) &C.SDL_Surface
+fn C.IMG_LoadWEBP_RW(src &SDL_RWops) &C.SDL_Surface
 
 /* Individual saving functions */
 fn C.IMG_SavePNG(surface voidptr, file byteptr) int

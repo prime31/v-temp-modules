@@ -14,7 +14,7 @@ mut:
 	done bool
 	show_another_window bool
 	counter int
-	io &C.ImGuiIo
+	io &C.ImGuiIO
 	window voidptr
 }
 

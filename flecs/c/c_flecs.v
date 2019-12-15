@@ -1,5 +1,4 @@
-module flecs
-import prime31.flecs.c
+module c
 
 #flag -I @VMOD/prime31/flecs/thirdparty
 #flag -I @VMOD/prime31/flecs/thirdparty/include
@@ -18,5 +17,5 @@ import prime31.flecs.c
 #include "include/flecs.h"
 
 
-
+pub const ( version = 1 )
 

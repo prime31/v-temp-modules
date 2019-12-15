@@ -1,6 +1,5 @@
 module core
 import prime31.fmod
-import prime31.fmod.core.internal
 
 pub struct System {
 pub:
@@ -71,8 +70,10 @@ pub fn (s &System) get_master_channel_group() (int, ChannelGroup) {
 	return FMOD_System_GetMasterChannelGroup(s.sys, &group.group), group
 }
 
-pub fn (s &System) create_dsp_by_type(typ DspType, dsp mut Dsp) int {
-	return FMOD_System_CreateDSPByType(s.sys, typ, &dsp.dsp)
+pub fn (s &System) create_dsp_by_type(typ DspType) (int, Dsp) {
+	dsp := Dsp{&FMOD_DSP(0)}
+	res := FMOD_System_CreateDSPByType(s.sys, typ, &dsp.dsp)
+	return res, dsp
 }
 
 pub fn (s &System) set_file_system(useropen voidptr, userclose voidptr, userread voidptr, userseek voidptr, userasyncread voidptr, userasynccancel voidptr, blockalign int) int {

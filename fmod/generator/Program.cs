@@ -90,52 +90,52 @@ namespace Generator
 		static void ProcessCore(string sourceDir, string destDir)
 		{
 			var vDestDir = destDir;
-			destDir = Path.Combine(destDir, "internal");
+			destDir = Path.Combine(destDir, "c");
 			Directory.CreateDirectory(destDir);
 
 
 			var methods = ExtractMethods(Path.Combine(sourceDir, "core/fmod.h"));
 			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "fmod_gen.v"), FileMode.Create)))
-				WriteMethodBagToFile(writer, methods, "internal");
+				WriteMethodBagToFile(writer, methods, "c");
 
 			var types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_common.h"));
 			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "common_gen.v"), FileMode.Create)))
 			using (var vWriter = new StreamWriter(File.Open(Path.Combine(vDestDir, "common_enums_gen.v"), FileMode.Create)))
-                WriteTypesToFile(writer, vWriter, types, "internal", "core");
+                WriteTypesToFile(writer, vWriter, types, "c", "core");
 
 			types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_dsp_effects.h"));
 			using (var writer = StreamWriter.Null) // only enums in there so no need to generate anything else
             using (var vWriter = new StreamWriter(File.Open(Path.Combine(vDestDir, "dsp_enums_gen.v"), FileMode.Create)))
-				WriteTypesToFile(writer, vWriter, types, "internal", "core");
+				WriteTypesToFile(writer, vWriter, types, "c", "core");
 
 			// these are for plugins so we dont bother generating them
 			// types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_dsp.h"));
 			// using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "dsp_gen.v"), System.IO.FileMode.Create)))
-			// 	WriteTypesToFile(writer, types, , "internal", "core");
+			// 	WriteTypesToFile(writer, types, , "c", "core");
 
 			// types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_codec.h"));
 			// using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "codec_gen.v"), System.IO.FileMode.Create)))
-			// 	WriteTypesToFile(writer, types, , "internal", "core");
+			// 	WriteTypesToFile(writer, types, , "c", "core");
 
 			// types = ExtractStructsAndTypes(Path.Combine(sourceDir, "core/fmod_output.h"));
 			// using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "output_gen.v"), System.IO.FileMode.Create)))
-			// 	WriteTypesToFile(writer, types, , "internal", "core");
+			// 	WriteTypesToFile(writer, types, , "c", "core");
 		}
 
 		static void ProcessStudio(string sourceDir, string destDir)
 		{
 			var vDestDir = destDir;
-			destDir = Path.Combine(destDir, "internal");
+			destDir = Path.Combine(destDir, "c");
 			Directory.CreateDirectory(destDir);
 
 			var methods = ExtractMethods(Path.Combine(sourceDir, "studio/fmod_studio.h"));
 			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "studio_gen.v"), FileMode.Create)))
-				WriteMethodBagToFile(writer, methods, "internal");
+				WriteMethodBagToFile(writer, methods, "c");
 
 			var types = ExtractStructsAndTypes(Path.Combine(sourceDir, "studio/fmod_studio_common.h"));
 			using (var writer = new StreamWriter(File.Open(Path.Combine(destDir, "common_gen.v"), FileMode.Create)))
             using (var vWriter = new StreamWriter(File.Open(Path.Combine(vDestDir, "studio_common_enums_gen.v"), FileMode.Create)))
-				WriteTypesToFile(writer, vWriter, types, "internal", "studio");
+				WriteTypesToFile(writer, vWriter, types, "c", "studio");
 		}
 
 		#region Methods

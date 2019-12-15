@@ -1,6 +1,6 @@
 module core
 import prime31.fmod
-import prime31.fmod.core.internal
+import prime31.fmod.core.c
 
 pub struct System {
 pub:

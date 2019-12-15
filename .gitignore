@@ -25,8 +25,8 @@ physfs/physfs_hg
 physfs/thirdparty
 fmod/generator/obj
 fmod/generator/bin
-fmod/core/internal
 fmod/core/*gen.v
-fmod/studio/internal
 fmod/studio/*gen.v
 fmod/fmodstudioapi20006linux
+fmod/core/c
+fmod/studio/c

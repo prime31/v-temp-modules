@@ -55,7 +55,7 @@ pub fn mat44_rotate(angle f32, unnormalizedAxis Vec3) Mat44 {
     s := C.sinf(angle)
 
     axis := unnormalizedAxis.normalize()
-    temp := axis.scale(1.0-c)
+    temp := axis.scale(1.0 - c)
 
     mut result := mat44_identity()
     result.set(0,0,c + temp.x * axis.x)
@@ -78,8 +78,6 @@ pub fn mat44_ortho2d(left f32, right f32, bottom f32, top f32) Mat44 {
 }
 
 pub fn mat44_ortho(left f32, right f32, bottom f32, top f32, zNear f32, zFar f32) Mat44 {
-    // FIXME: assert C.fabsf(zNear - C.FLT_EPSILON) > f32(0.0)
-
     mut result := mat44_identity()
 
     result.data[0] = 2.0 / (right - left)
@@ -93,8 +91,6 @@ pub fn mat44_ortho(left f32, right f32, bottom f32, top f32, zNear f32, zFar f32
 }
 
 pub fn mat44_perspective(fovy f32, aspect f32, zNear f32, zFar f32) Mat44 {
-    // FIXME assert C.fabsf(aspect - C.FLT_EPSILON) > f32(0.0)
-
     tan_half_fovy := C.tanf(fovy / 2.0)
 
     mut result := mat44_zero()
@@ -175,6 +171,10 @@ pub fn (self Mat44) transpose() Mat44 {
     result.swap(7,13)
     result.swap(11,14)
     return result
+}
+
+pub fn (self Mat44) * (other Mat44) Mat44 {
+    return self.mult(other)
 }
 
 pub fn (self Mat44) mult(other Mat44) Mat44 {

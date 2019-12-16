@@ -1,20 +1,22 @@
 import prime31.sdl2
 import prime31.gl3w
 import prime31.gl3w.gl41 as gl
+import prime31.math
 import time
 import os
 
 struct AppState {
 mut:
 	program u32
+	mvp_uni int
 	vert_pos_loc int
-	quad_vao u32
-	vbo u32
-	ibo u32
+	vert_col_loc int
 
-	tri_vbo u32
-	col_vbo u32
-	vao u32 = u32(0)
+	cube_vao u32 = u32(0)
+	cube_vbo u32
+	cube_col_vbo u32
+
+	rot int
 }
 
 fn main() {
@@ -40,7 +42,6 @@ fn main() {
 	gl3w.initialize()
 
 	state.create_shader()
-	state.create_buffers()
 
 	mut alive := true
 	for alive {
@@ -57,8 +58,7 @@ fn main() {
 
 		C.glClearColor(0.4, 0.0, 0.0, 1.0)
 		C.glClear(C.GL_COLOR_BUFFER_BIT | C.GL_DEPTH_BUFFER_BIT | C.GL_STENCIL_BUFFER_BIT)
-		// state.draw_quad()
-		state.draw_triangle()
+		state.draw_cube()
 		C.SDL_GL_SwapWindow(window)
 	}
 
@@ -70,7 +70,7 @@ fn main() {
 fn (state mut AppState) create_shader() {
 	// vertex shader
 	vert := gl.create_shader(C.GL_VERTEX_SHADER)
-	vert_src := '#version 150\nin vec3 LVertexPos3D;\nin vec3 VertexColor;\nout vec3 FragmentColor;\nvoid main() { FragmentColor = VertexColor; gl_Position = vec4(LVertexPos3D.x, LVertexPos3D.y, LVertexPos3D.z, 1); }'
+	vert_src := '#version 150\nin vec3 LVertexPos3D;\nin vec3 VertexColor;\nout vec3 FragmentColor;\nuniform mat4 MVP;\nvoid main() { FragmentColor = VertexColor; gl_Position = MVP * vec4(LVertexPos3D.xyz, 1.0); }'
 	C.glShaderSource(vert, 1, &vert_src.str, 0)
 	C.glCompileShader(vert)
 	if gl.get_shader_compile_status(vert) == 0 {
@@ -110,14 +110,23 @@ fn (state mut AppState) create_shader() {
 	}
 
 	state.program = shader_program
-	state.vert_pos_loc = C.glGetAttribLocation(state.program, 'LVertexPos3D')
+	state.vert_pos_loc = glGetAttribLocation(state.program, 'LVertexPos3D')
 	if state.vert_pos_loc == -1 {
 		println('LVertexPos3D is not a valid glsl program variable!')
 		exit(1)
 	}
 
-	name, size, typ := gl.get_active_attrib(state.program, 0)
-	println('att: $name')
+	state.vert_col_loc = glGetAttribLocation(state.program, 'VertexColor')
+	if state.vert_col_loc == -1 {
+		println('VertexColor is not a valid glsl program variable!')
+		exit(1)
+	}
+
+	state.mvp_uni = glGetUniformLocation(state.program, c'MVP')
+	if state.mvp_uni == -1 {
+		println('MVP is not a valid glsl program uniform!')
+		exit(1)
+	}
 
 	prog_res := gl.get_programiv(state.program, C.GL_LINK_STATUS)
 	println('prog link res=$prog_res')
@@ -128,53 +137,9 @@ fn (state mut AppState) create_shader() {
 	println('renderer=${gl.get_string(C.GL_RENDERER)}')
 }
 
-fn (state mut AppState) create_buffers() {
-	vertex_data := [
-		-0.5, -0.5, 0.0,
-		0.5, -0.5, 0.0,
-		0.5,  0.5, 0.0,
-		-0.5, 0.5, 0.0
-	]!
-	index_data := [
-		u32(0), 1, 3, 4
-	]!
-
-	state.quad_vao = gl.gen_vertex_array()
-	C.glBindVertexArray(state.quad_vao)
-
-	state.vbo = gl.gen_buffer()
-	C.glBindBuffer(C.GL_ARRAY_BUFFER, state.vbo)
-	gl.buffer_data_f32(C.GL_ARRAY_BUFFER, vertex_data, C.GL_STATIC_DRAW)
-
-	state.ibo = gl.gen_buffer()
-	C.glBindBuffer(C.GL_ELEMENT_ARRAY_BUFFER, state.ibo)
-	gl.buffer_data_u32(C.GL_ELEMENT_ARRAY_BUFFER, index_data, C.GL_STATIC_DRAW)
-}
-
-fn (state AppState) draw_quad() {
-	// Bind program
-	C.glUseProgram(state.program)
-
-	// Enable vertex position
-	C.glEnableVertexAttribArray(state.vert_pos_loc)
-
-	// Set vertex data
-	C.glBindBuffer(C.GL_ARRAY_BUFFER, state.vbo)
-	C.glVertexAttribPointer(state.vert_pos_loc, 3, C.GL_FLOAT, C.GL_FALSE, 2 * sizeof(f32), C.NULL)
-
-	// Set index data and render
-	C.glBindBuffer(C.GL_ELEMENT_ARRAY_BUFFER, state.ibo)
-	C.glDrawElements(C.GL_TRIANGLE_FAN, 4, C.GL_UNSIGNED_INT, C.NULL)
-
-	// Disable vertex position
-	C.glDisableVertexAttribArray(state.vert_pos_loc)
-
-	// Unbind program
-	C.glUseProgram(0)
-}
-
-fn (state mut AppState) draw_triangle() {
-	if state.vao == 0 {
+[live]
+fn (state mut AppState) draw_cube() {
+	if state.cube_vao == 0 {
 		vertices := [
 			-0.7,-0.7,-0.7, // triangle 1 : begin
 			-0.7,-0.7, 0.7,
@@ -213,10 +178,13 @@ fn (state mut AppState) draw_triangle() {
 			-0.7, 0.7, 0.7,
 			0.7,-0.7, 0.7
 		]!
-		state.vao = gl.gen_vertex_array()
-		state.tri_vbo = gl.gen_buffer()
-		C.glBindBuffer(C.GL_ARRAY_BUFFER, state.tri_vbo)
-		C.glBufferData(C.GL_ARRAY_BUFFER, vertices.len * sizeof(f32), vertices.data, C.GL_STATIC_DRAW)
+
+		state.cube_vao = gl.gen_vertex_array()
+		glBindVertexArray(state.cube_vao)
+
+		state.cube_vbo = gl.gen_buffer()
+		glBindBuffer(C.GL_ARRAY_BUFFER, state.cube_vbo)
+		glBufferData(C.GL_ARRAY_BUFFER, vertices.len * sizeof(f32), vertices.data, C.GL_STATIC_DRAW)
 
 		cols := [
 			0.583,  0.771,  0.014,
@@ -256,28 +224,40 @@ fn (state mut AppState) draw_triangle() {
 			0.820,  0.883,  0.371,
 			0.982,  0.099,  0.879
 		]!
-		state.col_vbo = gl.gen_buffer()
-		C.glBindBuffer(C.GL_ARRAY_BUFFER, state.col_vbo)
-		C.glBufferData(C.GL_ARRAY_BUFFER, cols.len * sizeof(f32), cols.data, C.GL_STATIC_DRAW)
+		state.cube_col_vbo = gl.gen_buffer()
+		glBindBuffer(C.GL_ARRAY_BUFFER, state.cube_col_vbo)
+		glBufferData(C.GL_ARRAY_BUFFER, cols.len * sizeof(f32), cols.data, C.GL_STATIC_DRAW)
 	}
 
-	C.glEnable(C.GL_DEPTH_TEST)
-	C.glDepthFunc(C.GL_LESS)
+	glEnable(C.GL_DEPTH_TEST)
+	glDepthFunc(C.GL_LESS)
 
-	C.glUseProgram(state.program)
+	glUseProgram(state.program)
 
-	C.glBindVertexArray(state.vao)
+	state.rot++
 
-	C.glEnableVertexAttribArray(0)
-	C.glBindBuffer(C.GL_ARRAY_BUFFER, state.tri_vbo)
-	C.glVertexAttribPointer(0, 3, C.GL_FLOAT, false, 0, 0)
+	// Projection: 25° fov, screen aspect ratio, near-far : 0.1 unit <-> 100 units
+	proj := math.mat44_perspective(math.radians(25), 1024.0 / 768.0, 0.1, 10)
+	// View: camera matrix
+	view := math.mat44_look_at(math.Vec3{4, 3, -3}, math.Vec3{0, 0, 0}, math.vec3_up())
+	model := math.mat44_rotate(math.radians(state.rot), math.Vec3{0, 1, 0})
+	mvp := proj * view * model
+	glUniformMatrix4fv(state.mvp_uni, 1, C.GL_FALSE, &mvp.data)
 
-	C.glEnableVertexAttribArray(1)
-	C.glBindBuffer(C.GL_ARRAY_BUFFER, state.col_vbo)
-	C.glVertexAttribPointer(1, 3, C.GL_FLOAT, false, 0, 0)
+	glBindVertexArray(state.cube_vao)
 
-	C.glDrawArrays(C.GL_TRIANGLES, 0, 12 * 3)
+	glEnableVertexAttribArray(state.vert_pos_loc)
+	glBindBuffer(C.GL_ARRAY_BUFFER, state.cube_vbo)
+	glVertexAttribPointer(state.vert_pos_loc, 3, C.GL_FLOAT, false, 0, 0)
 
-	C.glDisableVertexAttribArray(0)
-	C.glUseProgram(0)
+	glEnableVertexAttribArray(state.vert_col_loc)
+	glBindBuffer(C.GL_ARRAY_BUFFER, state.cube_col_vbo)
+	glVertexAttribPointer(state.vert_col_loc, 3, C.GL_FLOAT, false, 0, 0)
+
+	glDrawArrays(C.GL_TRIANGLES, 0, 12 * 3)
+
+	glDisableVertexAttribArray(state.vert_pos_loc)
+	glDisableVertexAttribArray(state.vert_col_loc)
+
+	glUseProgram(0)
 }

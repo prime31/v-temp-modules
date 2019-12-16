@@ -37,13 +37,13 @@ fn main() {
 	vel_type := vel_entity.type_from_entity()
 	println('pos_type=$pos_type, vel_type=$vel_type')
 
-	sys_entity := world.new_system("MoveSystem", C.EcsOnUpdate, "Position, !Velocity", move)
+	sys_entity := world.new_system('MoveSystem', C.EcsOnUpdate, 'Position, !Velocity', move)
 	println('sys_entity=$sys_entity')
 
-	entity := world.new_entity("My Entity", "Position")
+	entity := world.new_entity('My Entity', 'Position')
 	println('entity: $entity')
 
-	entity2 := world.new_entity("My Second Entity", "Position")
+	entity2 := world.new_entity('My Second Entity', 'Position')
 	println('entity2: $entity2')
 
 	p := Pos{10, 10}

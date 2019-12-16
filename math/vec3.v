@@ -25,6 +25,8 @@ fn (a Vec3) - (b Vec3) Vec3 {
 	}
 }
 
+pub fn vec3_up() Vec3 { return Vec3{0, 1, 0}}
+
 pub fn (self Vec3) scale(s f32) Vec3 { return Vec3 {self.x * s, self.y * s, self.z * s} }
 
 pub fn (self Vec3) square_magnitude() f32 { return self.x * self.x + self.y * self.y + self.z * self.z }

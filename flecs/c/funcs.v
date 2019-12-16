@@ -44,7 +44,7 @@ fn C.ecs_progress(world C.ecs_world_t, delta_time f32) bool
 //     ecs_world_t *world,
 //     float delta_time)
 
-fn C._ecs_column(rows C.ecs_world_t, size i64, column u32) voidptr
+fn C._ecs_column(rows C.ecs_rows_t, size i64, column u32) voidptr
 // void* _ecs_column(
 //     ecs_rows_t *rows,
 //     size_t size,

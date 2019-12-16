@@ -19,6 +19,27 @@ pub fn (self Mat44) str() string {
             '${self.data[3]} ${self.data[7]} ${self.data[11]} ${self.data[15]}\n'
 }
 
+pub fn (m Mat44) * (other Mat44) Mat44 {
+    return m.mult(other)
+}
+
+pub fn (m Mat44) mult_vec3(v Vec3) Vec3 {
+    return Vec3{
+        x: m.data[0]*v.x + m.data[4]*v.y + m.data[8]*v.z
+        y: m.data[1]*v.x + m.data[5]*v.y + m.data[9]*v.z
+        z: m.data[2]*v.x + m.data[6]*v.y + m.data[10]*v.z
+    }
+}
+
+pub fn (m Mat44) mult_vec4(v Vec4) Vec4 {
+    return Vec4{
+        x: m.data[0]*v.x + m.data[4]*v.y + m.data[8]*v.z + m.data[12]*v.w
+        y: m.data[1]*v.x + m.data[5]*v.y + m.data[9]*v.z + m.data[13]*v.w
+        z: m.data[2]*v.x + m.data[6]*v.y + m.data[10]*v.z + m.data[14]*v.w
+        w: m.data[3]*v.x + m.data[7]*v.y + m.data[11]*v.z + m.data[15]*v.w
+    }
+}
+
 pub fn mat44_zero() Mat44 {
     mut result := Mat44{}
     C.memset(&result, 0, sizeof(Mat44))
@@ -32,6 +53,34 @@ pub fn mat44_identity() Mat44 {
     result.data[10] = 1.0
     result.data[15] = 1.0
     return result
+}
+
+pub fn (self Mat44) get_col(index int) Vec4 {
+    match index {
+        0 { return Vec4{self.data[0], self.data[1], self.data[2], self.data[3]} }
+        1 { return Vec4{self.data[4], self.data[5], self.data[6], self.data[7]} }
+        2 { return Vec4{self.data[8], self.data[9], self.data[10], self.data[11]} }
+        3 { return Vec4{self.data[12], self.data[13], self.data[14], self.data[15]} }
+        else { panic('index out of bounds: $index') }
+    }
+}
+
+pub fn (self Mat44) get_row(index int) Vec4 {
+    match index {
+        0 { return Vec4{self.data[0], self.data[4], self.data[8], self.data[12]} }
+        1 { return Vec4{self.data[1], self.data[5], self.data[9], self.data[13]} }
+        2 { return Vec4{self.data[2], self.data[6], self.data[10], self.data[14]} }
+        3 { return Vec4{self.data[3], self.data[7], self.data[11], self.data[15]} }
+        else { panic('index out of bounds: $index') }
+    }
+}
+
+pub fn (self Mat44) get(row int, column int) f32 {
+    return self.data[row * 4 + column]
+}
+
+pub fn (self mut Mat44) set(row int, column int, val f32) {
+    self.data[row * 4 + column] = val
 }
 
 pub fn mat44_translate(offset Vec3) Mat44 {
@@ -127,34 +176,6 @@ pub fn mat44_look_at(eye Vec3, center Vec3, up Vec3) Mat44 {
     return result
 }
 
-pub fn (self Mat44) get_col(index int) Vec4 {
-    match index {
-        0 { return Vec4{self.data[0], self.data[1], self.data[2], self.data[3]} }
-        1 { return Vec4{self.data[4], self.data[5], self.data[6], self.data[7]} }
-        2 { return Vec4{self.data[8], self.data[9], self.data[10], self.data[11]} }
-        3 { return Vec4{self.data[12], self.data[13], self.data[14], self.data[15]} }
-        else { panic('index out of bounds: $index') }
-    }
-}
-
-pub fn (self Mat44) get_row(index int) Vec4 {
-    match index {
-        0 { return Vec4{self.data[0], self.data[4], self.data[8], self.data[12]} }
-        1 { return Vec4{self.data[1], self.data[5], self.data[9], self.data[13]} }
-        2 { return Vec4{self.data[2], self.data[6], self.data[10], self.data[14]} }
-        3 { return Vec4{self.data[3], self.data[7], self.data[11], self.data[15]} }
-        else { panic('index out of bounds: $index') }
-    }
-}
-
-pub fn (self Mat44) get(row int, column int) f32 {
-    return self.data[row * 4 + column]
-}
-
-pub fn (self mut Mat44) set(row int, column int, val f32) {
-    self.data[row * 4 + column] = val
-}
-
 // swap two elements within a Mat44
 fn (self mut Mat44) swap(i0 int, i1 int) {
     tmp := self.data[i0]
@@ -171,10 +192,6 @@ pub fn (self Mat44) transpose() Mat44 {
     result.swap(7,13)
     result.swap(11,14)
     return result
-}
-
-pub fn (self Mat44) * (other Mat44) Mat44 {
-    return self.mult(other)
 }
 
 pub fn (self Mat44) mult(other Mat44) Mat44 {

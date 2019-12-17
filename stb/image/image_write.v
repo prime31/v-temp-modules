@@ -10,6 +10,27 @@ fn C.stbi_write_hdr(filename byteptr, w int, h int, comp int, data voidptr) int
 fn C.stbi_write_jpg(filename byteptr, x int, y int, comp int, data voidptr, quality int) int
 
 
+pub fn write_png(filename string, width int, height int, channels int, data voidptr) int {
+	return C.stbi_write_png(filename.str, width, height, channels, data, width * 4)
+}
+
+pub fn write_bmp(filename string, width int, height int, channels int, data voidptr) int {
+	return C.stbi_write_bmp(filename.str, width, height, channels, data)
+}
+
+pub fn write_tga(filename string, width int, height int, channels int, data voidptr) int {
+	return C.stbi_write_tga(filename.str, width, height, channels, data)
+}
+
+pub fn write_hdr(filename string, width int, height int, channels int, data voidptr) int {
+	return C.stbi_write_hdr(filename.str, width, height, channels, data)
+}
+
+pub fn write_jpg(filename string, width int, height int, channels int, data voidptr, quality int) int {
+	return C.stbi_write_jpg(filename.str, width, height, channels, data, quality)
+}
+
+
 pub fn (img Image) save_as_png(filename string) int {
 	return C.stbi_write_png(filename.str, img.width, img.height, img.channels, img.data, img.width * 4)
 }

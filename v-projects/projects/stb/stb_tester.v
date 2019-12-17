@@ -1,6 +1,5 @@
 import os
 import prime31.stb.image
-import prime31.stb.truetype
 
 fn main() {
 	println('hi')

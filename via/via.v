@@ -8,7 +8,7 @@ struct Via {
 	window &Window
 }
 
-pub fn create_via(config ViaConfig) &Via {
+pub fn create(config ViaConfig) &Via {
 	via := &Via {
 		audio: create_audio(config)
 		filesystem: create_filesystem(config)
@@ -20,6 +20,12 @@ pub fn create_via(config ViaConfig) &Via {
 	return via
 }
 
-pub (v &Via) free() {
+pub fn (v &Via) free() {
+	v.audio.free()
+	v.filesystem.free()
+	v.graphics.free()
+	v.timer.free()
+	v.window.free()
+
 	free(v)
 }

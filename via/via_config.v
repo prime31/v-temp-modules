@@ -1,10 +1,10 @@
 module via
 
-struct ViaConfig {
-	identity string 						// save directory name
+pub struct ViaConfig {
+	identity string							// save directory name
 	append_identity bool = false 			// search files in src dir before save dir
 
-	window_title string = "V is for Via"
+	window_title string = 'V is for Via'
 	window_width int = 1024
 	window_height int = 768
 	window_x int

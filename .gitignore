@@ -30,3 +30,6 @@ fmod/studio/*gen.v
 fmod/fmodstudioapi20006linux
 fmod/core/c
 fmod/studio/c
+v-projects/projects/stb/*.png
+v-projects/projects/stb/*.jpg
+v-projects/projects/stb/stb_tester

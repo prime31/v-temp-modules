@@ -28,6 +28,8 @@ fn (a Vec4) - (b Vec4) Vec4 {
 	}
 }
 
+pub fn (a Vec4) eq(b Vec4) bool { return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w }
+
 pub fn (self Vec4) xyz() Vec3 { return Vec3 {self.x, self.y, self.z} }
 
 pub fn (self Vec4) scale(s f32) Vec4 { return Vec4 {self.x * s, self.y * s, self.z * s, self.w * s} }

@@ -25,6 +25,8 @@ fn (a Vec3) - (b Vec3) Vec3 {
 	}
 }
 
+pub fn (a Vec3) eq(b Vec3) bool { return a.x == b.x && a.y == b.y && a.z == b.z }
+
 pub fn vec3_up() Vec3 { return Vec3{0, 1, 0}}
 
 pub fn (self Vec3) scale(s f32) Vec3 { return Vec3 {self.x * s, self.y * s, self.z * s} }

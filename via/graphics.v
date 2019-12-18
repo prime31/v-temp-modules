@@ -1,11 +1,13 @@
 module via
 
 struct Graphics {
-	tmp int
+	filesystem &FileSystem
 }
 
-fn create_graphics(config ViaConfig) &Graphics {
-	return &Graphics{}
+fn create_graphics(config ViaConfig, filesystem &FileSystem) &Graphics {
+	return &Graphics{
+		filesystem: filesystem
+	}
 }
 
 fn (g &Graphics) free() {

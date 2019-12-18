@@ -1,6 +1,7 @@
 module via
 
 struct Via {
+pub:
 	audio &Audio
 	filesystem &FileSystem
 	graphics &Graphics
@@ -9,10 +10,11 @@ struct Via {
 }
 
 pub fn create(config ViaConfig) &Via {
+	filesystem := create_filesystem(config)
 	via := &Via {
 		audio: create_audio(config)
-		filesystem: create_filesystem(config)
-		graphics: create_graphics(config)
+		filesystem: filesystem
+		graphics: create_graphics(config, filesystem)
 		timer: create_timer(config)
 		window: create_window(config)
 	}

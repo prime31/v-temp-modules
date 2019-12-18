@@ -13,11 +13,11 @@ import filepath
 
 
 pub enum Channels {
-	default int 	= 0
-	grey int       	= 1,
-	grey_alpha int 	= 2,
-	rgb int        	= 3,
-	rgb_alpha int  	= 4
+	default int
+	grey int
+	grey_alpha int
+	rgb int
+	rgb_alpha int
 }
 
 pub struct Image {

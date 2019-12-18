@@ -97,7 +97,13 @@ pub fn asin(x f32) f32 { return C.asinf(x) }
 pub fn floor(x f32) f32 { return C.floorf(x) }
 
 [inline]
+pub fn ifloor(x f32) int { return int(C.floorf(x)) }
+
+[inline]
 pub fn ceil(x f32) f32 { return C.ceilf(x) }
+
+[inline]
+pub fn iceil(x f32) int { return int(C.ceilf(x)) }
 
 [inline]
 pub fn round(x f32) f32 { return C.roundf(x) }

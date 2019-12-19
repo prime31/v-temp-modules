@@ -10,7 +10,7 @@ fn main() {
 }
 
 fn load_high_level_from_memory() {
-	data := read_bytes('assets/beach.png') or { panic('file not loaded') }
+	data := os.read_bytes('assets/beach.png') or { panic('file not loaded') }
 	img := image.load_from_memory(data.data, data.len)
 	img.save_as_png('hl_mem_beach.png')
 	img.free()
@@ -33,7 +33,7 @@ fn load_image() {
 	h := 0
 	channels := 0
 	flag := 0
-	
+
 	data := C.stbi_load('assets/beach.png', &w, &h, &channels, flag)
 	if isnil(data) {
 		println('stbi image failed to load')
@@ -53,24 +53,8 @@ fn load_image_from_mem() {
 	h := 0
 	channels := 0
 	flag := 0
-	file_data := read_bytes('assets/beach.png') or { panic('file not loaded') }
+	file_data := os.read_bytes('assets/beach.png') or { panic('file not loaded') }
 
 	C.stbi_info_from_memory(file_data.data, file_data.len, &w, &h, &channels)
 	println('loaded image info. w=$w, h=$h, channels=$channels')
-}
-
-// tmp until PR that fixes os.read_bytes is in
-pub fn read_bytes(path string) ?[]byte {
-	mut fp := C.fopen(path.str, 'rb')
-	if isnil(fp) {
-		return error('failed to open file "$path"')
-	}
-	C.fseek(fp, 0, C.SEEK_END)
-	fsize := C.ftell(fp)
-	C.rewind(fp)
-
-	mut res	 := [`0`].repeat(fsize)
-	nreadbytes := C.fread(res.data, fsize, 1, fp)
-	C.fclose(fp)
-	return res[0..nreadbytes * fsize]
 }

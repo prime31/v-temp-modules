@@ -8,7 +8,7 @@ namespace Generator
 		static string[] MethodsWithManualCImpl = new string[] { };
 		static string[] MethodsWithManualVImpl = new string[] { "glGetProgramInfoLog", "glGetShaderInfoLog",
 		"glGetShaderiv", "glGetProgramiv", "glGetActiveUniform", "glGetActiveAttrib", "glBufferData", "glGetString",
-		"glGetStringi", "glGenBuffers", "glGenVertexArrays" };
+		"glGetStringi", "glGenBuffers", "glGenVertexArrays", "glGenTextures" };
 
 		public static bool HasManualCImplementation(string name) => MethodsWithManualCImpl.Contains(name);
 
@@ -152,6 +152,18 @@ namespace Generator
 				writer.WriteLine("\tvao := u32(0)");
 				writer.WriteLine("\tC.glGenVertexArrays(1, &vao)");
 				writer.WriteLine("\treturn vao");
+				writer.WriteLine("}");
+			}
+			else if (namem == "glGenTextures")
+			{
+				writer.WriteLine("pub fn gen_textures(n int, textures []u32) {");
+				writer.WriteLine("\tC.glGenTextures(n, textures.data)");
+				writer.WriteLine("}");
+				writer.WriteLine();
+				writer.WriteLine("pub fn gen_texture() u32 {");
+				writer.WriteLine("\tex := u32(0)");
+				writer.WriteLine("\tC.glGenTextures(1, &tex)");
+				writer.WriteLine("\treturn tex");
 				writer.WriteLine("}");
 			}
 			else

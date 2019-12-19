@@ -7,13 +7,16 @@ import os
 
 struct AppState {
 mut:
-	program u32
-	vert_pos_loc int
+	program1 u32
+	program2 u32
+
 	vao u32
 	vbo u32
 	ibo u32
 	tex u32
 	tex2 u32
+
+	tri_mesh Mesh
 }
 
 const (
@@ -44,7 +47,33 @@ const (
 	void main()
 	{
 		// FragColor = texture(texture1, TexCoord);
-		FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.2);
+		FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.2) * vec4(ourColor, 1);
+	}'
+
+	vert_shader_via = '#version 330 core
+	layout (location = 0) in vec2 VertPosition;
+	layout (location = 1) in vec2 VertTexCoord;
+	layout (location = 2) in vec4 VertColor;
+
+	out vec2 VaryingTexCoord;
+	out vec4 VaryingColor;
+
+	void main()
+	{
+		VaryingTexCoord = VertTexCoord;
+		VaryingColor = VertColor;
+		gl_Position = vec4(VertPosition, 1.0, 1.0);
+	}'
+
+	frag_shader_via = '#version 330 core
+	out vec4 FragColor;
+
+	in vec2 VaryingTexCoord;
+	in vec4 VaryingColor;
+
+	void main()
+	{
+		FragColor = VaryingColor;
 	}'
 )
 
@@ -70,9 +99,12 @@ fn main() {
 
 	gl3w.initialize()
 
-	state.create_shader()
+	state.program1 = create_shader(vert_shader, frag_shader)
 	state.create_buffers()
 	state.load_texture()
+
+	state.program2 = create_shader(vert_shader_via, frag_shader_via)
+	state.tri_mesh = create_tri_buffers()
 
 	mut alive := true
 	for alive {
@@ -90,6 +122,7 @@ fn main() {
 		C.glClearColor(0.1, 0.0, 0.2, 1.0)
 		C.glClear(C.GL_COLOR_BUFFER_BIT | C.GL_DEPTH_BUFFER_BIT | C.GL_STENCIL_BUFFER_BIT)
 		state.draw_quad()
+		state.draw_tri()
 		C.SDL_GL_SwapWindow(window)
 	}
 
@@ -98,10 +131,10 @@ fn main() {
     C.SDL_Quit()
 }
 
-fn (state mut AppState) create_shader() {
+fn create_shader(vert_src, frag_src string) u32 {
 	// vertex shader
 	vert := gl.create_shader(C.GL_VERTEX_SHADER)
-	vert_src := vert_shader
+	// vert_src := vert_shader
 	C.glShaderSource(vert, 1, &vert_src.str, 0)
 	C.glCompileShader(vert)
 	if gl.get_shader_compile_status(vert) == 0 {
@@ -113,7 +146,7 @@ fn (state mut AppState) create_shader() {
 
 	// fragment shader
 	frag := gl.create_shader(C.GL_FRAGMENT_SHADER)
-	frag_src := frag_shader
+	// frag_src := frag_shader
 	C.glShaderSource(frag, 1, &frag_src.str, 0)
 	C.glCompileShader(frag)
 	if gl.get_shader_compile_status(frag) == 0 {
@@ -143,23 +176,7 @@ fn (state mut AppState) create_shader() {
 	glDeleteShader(vert)
 	glDeleteShader(frag)
 
-	state.program = shader_program
-	state.vert_pos_loc = C.glGetAttribLocation(state.program, 'aPos')
-	if state.vert_pos_loc == -1 {
-		println('aPos is not a valid glsl program variable!')
-		exit(1)
-	}
-
-	name, size, typ := gl.get_active_attrib(state.program, 0)
-	println('att: $name')
-
-	prog_res := gl.get_programiv(state.program, C.GL_LINK_STATUS)
-	println('prog link res=$prog_res')
-
-	println('gl version=${gl.get_string(C.GL_VERSION)}')
-	println('glsl version=${gl.get_string(C.GL_SHADING_LANGUAGE_VERSION)}')
-	println('vendor=${gl.get_string(C.GL_VENDOR)}')
-	println('renderer=${gl.get_string(C.GL_RENDERER)}')
+	return shader_program
 }
 
 fn (state mut AppState) create_buffers() {
@@ -178,7 +195,6 @@ fn (state mut AppState) create_buffers() {
 	C.glBindVertexArray(state.vao)
 
 	state.vbo = gl.gen_buffer()
-	C.glGenBuffers(1, &state.vbo)
 	C.glBindBuffer(C.GL_ARRAY_BUFFER, state.vbo)
 	gl.buffer_data_f32(C.GL_ARRAY_BUFFER, vertex_data, C.GL_STATIC_DRAW)
 
@@ -195,6 +211,41 @@ fn (state mut AppState) create_buffers() {
     // texture coord attribute
     glVertexAttribPointer(2, 2, C.GL_FLOAT, C.GL_FALSE, 8 * sizeof(f32), (6 * sizeof(f32)))
     glEnableVertexAttribArray(2)
+}
+
+fn create_tri_buffers() Mesh {
+	vertex_data := [
+    // positions	// tex coords // colors        
+     -1.0, -1.0,	1.0, 1.0,		1.0, 0.0, 0.0, 1.0,   // top right
+     0.5,  -0.5,	1.0, 0.0,		0.0, 1.0, 0.0, 1.0,   // bottom right
+     0.0,  0.5, 	0.0, 1.0,		1.0, 1.0, 0.0, 1.0    // top left
+	]!
+	index_data := [
+		u16(0), 1, 2
+	]!
+
+	vao := gl.gen_vertex_array()
+	C.glBindVertexArray(vao)
+
+	vbo := gl.gen_buffer()
+	C.glBindBuffer(C.GL_ARRAY_BUFFER, vbo)
+	gl.buffer_data_f32(C.GL_ARRAY_BUFFER, vertex_data, C.GL_STATIC_DRAW)
+
+	ibo := gl.gen_buffer()
+	C.glBindBuffer(C.GL_ELEMENT_ARRAY_BUFFER, ibo)
+	gl.buffer_data_u16(C.GL_ELEMENT_ARRAY_BUFFER, index_data, C.GL_STATIC_DRAW)
+
+	// position attribute
+    glVertexAttribPointer(0, 2, C.GL_FLOAT, C.GL_FALSE, 8 * sizeof(f32), C.NULL)
+    glEnableVertexAttribArray(0)
+    // texture coord attribute
+    glVertexAttribPointer(2, 2, C.GL_FLOAT, C.GL_FALSE, 8 * sizeof(f32), (2 * sizeof(f32)))
+    glEnableVertexAttribArray(2)
+    // color attribute
+    glVertexAttribPointer(2, 4, C.GL_FLOAT, C.GL_FALSE, 8 * sizeof(f32), (4 * sizeof(f32)))
+    glEnableVertexAttribArray(2)
+
+	return Mesh { vao, vbo, ibo }
 }
 
 fn (state mut AppState) load_texture() {
@@ -231,13 +282,14 @@ fn (state mut AppState) load_texture() {
 	glTexImage2D(C.GL_TEXTURE_2D, 0, C.GL_RGBA, img2.width, img2.height, 0, C.GL_RGBA, C.GL_UNSIGNED_BYTE, img2.data)
 	img2.free()
 
-	C.glUseProgram(state.program)
-    glUniform1i(glGetUniformLocation(state.program, "texture1"), 0)
-	glUniform1i(glGetUniformLocation(state.program, "texture2"), 1)
+	C.glUseProgram(state.program1)
+    glUniform1i(glGetUniformLocation(state.program1, "texture1"), 0)
+	glUniform1i(glGetUniformLocation(state.program1, "texture2"), 1)
 }
 
 fn (state AppState) draw_quad() {
-	// bind textures on corresponding texture units
+	C.glUseProgram(state.program1)
+
 	glActiveTexture(C.GL_TEXTURE0)
 	glBindTexture(C.GL_TEXTURE_2D, state.tex)
 	glActiveTexture(C.GL_TEXTURE1)
@@ -247,10 +299,23 @@ fn (state AppState) draw_quad() {
 	C.glDrawElements(C.GL_TRIANGLE_FAN, 6, C.GL_UNSIGNED_SHORT, C.NULL)
 }
 
+fn (state AppState) draw_tri() {
+	C.glUseProgram(state.program2)
+
+	glActiveTexture(C.GL_TEXTURE0)
+	glBindTexture(C.GL_TEXTURE_2D, 0)
+	glActiveTexture(C.GL_TEXTURE1)
+	glBindTexture(C.GL_TEXTURE_2D, 0)
+
+	// glPolygonMode(C.GL_FRONT_AND_BACK, C.GL_LINE) // C.GL_FILL is default
+	
+	glBindVertexArray(state.tri_mesh.vao)
+	glDrawElements(C.GL_TRIANGLE_FAN, 3, C.GL_UNSIGNED_SHORT, C.NULL)
+}
+
 
 struct Mesh {
 pub:
-	program u32
 	vao u32
 	vbo u32
 	ibo u32

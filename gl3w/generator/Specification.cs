@@ -68,6 +68,8 @@ namespace Generator
         public Feature[] Features;
         public Command[] Commands;
 
+        public SortedDictionary<string, List<Enum>> GroupedEnums = new SortedDictionary<string, List<Enum>>();
+
         public Enum GetEnum(string name) => Enums.Where(e => e.Name == name).First();
         public Command GetCommand(string name) => Commands.Where(e => e.Name == name).First();
         public Group GetGroupForEnum(string enu) => Groups.Where(g => g.Names.Contains(enu)).FirstOrDefault();
@@ -83,6 +85,36 @@ namespace Generator
             Enums = ParseEnums(xml);
             Commands = ParseCommands(xml);
             Features = ParseFeatures(xml, api, ver, extensions);
+
+            // add groups for all enums that are missing them
+            foreach (var e in Enums)
+            {
+                // no group. lets see if we can find one
+                if (string.IsNullOrEmpty(e.Group))
+                {
+                    var g = GetGroupForEnum(e.Name);
+                    if (g != null)
+                        e.Group = g.Name;
+                }
+            }
+
+            // create a global list of grouped enums used for writing out actual enums
+            foreach (var e in Enums)
+            {
+                if (!string.IsNullOrEmpty(e.Group))
+                {
+                    var g = GetGroupForEnum(e.Name);
+                    if (g != null)
+                    {
+                        if (!GroupedEnums.TryGetValue(g.Name, out var enumList))
+                        {
+                            enumList = new List<Enum>();
+                            GroupedEnums[g.Name] = enumList;
+                        }
+                        enumList.Add(e);
+                    }
+                }
+            }
         }
 
         Group[] ParseGroups(XElement xml)
@@ -117,6 +149,7 @@ namespace Generator
                     Api = (string)x.Attribute("api"),
                     Group = (string)group
                 });
+
                 allEnums.AddRange(tmpEnums);
             }
 

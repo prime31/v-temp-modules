@@ -154,14 +154,14 @@ namespace Generator
 				writer.WriteLine("\treturn vao");
 				writer.WriteLine("}");
 			}
-			else if (namem == "glGenTextures")
+			else if (name == "glGenTextures")
 			{
 				writer.WriteLine("pub fn gen_textures(n int, textures []u32) {");
 				writer.WriteLine("\tC.glGenTextures(n, textures.data)");
 				writer.WriteLine("}");
 				writer.WriteLine();
 				writer.WriteLine("pub fn gen_texture() u32 {");
-				writer.WriteLine("\tex := u32(0)");
+				writer.WriteLine("\ttex := u32(0)");
 				writer.WriteLine("\tC.glGenTextures(1, &tex)");
 				writer.WriteLine("\treturn tex");
 				writer.WriteLine("}");

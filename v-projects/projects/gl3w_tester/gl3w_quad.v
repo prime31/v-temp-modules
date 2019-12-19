@@ -66,14 +66,16 @@ const (
 	}'
 
 	frag_shader_via = '#version 330 core
-	out vec4 FragColor;
+	layout(location = 0) out vec4 FragColor;
 
 	in vec2 VaryingTexCoord;
 	in vec4 VaryingColor;
 
+	uniform sampler2D MainTex;
+
 	void main()
 	{
-		FragColor = VaryingColor;
+		FragColor = texture(MainTex, VaryingTexCoord) * VaryingColor;
 	}'
 )
 

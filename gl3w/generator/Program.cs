@@ -167,20 +167,21 @@ namespace Generator
 		{
 			var spec = ParseSpec(xmlDir, api, ver, extensions);
 			var docs = new Documentation(Path.Combine(xmlDir, "doc"));
+			var versionString = ver.ToString().Replace(".", "");
 
-			// Select the commands and enums relevant to the specified API version
 			foreach (var feature in spec.Features)
 			{
 				// actually generate the file here
-				GenerateCode(spec, feature, docs, ver, outDir);
+				GenerateCode(spec, feature, docs, versionString, outDir);
 			}
+
+			GenerateEnums(spec, versionString, outDir);
 		}
 
-		static void GenerateCode(Specification spec, Specification.Feature feature, Documentation docs, Version version, string outDir)
+		static void GenerateCode(Specification spec, Specification.Feature feature, Documentation docs, string versionString, string outDir)
 		{
 			// if we want one module per version the module would need the version name
-			var moduleDecl = $"module gl" + version.ToString().Replace(".", "");
-			// var moduleDecl = "module gl3w";
+			var moduleDecl = $"module gl{versionString}";
 
 			var baseName = feature.Version.Major > 0 ? feature.Version.ToString().Replace(".", "") : "ext";
 			var filename = "gl" + baseName + "_c.v";
@@ -210,18 +211,21 @@ namespace Generator
 			if (!(feature is Specification.EXTFeature))
 				writer.WriteLine(")");
 
-			var t = groupedEnums.GroupBy(e => e.Group, e => e, (g, all) => new { Group = g, Enums = all.ToArray() });
-			foreach (var grouping in t)
-			{
-				writer.WriteLine();
-				writer.WriteLine($"// {grouping.Group}");
-				writer.WriteLine("pub const (");
+			// dont think we need consts declared now that we have proper enums
+			// var t = groupedEnums.GroupBy(e => e.Group, e => e, (g, all) => new { Group = g, Enums = all.ToArray() });
+			// foreach (var grouping in t)
+			// {
+			// 	writer.WriteLine();
+			// 	writer.WriteLine($"// {grouping.Group}");
+			// 	writer.WriteLine("pub const (");
 
-				foreach (var e in grouping.Enums)
-					writer.WriteLine($"\t{e.Name} = {e.Value}");
+			// 	foreach (var e in grouping.Enums)
+			// 		writer.WriteLine($"\t{e.Name} = {e.Value}");
 
-				writer.WriteLine(")");
-			}
+			// 	writer.WriteLine(")");
+
+			// 	Console.WriteLine($"Grouped: {grouping.Group}");
+			// }
 
 			writer.WriteLine(); writer.WriteLine();
 
@@ -332,6 +336,35 @@ namespace Generator
 			vWriter.Dispose();
 		}
 
+		static void GenerateEnums(Specification spec, string versionString, string outDir)
+		{
+			var filename = "enums.v";
+			var writer = new StreamWriter(File.Open(Path.Combine(outDir, filename), System.IO.FileMode.Create));
+
+			writer.WriteLine($"module gl{versionString}"); writer.WriteLine();
+
+			foreach (var kvPair in spec.GroupedEnums)
+			{
+				writer.WriteLine($"pub enum {kvPair.Key} {{");
+
+				var hasReservedWord = HasReservedWord(kvPair.Value);
+				foreach (var e in kvPair.Value)
+				{
+					var name = e.Name.Replace("GL_", "").ToLower();
+					if (hasReservedWord)
+						name = "gl_" + name;
+					if (char.IsDigit(name[0]))
+						name = "gl_" + name;
+					writer.WriteLine($"\t{name} = {e.Value}");
+				}
+
+				writer.WriteLine("}");
+				writer.WriteLine();
+			}
+
+			writer.Dispose();
+		}
+
 		static string GlToSnakeCase(string name)
 		{
 			if (name.EndsWith("1D") || name.EndsWith("2D") || name.EndsWith("3D"))
@@ -346,7 +379,15 @@ namespace Generator
 				return "map";
 			if (name == "string")
 				return "str";
+			if (name == "return")
+				return "ret";
 			return name;
+		}
+
+		static bool HasReservedWord(List<Specification.Enum> enums)
+		{
+			var reserved = new [] {"map", "string", "return", "or", "none", "type", "select", "false", "true"};
+			return enums.Where(e => reserved.Contains(e.Name.Replace("GL_", "").ToLower())).Count() > 0;
 		}
 
 		static Specification ParseSpec(string xmlDir, string api, Version ver, string[] extensions)

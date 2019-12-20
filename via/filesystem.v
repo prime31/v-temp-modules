@@ -21,8 +21,10 @@ fn create_filesystem(config ViaConfig) &FileSystem {
 	pref_path_raw := SDL_GetPrefPath(C.NULL, identity.str)
 	pref_path := tos2(pref_path_raw)
 	physfs.set_write_dir(pref_path)
-	physfs.mount(pref_path, '', 1)
-	SDL_free(pref_path)
+
+	append := if config.append_identity { 1 } else { 0 }
+	physfs.mount(pref_path, '', append)
+	SDL_free(pref_path_raw)
 
 	return &FileSystem{}
 }

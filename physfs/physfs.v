@@ -87,13 +87,14 @@ pub fn is_init() int {
 }
 
 [inline]
-pub fn mount(newDir string, mountPoint string, appendToPath int) int {
-	return C.PHYSFS_mount(newDir.str, mountPoint.str, appendToPath)
+pub fn mount(new_dir string, mount_point string, append_to_path bool) bool {
+	append := if append_to_path { 1 } else { 0 }
+	return C.PHYSFS_mount(new_dir.str, mount_point.str, append) == 1
 }
 
 [inline]
-pub fn unmount(oldDir string) int {
-	return C.PHYSFS_unmount(oldDir.str)
+pub fn unmount(old_dir string) bool {
+	return C.PHYSFS_unmount(old_dir.str) == 1
 }
 
 [inline]
@@ -108,8 +109,8 @@ pub fn enumerate(dir string, cb fn(voidptr, byteptr, byteptr) int, d voidptr) in
 }
 
 [inline]
-pub fn exists(fname byteptr) int {
-	return PHYSFS_exists(fname)
+pub fn exists(fname string) bool {
+	return PHYSFS_exists(fname.str) == 1
 }
 
 [inline]
@@ -123,8 +124,8 @@ pub fn file_length(handle &PHYSFS_File) i64 {
 }
 
 [inline]
-pub fn file_close(handle &PHYSFS_File) int {
-	return PHYSFS_close(handle)
+pub fn file_close(handle &PHYSFS_File) bool {
+	return PHYSFS_close(handle) == 1
 }
 
 [inline]

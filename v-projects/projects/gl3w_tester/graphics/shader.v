@@ -48,7 +48,7 @@ fn get_frag_shader_source(src_or_path, version string) string {
 	if src_or_path.len == 0 {
 		frag_sb.writeln(frag_default)
 	} else {
-		// TODO: check for file path validity (no newlines, ends with .frag maybe)
+		// TODO: check for file path validity (no newlines, ends with .frag maybe) and load from file if necessary
 		frag_sb.writeln(src_or_path)
 		if src_or_path.contains('effects(') { panic('custom effects() not yet supported for frag shader') }
 	}
@@ -65,8 +65,9 @@ fn get_vert_shader_source(src_or_path, version string) string {
 	if src_or_path.len == 0 {
 		vert_sb.writeln(vert_default)
 	} else {
-		// TODO: check for file path validity (no newlines, ends with .vert maybe)
+		// TODO: check for file path validity (no newlines, ends with .vert maybe) and load from file if necessary
 		vert_sb.writeln(src_or_path)
+		if !src_or_path.contains('position(') { panic('postion function not found in vert shader') }
 	}
 
 	return vert_sb.str()

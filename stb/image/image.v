@@ -49,7 +49,7 @@ pub fn set_flip_vertically_on_load(val bool) {
 pub fn load(path string) Image { return load_channels(path, .default) }
 
 pub fn load_channels(path string, channels Channels) Image {
-	mut img := Image{}
+	mut img := Image{data: 0}
 
 	img.data = C.stbi_load(path.str, &img.width, &img.height, &img.channels, int(channels))
 	if isnil(img.data) {
@@ -70,7 +70,7 @@ pub fn get_info(filename string) (int, int, int) {
 pub fn load_from_memory(buffer voidptr, len int) Image { return load_channels_from_memory(buffer, len, .default) }
 
 pub fn load_channels_from_memory(buffer voidptr, len int, channels Channels) Image {
-	mut img := Image{}
+	mut img := Image{data: 0}
 
 	img.data = C.stbi_load_from_memory(buffer, len, &img.width, &img.height, &img.channels, int(channels))
 	if isnil(img.data) {

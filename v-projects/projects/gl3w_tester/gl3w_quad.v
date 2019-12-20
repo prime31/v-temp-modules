@@ -2,6 +2,7 @@ import prime31.sdl2
 import prime31.gl3w.gl41 as gl
 import prime31.gl3w
 import prime31.stb.image
+import graphics
 import time
 import os
 
@@ -121,6 +122,7 @@ fn main() {
 
 	gl3w.initialize()
 
+	graphics.create_shader('', '')
 	state.program1 = create_shader(vert_shader, frag_shader)
 	state.create_buffers()
 	state.load_textures()

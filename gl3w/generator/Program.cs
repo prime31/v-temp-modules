@@ -292,7 +292,8 @@ namespace Generator
 						if (!string.IsNullOrEmpty(p.Group) && spec.IsInNonEmptyGroup(p.Group))
 							vType = p.Group;
 
-						if (vType.Contains("[]") && (com.Name.StartsWith("glGet") || MethodsWithRefParam.Contains(com.Name)))
+						if (vType.Contains("[]") && (com.Name.StartsWith("glGet")
+							|| MethodsWithRefParam.Contains(com.Name)) || com.Name.StartsWith("glUniform"))
 							vType = vType.Replace("[]", "&");
 
 						writer.Write($"{p.Name} {type}");

@@ -60,16 +60,14 @@ namespace Generator
 			}
 			else if (name == "glGetProgramiv")
 			{
-				writer.WriteLine("pub fn get_programiv(program u32, pname int) int {");
+				writer.WriteLine("pub fn get_programiv(program u32, pname ProgramPropertyARB) int {");
 				writer.WriteLine("\tsuccess := 0");
 				writer.WriteLine("\tC.glGetProgramiv(program, pname, &success)");
 				writer.WriteLine("\treturn success");
 				writer.WriteLine("}");
 				writer.WriteLine();
 				writer.WriteLine("pub fn get_program_link_status(program u32) int {");
-				writer.WriteLine("success := 0");
-				writer.WriteLine("C.glGetProgramiv(program, C.GL_LINK_STATUS, &success)");
-				writer.WriteLine("return success");
+				writer.WriteLine("\treturn get_programiv(program, .link_status)");
 				writer.WriteLine("}");
 			}
 			else if (name == "glGetActiveUniform")
@@ -120,7 +118,7 @@ namespace Generator
 			}
 			else if (name == "glGetString")
 			{
-				writer.WriteLine("pub fn get_string(name int) string {");
+				writer.WriteLine("pub fn get_string(name StringName) string {");
 				writer.WriteLine("\treturn tos2(glGetString(name))");
 				writer.WriteLine("}");
 			}

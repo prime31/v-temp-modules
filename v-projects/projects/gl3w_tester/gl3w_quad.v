@@ -122,7 +122,9 @@ fn main() {
 
 	gl3w.initialize()
 
-	graphics.create_shader('', '')
+	s := graphics.create_shader('', '')
+	s.free()
+
 	state.program1 = create_shader(vert_shader, frag_shader)
 	state.create_buffers()
 	state.load_textures()

@@ -3,6 +3,14 @@ import strings
 import prime31.math
 import prime31.gl3w.gl41 as gl
 
+// TODO: after setup gl context set these, create 1px white texture. do what OpenGL.cpp in Love does
+enum BuiltinVertexAttribute {
+	position
+	texcoord,
+	vert_color,
+	constant_color
+}
+
 pub struct Shader {
 	program u32
 }
@@ -33,6 +41,8 @@ pub fn create_shader(frag_src, vert_src string) &Shader {
 
 	gl.delete_shader(vert)
 	gl.delete_shader(frag)
+
+	// TODO: query shader for
 
 	return &Shader {
 		program: program
@@ -116,6 +126,15 @@ pub fn (s &Shader) set_vec3(name string, val math.Vec3) {
 
 pub fn (s &Shader) set_vec4(name string, val math.Vec4) {
 	gl.uniform3fv(gl.get_uniform_location(s.program, name), 1, &val.x)
+}
+
+pub fn (s &Shader) set_vertex_attrib4f(name string, x f32, y f32, z f32, w f32) {
+	index := gl.get_attrib_location(s.program, name)
+	if index >= 0 {
+		gl.vertex_attrib4f(u32(index), x, y, z, w)
+	} else {
+		println('could not find vertex attribute $name')
+	}
 }
 
 

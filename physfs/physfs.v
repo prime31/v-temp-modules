@@ -52,6 +52,11 @@ pub fn get_base_dir() string {
 }
 
 [inline]
+pub fn set_write_dir(newDir string) int {
+	return C.PHYSFS_setWriteDir(newDir.str)
+}
+
+[inline]
 pub fn get_write_dir() string {
 	str := C.PHYSFS_getWriteDir()
 	if str == C.NULL {

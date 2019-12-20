@@ -19,7 +19,7 @@ fn C.PHYSFS_permitSymbolicLinks(allow int)
 //char **PHYSFS_getCdRomDirs(void)
 fn C.PHYSFS_getBaseDir() byteptr
 fn C.PHYSFS_getWriteDir() byteptr
-fn C.PHYSFS_setWriteDir(newDir byteptr) int // not in physfs.v
+fn C.PHYSFS_setWriteDir(newDir byteptr) int
 fn C.PHYSFS_getSearchPath() voidptr
 fn C.PHYSFS_setSaneConfig(organization byteptr, appName byteptr, archiveExt byteptr, includeCdRoms int, archivesFirst int) int // not in physfs.v
 fn C.PHYSFS_mkdir(dirName byteptr) int // not in physfs.v

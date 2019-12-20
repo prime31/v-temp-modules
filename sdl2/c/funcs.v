@@ -73,9 +73,12 @@ fn C.SDL_PauseAudio(pause_on int)
 fn C.SDL_JoystickOpen(device_index int) int
 fn C.SDL_JoystickEventState(state int) int
 
+fn C.SDL_GetPrefPath(org byteptr, app byteptr) byteptr
+fn C.SDL_free(obj voidptr)
+
 // SDL_Timer.h
 fn C.SDL_GetTicks() u32
-fn C.SDL_TICKS_PASSED(a,b u32) bool
+fn C.SDL_TICKS_PASSED(a, b u32) bool
 fn C.SDL_GetPerformanceCounter() u64
 fn C.SDL_GetPerformanceFrequency() u64
 fn C.SDL_Delay(ms u32)

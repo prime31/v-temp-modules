@@ -289,6 +289,8 @@ namespace Generator
 						var type = Statics.GetVTypeForCType(p.Type, false);
 						var vType = Statics.GetVTypeForCType(p.Type, false, true);
 						var vName = GlToSnakeCase(p.Name);
+						if (!string.IsNullOrEmpty(p.Group) && spec.IsInNonEmptyGroup(p.Group))
+							vType = p.Group;
 
 						if (vType.Contains("[]") && (com.Name.StartsWith("glGet") || MethodsWithRefParam.Contains(com.Name)))
 							vType = vType.Replace("[]", "&");

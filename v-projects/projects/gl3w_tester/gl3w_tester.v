@@ -68,7 +68,7 @@ fn main() {
 
 fn (state mut AppState) create_shader() {
 	// vertex shader
-	vert := gl.create_shader(C.GL_VERTEX_SHADER)
+	vert := gl.create_shader(.vertex_shader)
 	vert_src := '#version 150\nin vec2 LVertexPos2D;\nuniform vec2 fff = vec2(0); void main() { gl_Position = vec4(LVertexPos2D.x, LVertexPos2D.y, fff.x, 1); }'
 	C.glShaderSource(vert, 1, &vert_src.str, 0)
 	C.glCompileShader(vert)
@@ -80,7 +80,7 @@ fn (state mut AppState) create_shader() {
 	}
 
 	// fragment shader
-	frag := gl.create_shader(C.GL_FRAGMENT_SHADER)
+	frag := gl.create_shader(.fragment_shader)
 	frag_src := '#version 150\nout vec4 LFragment; void main() { LFragment = vec4(0.9, 0.1, 0.1, 1.0); }'
 	C.glShaderSource(frag, 1, &frag_src.str, 0)
 	C.glCompileShader(frag)
@@ -141,16 +141,13 @@ fn (state mut AppState) create_buffers() {
 	state.quad_vao = gl.gen_vertex_array()
 	C.glBindVertexArray(state.quad_vao)
 
-	// state.vbo = gl.gen_buffer()
-	C.glGenBuffers(1, &state.vbo)
-	C.glBindBuffer(C.GL_ARRAY_BUFFER, state.vbo)
-	gl.buffer_data_f32(C.GL_ARRAY_BUFFER, vertex_data, C.GL_STATIC_DRAW)
-	// C.glBufferData(C.GL_ARRAY_BUFFER, vertex_data.len * sizeof(f32), vertex_data.data, C.GL_STATIC_DRAW)
+	state.vbo = gl.gen_buffer()
+	gl.bind_buffer(.array_buffer, state.vbo)
+	gl.buffer_data_f32(.array_buffer, vertex_data, .static_draw)
 
 	state.ibo = gl.gen_buffer()
-	C.glBindBuffer(C.GL_ELEMENT_ARRAY_BUFFER, state.ibo)
-	gl.buffer_data_u32(C.GL_ELEMENT_ARRAY_BUFFER, index_data, C.GL_STATIC_DRAW)
-	// C.glBufferData(C.GL_ELEMENT_ARRAY_BUFFER, index_data.len * sizeof(u32), index_data.data, C.GL_STATIC_DRAW)
+	gl.bind_buffer(.element_array_buffer, state.ibo)
+	gl.buffer_data_u32(.element_array_buffer, index_data, .static_draw)
 }
 
 fn (state AppState) draw_quad() {

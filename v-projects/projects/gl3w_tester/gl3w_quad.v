@@ -19,6 +19,13 @@ mut:
 	tri_mesh Mesh
 }
 
+struct Mesh {
+pub:
+	vao u32
+	vbo u32
+	ibo u32
+}
+
 const (
 	vert_shader = '#version 330 core
 	layout (location = 0) in vec3 aPos;
@@ -48,6 +55,19 @@ const (
 	{
 		// FragColor = texture(texture1, TexCoord);
 		FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.2) * vec4(ourColor, 1);
+	}'
+
+	frag_shader_via_color_only = '#version 330 core
+	layout(location = 0) out vec4 FragColor;
+
+	in vec2 VaryingTexCoord;
+	in vec4 VaryingColor;
+
+	uniform sampler2D MainTex;
+
+	void main()
+	{
+		FragColor = VaryingColor;
 	}'
 
 	vert_shader_via = '#version 330 core
@@ -103,9 +123,9 @@ fn main() {
 
 	state.program1 = create_shader(vert_shader, frag_shader)
 	state.create_buffers()
-	state.load_texture()
+	state.load_textures()
 
-	state.program2 = create_shader(vert_shader_via, frag_shader_via)
+	state.program2 = create_shader(vert_shader_via, frag_shader_via_color_only)
 	state.tri_mesh = create_tri_buffers()
 
 	mut alive := true
@@ -121,8 +141,8 @@ fn main() {
 			}
 		}
 
-		C.glClearColor(0.1, 0.0, 0.2, 1.0)
-		C.glClear(C.GL_COLOR_BUFFER_BIT | C.GL_DEPTH_BUFFER_BIT | C.GL_STENCIL_BUFFER_BIT)
+		gl.clear_color(0.1, 0.0, 0.2, 1.0)
+		gl.clear(.color_buffer_bit)
 		state.draw_quad()
 		state.draw_tri()
 		C.SDL_GL_SwapWindow(window)
@@ -135,10 +155,9 @@ fn main() {
 
 fn create_shader(vert_src, frag_src string) u32 {
 	// vertex shader
-	vert := gl.create_shader(C.GL_VERTEX_SHADER)
-	// vert_src := vert_shader
-	C.glShaderSource(vert, 1, &vert_src.str, 0)
-	C.glCompileShader(vert)
+	vert := gl.create_shader(.vertex_shader)
+	gl.shader_source(vert, vert_src)
+	gl.compile_shader(vert)
 	if gl.get_shader_compile_status(vert) == 0 {
 		log := gl.get_shader_info_log(vert)
 		println('shader $vert compilation failed')
@@ -147,10 +166,9 @@ fn create_shader(vert_src, frag_src string) u32 {
 	}
 
 	// fragment shader
-	frag := gl.create_shader(C.GL_FRAGMENT_SHADER)
-	// frag_src := frag_shader
-	C.glShaderSource(frag, 1, &frag_src.str, 0)
-	C.glCompileShader(frag)
+	frag := gl.create_shader(.fragment_shader)
+	gl.shader_source(frag, frag_src)
+	gl.compile_shader(frag)
 	if gl.get_shader_compile_status(frag) == 0 {
 		log := gl.get_shader_info_log(frag)
 		println('fragment $frag shader compilation failed')
@@ -160,9 +178,9 @@ fn create_shader(vert_src, frag_src string) u32 {
 
 	// link shaders
 	shader_program := gl.create_program()
-	C.glAttachShader(shader_program, vert)
-	C.glAttachShader(shader_program, frag)
-	C.glLinkProgram(shader_program)
+	gl.attach_shader(shader_program, vert)
+	gl.attach_shader(shader_program, frag)
+	gl.link_program(shader_program)
 
 	// check for linking errors
 	success := gl.get_program_link_status(shader_program)
@@ -175,8 +193,8 @@ fn create_shader(vert_src, frag_src string) u32 {
 		exit(1)
 	}
 
-	glDeleteShader(vert)
-	glDeleteShader(frag)
+	gl.delete_shader(vert)
+	gl.delete_shader(frag)
 
 	return shader_program
 }
@@ -194,131 +212,121 @@ fn (state mut AppState) create_buffers() {
 	]!
 
 	state.vao = gl.gen_vertex_array()
-	C.glBindVertexArray(state.vao)
+	gl.bind_vertex_array(state.vao)
 
 	state.vbo = gl.gen_buffer()
-	C.glBindBuffer(C.GL_ARRAY_BUFFER, state.vbo)
-	gl.buffer_data_f32(C.GL_ARRAY_BUFFER, vertex_data, C.GL_STATIC_DRAW)
+	gl.bind_buffer(.array_buffer, state.vbo)
+	gl.buffer_data_f32(.array_buffer, vertex_data, .static_draw)
 
 	state.ibo = gl.gen_buffer()
-	C.glBindBuffer(C.GL_ELEMENT_ARRAY_BUFFER, state.ibo)
-	gl.buffer_data_u16(C.GL_ELEMENT_ARRAY_BUFFER, index_data, C.GL_STATIC_DRAW)
+	gl.bind_buffer(.element_array_buffer, state.ibo)
+	gl.buffer_data_u16(.element_array_buffer, index_data, .static_draw)
 
 	// position attribute
-    glVertexAttribPointer(0, 3, C.GL_FLOAT, C.GL_FALSE, 8 * sizeof(f32), C.NULL)
-    glEnableVertexAttribArray(0)
+    gl.vertex_attrib_pointer(0, 3, .float, .gl_false, 8 * sizeof(f32), C.NULL)
+    gl.enable_vertex_attrib_array(0)
     // color attribute
-    glVertexAttribPointer(1, 3, C.GL_FLOAT, C.GL_FALSE, 8 * sizeof(f32), (3 * sizeof(f32)))
-    glEnableVertexAttribArray(1)
+    gl.vertex_attrib_pointer(1, 3, .float, .gl_false, 8 * sizeof(f32), (3 * sizeof(f32)))
+    gl.enable_vertex_attrib_array(1)
     // texture coord attribute
-    glVertexAttribPointer(2, 2, C.GL_FLOAT, C.GL_FALSE, 8 * sizeof(f32), (6 * sizeof(f32)))
-    glEnableVertexAttribArray(2)
+    gl.vertex_attrib_pointer(2, 2, .float, .gl_false, 8 * sizeof(f32), (6 * sizeof(f32)))
+    gl.enable_vertex_attrib_array(2)
 }
 
 fn create_tri_buffers() Mesh {
 	vertex_data := [
-    // positions	// tex coords // colors        
-     -1.0, -1.0,	1.0, 1.0,		1.0, 0.0, 0.0, 1.0,   // top right
-     0.5,  -0.5,	1.0, 0.0,		0.0, 1.0, 0.0, 1.0,   // bottom right
-     0.0,  0.5, 	0.0, 1.0,		1.0, 1.0, 0.0, 1.0    // top left
+		// positions	// tex coords 	// colors
+		-1.0, -1.0,		1.0, 1.0,		1.0, 0.0, 0.0, 1.0,   // bottom left
+		1.0,  -1.0,		1.0, 0.0,		0.0, 1.0, 0.0, 1.0,   // bottom right
+		0.0,  0.0, 		0.0, 1.0,		1.0, 1.0, 0.0, 1.0    // top
 	]!
 	index_data := [
 		u16(0), 1, 2
 	]!
 
 	vao := gl.gen_vertex_array()
-	C.glBindVertexArray(vao)
+	gl.bind_vertex_array(vao)
 
 	vbo := gl.gen_buffer()
-	C.glBindBuffer(C.GL_ARRAY_BUFFER, vbo)
-	gl.buffer_data_f32(C.GL_ARRAY_BUFFER, vertex_data, C.GL_STATIC_DRAW)
+	gl.bind_buffer(.array_buffer, vbo)
+	gl.buffer_data_f32(.array_buffer, vertex_data, .static_draw)
 
 	ibo := gl.gen_buffer()
-	C.glBindBuffer(C.GL_ELEMENT_ARRAY_BUFFER, ibo)
-	gl.buffer_data_u16(C.GL_ELEMENT_ARRAY_BUFFER, index_data, C.GL_STATIC_DRAW)
+	gl.bind_buffer(.element_array_buffer, ibo)
+	gl.buffer_data_u16(.element_array_buffer, index_data, .static_draw)
 
 	// position attribute
-    glVertexAttribPointer(0, 2, C.GL_FLOAT, C.GL_FALSE, 8 * sizeof(f32), C.NULL)
-    glEnableVertexAttribArray(0)
+	gl.vertex_attrib_pointer(0, 2, .float, .gl_false, 8 * sizeof(f32), C.NULL)
+    gl.enable_vertex_attrib_array(0)
     // texture coord attribute
-    glVertexAttribPointer(2, 2, C.GL_FLOAT, C.GL_FALSE, 8 * sizeof(f32), (2 * sizeof(f32)))
-    glEnableVertexAttribArray(2)
+	gl.vertex_attrib_pointer(2, 2, .float, .gl_false, 8 * sizeof(f32), 2 * sizeof(f32))
+    gl.enable_vertex_attrib_array(2)
     // color attribute
-    glVertexAttribPointer(2, 4, C.GL_FLOAT, C.GL_FALSE, 8 * sizeof(f32), (4 * sizeof(f32)))
-    glEnableVertexAttribArray(2)
+	gl.vertex_attrib_pointer(2, 4, .float, .gl_false, 8 * sizeof(f32), 2 * sizeof(f32))
+    gl.enable_vertex_attrib_array(2)
 
 	return Mesh { vao, vbo, ibo }
 }
 
-fn (state mut AppState) load_texture() {
+fn (state mut AppState) load_textures() {
 	image.set_flip_vertically_on_load(true)
 
- 	glGenTextures(1, &state.tex)
-    glBindTexture(C.GL_TEXTURE_2D, state.tex)
+ 	state.tex = gl.gen_texture()
+    gl.bind_texture(.texture_2d, state.tex)
 
      // set the texture wrapping parameters
-    glTexParameteri(C.GL_TEXTURE_2D, C.GL_TEXTURE_WRAP_S, C.GL_REPEAT)
-    glTexParameteri(C.GL_TEXTURE_2D, C.GL_TEXTURE_WRAP_T, C.GL_REPEAT)
+	gl.tex_parameteri(.texture_2d, .texture_wrap_s, C.GL_REPEAT)
+	gl.tex_parameteri(.texture_2d, .texture_wrap_t, C.GL_REPEAT)
 
     // set texture filtering parameters
-    glTexParameteri(C.GL_TEXTURE_2D, C.GL_TEXTURE_MIN_FILTER, C.GL_LINEAR)
-    glTexParameteri(C.GL_TEXTURE_2D, C.GL_TEXTURE_MAG_FILTER, C.GL_LINEAR)
+	gl.tex_parameteri(.texture_2d, .texture_min_filter, C.GL_LINEAR)
+	gl.tex_parameteri(.texture_2d, .texture_mag_filter, C.GL_LINEAR)
 
 	img := image.load('assets/container.jpg')
-	glTexImage2D(C.GL_TEXTURE_2D, 0, C.GL_RGB, img.width, img.height, 0, C.GL_RGB, C.GL_UNSIGNED_BYTE, img.data)
+	gl.tex_image_2d(.texture_2d, 0, .rgb, img.width, img.height, 0, .rgb, .unsigned_byte, img.data)
 	img.free()
 
 
-	glGenTextures(1, &state.tex2)
-    glBindTexture(C.GL_TEXTURE_2D, state.tex2)
+	state.tex2 = gl.gen_texture()
+    gl.bind_texture(.texture_2d, state.tex2)
 
      // set the texture wrapping parameters
-    glTexParameteri(C.GL_TEXTURE_2D, C.GL_TEXTURE_WRAP_S, C.GL_REPEAT)
-    glTexParameteri(C.GL_TEXTURE_2D, C.GL_TEXTURE_WRAP_T, C.GL_REPEAT)
+	gl.tex_parameteri(.texture_2d, .texture_wrap_s, C.GL_REPEAT)
+	gl.tex_parameteri(.texture_2d, .texture_wrap_t, C.GL_REPEAT)
 
     // set texture filtering parameters
-    glTexParameteri(C.GL_TEXTURE_2D, C.GL_TEXTURE_MIN_FILTER, C.GL_LINEAR)
-    glTexParameteri(C.GL_TEXTURE_2D, C.GL_TEXTURE_MAG_FILTER, C.GL_LINEAR)
+	gl.tex_parameteri(.texture_2d, .texture_min_filter, C.GL_LINEAR)
+	gl.tex_parameteri(.texture_2d, .texture_mag_filter, C.GL_LINEAR)
 
 	img2 := image.load('assets/face.png')
-	glTexImage2D(C.GL_TEXTURE_2D, 0, C.GL_RGBA, img2.width, img2.height, 0, C.GL_RGBA, C.GL_UNSIGNED_BYTE, img2.data)
+	gl.tex_image_2d(.texture_2d, 0, .rgba, img2.width, img2.height, 0, .rgba, .unsigned_byte, img2.data)
 	img2.free()
 
-	C.glUseProgram(state.program1)
-    glUniform1i(glGetUniformLocation(state.program1, "texture1"), 0)
-	glUniform1i(glGetUniformLocation(state.program1, "texture2"), 1)
+	gl.use_program(state.program1)
+    gl.uniform1i(gl.get_uniform_location(state.program1, "texture1"), 0)
+	gl.uniform1i(gl.get_uniform_location(state.program1, "texture2"), 1)
 }
 
 fn (state AppState) draw_quad() {
-	C.glUseProgram(state.program1)
+	gl.use_program(state.program1)
 
-	glActiveTexture(C.GL_TEXTURE0)
-	glBindTexture(C.GL_TEXTURE_2D, state.tex)
-	glActiveTexture(C.GL_TEXTURE1)
-	glBindTexture(C.GL_TEXTURE_2D, state.tex2)
+	gl.active_texture(.texture0)
+	gl.bind_texture(.texture_2d, state.tex)
+	gl.active_texture(.texture1)
+	gl.bind_texture(.texture_2d, state.tex2)
 
-	C.glBindVertexArray(state.vao)
-	C.glDrawElements(C.GL_TRIANGLE_FAN, 6, C.GL_UNSIGNED_SHORT, C.NULL)
+	gl.bind_vertex_array(state.vao)
+	gl.draw_elements(.triangle_fan, 6, .unsigned_short, C.NULL)
 }
 
 fn (state AppState) draw_tri() {
-	C.glUseProgram(state.program2)
+	gl.use_program(state.program2)
 
-	glActiveTexture(C.GL_TEXTURE0)
-	glBindTexture(C.GL_TEXTURE_2D, 0)
-	glActiveTexture(C.GL_TEXTURE1)
-	glBindTexture(C.GL_TEXTURE_2D, 0)
+	gl.active_texture(.texture0)
+	gl.bind_texture(.texture_2d, 0)
+	gl.active_texture(.texture1)
+	gl.bind_texture(.texture_2d, 0)
 
-	// glPolygonMode(C.GL_FRONT_AND_BACK, C.GL_LINE) // C.GL_FILL is default
-	
-	glBindVertexArray(state.tri_mesh.vao)
-	glDrawElements(C.GL_TRIANGLE_FAN, 3, C.GL_UNSIGNED_SHORT, C.NULL)
-}
-
-
-struct Mesh {
-pub:
-	vao u32
-	vbo u32
-	ibo u32
+	gl.bind_vertex_array(state.tri_mesh.vao)
+	gl.draw_elements(.triangle_fan, 3, .unsigned_short, C.NULL)
 }

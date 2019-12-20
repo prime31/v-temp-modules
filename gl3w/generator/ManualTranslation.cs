@@ -8,7 +8,7 @@ namespace Generator
 		static string[] MethodsWithManualCImpl = new string[] { };
 		static string[] MethodsWithManualVImpl = new string[] { "glGetProgramInfoLog", "glGetShaderInfoLog",
 		"glGetShaderiv", "glGetProgramiv", "glGetActiveUniform", "glGetActiveAttrib", "glBufferData", "glGetString",
-		"glGetStringi", "glGenBuffers", "glGenVertexArrays", "glGenTextures" };
+		"glGetStringi", "glGenBuffers", "glGenVertexArrays", "glGenTextures", "glShaderSource" };
 
 		public static bool HasManualCImplementation(string name) => MethodsWithManualCImpl.Contains(name);
 
@@ -98,23 +98,23 @@ namespace Generator
 			}
 			else if (name == "glBufferData")
 			{
-				writer.WriteLine("pub fn buffer_data(target int, size int, data voidptr, usage int) {");
+				writer.WriteLine("pub fn buffer_data(target BufferTargetARB, size int, data voidptr, usage BufferUsageARB) {");
 				writer.WriteLine("\tC.glBufferData(target, size, data, usage)");
 				writer.WriteLine("}");
 				writer.WriteLine();
-				writer.WriteLine("pub fn buffer_data_int(target int, data []int, usage int) {");
+				writer.WriteLine("pub fn buffer_data_int(target BufferTargetARB, data []int, usage BufferUsageARB) {");
 				writer.WriteLine("\tC.glBufferData(target, data.len * sizeof(int), data.data, usage)");
 				writer.WriteLine("}");
 				writer.WriteLine();
-				writer.WriteLine("pub fn buffer_data_u16(target int, data []u16, usage int) {");
+				writer.WriteLine("pub fn buffer_data_u16(target BufferTargetARB, data []u16, usage BufferUsageARB) {");
 				writer.WriteLine("\tC.glBufferData(target, data.len * sizeof(u16), data.data, usage)");
 				writer.WriteLine("}");
 				writer.WriteLine();
-				writer.WriteLine("pub fn buffer_data_u32(target int, data []u32, usage int) {");
+				writer.WriteLine("pub fn buffer_data_u32(target BufferTargetARB, data []u32, usage BufferUsageARB) {");
 				writer.WriteLine("\tC.glBufferData(target, data.len * sizeof(u32), data.data, usage)");
 				writer.WriteLine("}");
 				writer.WriteLine();
-				writer.WriteLine("pub fn buffer_data_f32(target int, data []f32, usage int) {");
+				writer.WriteLine("pub fn buffer_data_f32(target BufferTargetARB, data []f32, usage BufferUsageARB) {");
 				writer.WriteLine("\tC.glBufferData(target, data.len * sizeof(f32), data.data, usage)");
 				writer.WriteLine("}");
 			}
@@ -127,7 +127,7 @@ namespace Generator
 			else if (name == "glGetStringi")
 			{
 				writer.WriteLine("pub fn get_stringi(index u32) string {");
-				writer.WriteLine("\treturn tos2(glGetStringi(GL_EXTENSIONS, index))");
+				writer.WriteLine("\treturn tos2(glGetStringi(C.GL_EXTENSIONS, index))");
 				writer.WriteLine("}");
 			}
 			else if (name == "glGenBuffers")
@@ -144,8 +144,8 @@ namespace Generator
 			}
 			else if (name == "glGenVertexArrays")
 			{
-				writer.WriteLine("pub fn gen_vertex_arrays(n int, arrays []u32) {");
-				writer.WriteLine("\tC.glGenVertexArrays(n, arrays.data)");
+				writer.WriteLine("pub fn gen_vertex_arrays(arrays []u32) {");
+				writer.WriteLine("\tC.glGenVertexArrays(arrays.len, arrays.data)");
 				writer.WriteLine("}");
                 writer.WriteLine();
 				writer.WriteLine("pub fn gen_vertex_array() u32 {");
@@ -156,14 +156,20 @@ namespace Generator
 			}
 			else if (name == "glGenTextures")
 			{
-				writer.WriteLine("pub fn gen_textures(n int, textures []u32) {");
-				writer.WriteLine("\tC.glGenTextures(n, textures.data)");
+				writer.WriteLine("pub fn gen_textures(textures []u32) {");
+				writer.WriteLine("\tC.glGenTextures(textures.len, textures.data)");
 				writer.WriteLine("}");
 				writer.WriteLine();
 				writer.WriteLine("pub fn gen_texture() u32 {");
 				writer.WriteLine("\ttex := u32(0)");
 				writer.WriteLine("\tC.glGenTextures(1, &tex)");
 				writer.WriteLine("\treturn tex");
+				writer.WriteLine("}");
+			}
+			else if (name == "glShaderSource")
+			{
+				writer.WriteLine("pub fn shader_source(shader u32, src string) {");
+				writer.WriteLine("\tC.glShaderSource(shader, 1, &src.str, 0)");
 				writer.WriteLine("}");
 			}
 			else

@@ -72,7 +72,8 @@ namespace Generator
 
         public Enum GetEnum(string name) => Enums.Where(e => e.Name == name).First();
         public Command GetCommand(string name) => Commands.Where(e => e.Name == name).First();
-        public Group GetGroupForEnum(string enu) => Groups.Where(g => g.Names.Contains(enu)).FirstOrDefault();
+        public Group[] GetGroupsForEnum(string enu) => Groups.Where(g => g.Names.Contains(enu)).ToArray();
+        public bool IsInNonEmptyGroup(string enu) => Groups.Where(g => g.Name == enu && g.Names.Length > 0).Count() > 0;
 
         bool HasEnum(string name) => Enums.Where(e => e.Name == name).FirstOrDefault() != null;
         bool HasCommand(string name) => Commands.Where(e => e.Name == name).FirstOrDefault() != null;
@@ -92,8 +93,7 @@ namespace Generator
                 // no group. lets see if we can find one
                 if (string.IsNullOrEmpty(e.Group))
                 {
-                    var g = GetGroupForEnum(e.Name);
-                    if (g != null)
+                    foreach (var g in GetGroupsForEnum(e.Name))
                         e.Group = g.Name;
                 }
             }
@@ -103,8 +103,7 @@ namespace Generator
             {
                 if (!string.IsNullOrEmpty(e.Group))
                 {
-                    var g = GetGroupForEnum(e.Name);
-                    if (g != null)
+                    foreach (var g in GetGroupsForEnum(e.Name))
                     {
                         if (!GroupedEnums.TryGetValue(g.Name, out var enumList))
                         {

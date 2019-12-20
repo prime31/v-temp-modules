@@ -69,7 +69,7 @@ fn main() {
 
 fn (state mut AppState) create_shader() {
 	// vertex shader
-	vert := gl.create_shader(C.GL_VERTEX_SHADER)
+	vert := gl.create_shader(.vertex_shader)
 	vert_src := '#version 150\nin vec3 LVertexPos3D;\nin vec3 VertexColor;\nout vec3 FragmentColor;\nuniform mat4 MVP;\nvoid main() { FragmentColor = VertexColor; gl_Position = MVP * vec4(LVertexPos3D.xyz, 1.0); }'
 	C.glShaderSource(vert, 1, &vert_src.str, 0)
 	C.glCompileShader(vert)
@@ -81,7 +81,7 @@ fn (state mut AppState) create_shader() {
 	}
 
 	// fragment shader
-	frag := gl.create_shader(C.GL_FRAGMENT_SHADER)
+	frag := gl.create_shader(.fragment_shader)
 	frag_src := '#version 150\nin vec3 FragmentColor;\nout vec3 LFragment; void main() { LFragment = FragmentColor; }'
 	C.glShaderSource(frag, 1, &frag_src.str, 0)
 	C.glCompileShader(frag)

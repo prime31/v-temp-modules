@@ -1,6 +1,7 @@
 module via
 
 pub struct ViaConfig {
+pub mut:
 	identity string							// save directory name
 	append_identity bool = false 			// search files in src dir before save dir
 

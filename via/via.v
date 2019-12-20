@@ -9,8 +9,9 @@ pub:
 	window &Window
 }
 
-pub fn create(config ViaConfig) &Via {
+pub fn create(config &ViaConfig) &Via {
 	filesystem := create_filesystem(config)
+
 	via := &Via {
 		audio: create_audio(config)
 		filesystem: filesystem

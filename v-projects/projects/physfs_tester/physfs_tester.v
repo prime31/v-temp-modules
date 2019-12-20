@@ -21,6 +21,7 @@ fn main() {
 	println('dir seperator: ${physfs.get_dir_separator()}')
 
 	physfs.permit_symbolic_links(1)
+	physfs.set_write_dir(tos2(SDL_GetPrefPath(C.NULL, 'game_name')))
 
 	println('base dir: ${physfs.get_base_dir()}')
 	println('write dir: ${physfs.get_write_dir()}')

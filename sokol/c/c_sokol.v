@@ -21,3 +21,11 @@ module c
 
 #define SOKOL_NO_DEPRECATED
 #include "sokol_gfx.h"
+
+#define SOKOL_GL_IMPL
+#include "util/sokol_gl.h"
+
+#define SOKOL_IMGUI_IMPL
+// don't depend on sokol_app.h
+// #define SOKOL_IMGUI_NO_SOKOL_APP
+// #include "util/sokol_imgui.h"

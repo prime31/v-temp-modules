@@ -1,8 +1,6 @@
 import prime31.sokol
 import os
 
-#define SOKOL_GL_IMPL
-#include "util/sokol_gl.h"
 #define FONTSTASH_IMPLEMENTATION
 #include "fontstash/fontstash.h"
 #define SOKOL_FONTSTASH_IMPL
@@ -187,32 +185,3 @@ fn line(sx f32, sy f32, ex f32, ey f32) {
     C.sgl_v2f(ex, ey)
     C.sgl_end()
 }
-
-fn C.sfons_create() &C.FONScontext
-fn C.fonsAddFontMem() int
-fn C.fonsDrawDebug()
-fn C.fonsClearState()
-fn C.fonsSetSpacing()
-fn C.fonsSetFont()
-fn C.fonsSetSize()
-fn C.fonsSetBlur()
-fn C.fonsSetAlign()
-fn C.fonsVertMetrics()
-fn C.fonsSetColor()
-fn C.fonsDrawText() f32
-
-fn C.sfons_rgba() u32
-fn C.sfons_flush()
-
-
-struct C.sgl_desc_t{}
-
-fn C.sgl_setup(&C.sgl_desc_t)
-fn C.sgl_defaults()
-fn C.sgl_matrix_mode_projection()
-fn C.sgl_ortho()
-fn C.sgl_draw()
-fn C.sgl_begin_lines()
-fn C.sgl_c4b()
-fn C.sgl_v2f()
-fn C.sgl_end()

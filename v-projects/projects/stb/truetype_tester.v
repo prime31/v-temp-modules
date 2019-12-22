@@ -54,13 +54,13 @@ fn load_font() {
 	ypos := 0.0
 	quad := stbtt_aligned_quad{}
 	// stbtt_GetPackedQuad(char_info.data, w, h, c - first_char, &xpos, &ypos, &quad, 1)
-	q := get_packed_quad(char_info, w, h, int(c - first_char), true)
+	q := tt.get_packed_quad(char_info, w, h, int(c - first_char), true)
 	println('$xpos, $ypos')
 	println('$q')
 
 	c = `z`
 	// stbtt_GetPackedQuad(char_info.data, w, h, c - first_char, &xpos, &ypos, &quad, 1)
-	q2 := get_packed_quad(char_info, w, h, int(c - first_char), true)
+	q2 := tt.get_packed_quad(char_info, w, h, int(c - first_char), true)
 	println('$xpos, $ypos')
 	println('$q2')
 
@@ -68,36 +68,4 @@ fn load_font() {
 
 	char_info.free()
 	free(bitmap)
-}
-
-fn get_packed_quad(chardata []stbtt_packedchar, pw int, ph int, char_index int, align_to_int bool) stbtt_aligned_quad {
-	ipw := 1.0 / pw
-	iph := 1.0 / ph
-	b := chardata[char_index]
-	mut q := stbtt_aligned_quad{}
-
-	if align_to_int {
-		x := f32(math.ifloor((b.xoff) + 0.5))
-		y := f32(math.ifloor((b.yoff) + 0.5))
-		q.x0 = x
-		q.y0 = y
-		q.x1 = x + b.xoff2 - b.xoff
-		q.y1 = y + b.yoff2 - b.yoff
-	} else {
-		q.x0 = b.xoff
-		q.y0 = b.yoff
-		q.x1 = b.xoff2
-		q.y1 = b.yoff2
-	}
-
-	q.s0 = f32(b.x0) * ipw
-	q.t0 = f32(b.y0) * iph
-	q.s1 = f32(b.x1) * ipw
-	q.t1 = f32(b.y1) * iph
-
-	return q
-}
-
-fn mut_int(x mut &int) {
-	*x = 5
 }

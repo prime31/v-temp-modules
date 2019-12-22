@@ -1,4 +1,5 @@
 module truetype
+import prime31.math
 
 #flag -I @VMOD/prime31/stb/truetype/thirdparty
 
@@ -69,6 +70,30 @@ fn C.stbtt_GetScaledFontVMetrics(fontdata charptr, index int, size f32, ascent &
 fn C.stbtt_GetNumberOfFonts(fontdata charptr) int
 
 
-pub fn test() {
-   quad := stbtt_aligned_quad{}
+pub fn get_packed_quad(chardata []stbtt_packedchar, pw int, ph int, char_index int, align_to_int bool) stbtt_aligned_quad {
+	ipw := 1.0 / pw
+	iph := 1.0 / ph
+	b := chardata[char_index]
+	mut q := stbtt_aligned_quad{}
+
+	if align_to_int {
+		x := f32(math.ifloor((b.xoff) + 0.5))
+		y := f32(math.ifloor((b.yoff) + 0.5))
+		q.x0 = x
+		q.y0 = y
+		q.x1 = x + b.xoff2 - b.xoff
+		q.y1 = y + b.yoff2 - b.yoff
+	} else {
+		q.x0 = b.xoff
+		q.y0 = b.yoff
+		q.x1 = b.xoff2
+		q.y1 = b.yoff2
+	}
+
+	q.s0 = f32(b.x0) * ipw
+	q.t0 = f32(b.y0) * iph
+	q.s1 = f32(b.x1) * ipw
+	q.t1 = f32(b.y1) * iph
+
+	return q
 }

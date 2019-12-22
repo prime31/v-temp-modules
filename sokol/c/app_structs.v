@@ -11,7 +11,7 @@ pub struct C.sapp_desc {
 	init_userdata_cb fn(voidptr)
 	frame_userdata_cb fn(voidptr)
 	cleanup_userdata_cb fn(voidptr)
-	event_userdata_cb fn(&sapp_event, voidptr)
+	event_userdata_cb fn(&C.sapp_event, voidptr)
 	fail_userdata_cb fn(voidptr)
 
     width int                          /* the preferred width of the window / canvas */
@@ -53,6 +53,9 @@ pub struct C.sapp_event {
     window_height int
     framebuffer_width int
     framebuffer_height int
+}
+pub fn (e &C.sapp_event) str() string {
+    return 'evt: frame_count=$e.frame_count, type=${e.@type}'
 }
 
 pub struct C.sapp_touchpoint {

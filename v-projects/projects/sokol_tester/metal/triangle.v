@@ -56,7 +56,7 @@ fn main() {
 
 fn init(user_data voidptr) {
 	mut state := &AppState(user_data)
-	
+
 	sg_setup(&sg_desc {
 		mtl_device: C.sapp_metal_get_device()
 		mtl_renderpass_descriptor_cb: sapp_metal_get_renderpass_descriptor
@@ -77,17 +77,13 @@ fn init(user_data voidptr) {
 		content: verts.data
 	})
 
-	vs_desc := sg_shader_stage_desc{
-		source: vert.str
-	}
-
-	fs_desc := sg_shader_stage_desc{
-		source: frag.str
-	}
-
 	shd := sg_make_shader(&sg_shader_desc{
-		vs: vs_desc
-		fs: fs_desc
+		vs: sg_shader_stage_desc{
+			source: vert.str
+		}
+		fs: sg_shader_stage_desc{
+			source: frag.str
+		}
 	})
 
 	mut layout := sg_layout_desc{}

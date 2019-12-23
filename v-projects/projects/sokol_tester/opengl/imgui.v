@@ -69,7 +69,6 @@ fn on_event(evt &C.sapp_event, user_data voidptr) {
 }
 
 fn cleanup() {
-	println('hi cleanup')
 	simgui.shutdown()
 }
 

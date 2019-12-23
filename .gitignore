@@ -48,3 +48,4 @@ a.out
 sokol/generator/obj
 sokol/generator/bin
 sokol/cimgui_git
+sokol/thirdparty/cimgui

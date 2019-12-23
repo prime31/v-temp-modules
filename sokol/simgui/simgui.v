@@ -5,13 +5,13 @@ module simgui
 #flag -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS=1
 #flag -DIMGUI_IMPL_API=
 
-#flag -I @VMOD/prime31/imgui
-#flag linux @VMOD/prime31/imgui/thirdparty/cimgui.a
-#flag linux -lGL -lstdc++
-#flag darwin @VMOD/prime31/imgui/thirdparty/cimgui.a
-#flag darwin -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
-#flag darwin -lm -lc++
-#include "thirdparty/cimgui.h"
+#flag -I @VMOD/prime31/sokol
+#flag linux @VMOD/prime31/sokol/thirdparty/cimgui/cimgui.a
+#flag linux -lstdc++
+#flag darwin @VMOD/prime31/sokol/thirdparty/cimgui/cimgui.a
+// #flag darwin -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
+#flag darwin -lc++
+#include "thirdparty/cimgui/cimgui.h"
 
 // optionally don't depend on sokol_app.h
 // #define SOKOL_IMGUI_NO_SOKOL_APP

@@ -1,5 +1,7 @@
 module fontstash
 
+// not sure why this include needs to be here. sgl should be included before this in the main file...
+#include "util/sokol_gl.h"
 #define FONTSTASH_IMPLEMENTATION
 #include "fontstash/fontstash.h"
 #define SOKOL_FONTSTASH_IMPL

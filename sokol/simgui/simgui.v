@@ -1,5 +1,10 @@
 module imgui
 
+#define SOKOL_IMGUI_IMPL
+// don't depend on sokol_app.h
+// #define SOKOL_IMGUI_NO_SOKOL_APP
+// #include "util/sokol_imgui.h"
+
 [inline]
 pub fn setup(desc &C.simgui_desc_t) {
 	C.simgui_setup(desc)

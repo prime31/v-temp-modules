@@ -1,5 +1,8 @@
 module sgl
 
+#define SOKOL_GL_IMPL
+#include "util/sokol_gl.h"
+
 /* setup/shutdown/misc */
 [inline]
 pub fn sgl_setup(desc &C.sgl_desc_t) {

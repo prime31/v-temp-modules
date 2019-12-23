@@ -1,5 +1,8 @@
 module time
 
+#define SOKOL_IMPL
+#include "sokol_time.h"
+
 [inline]
 pub fn setup() {
 	C.stm_setup()

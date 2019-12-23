@@ -43,7 +43,7 @@ fn C.sg_query_pass_info(pass C.sg_pass) C.sg_pass_info
 
 // getting information
 fn C.sg_query_desc() C.sg_desc
-fn C.sg_query_backend() C.sg_backend
+fn C.sg_query_backend() Backend
 fn C.sg_query_features() C.sg_features
 fn C.sg_query_limits() C.sg_limits
 fn C.sg_query_pixelformat(fmt PixelFormat) C.sg_pixelformat_info

@@ -62,25 +62,25 @@ pub enum PixelFormat {
     depth
     depth_stencil
 
-    rgba
-    rgba
-    rgba
-    r
-    rsn
-    rg
-    rgsn
-    rgbf
-    rgbuf
-    rgba
-    rgb_2bpp
-    rgb_4bpp
-    rgba_2bpp
-    rgba_4bpp
-    rgb8
-    rgb8a1
-    rgba8
-    rg11
-    rg11sn
+    bc1_rgba
+    bc2_rgba
+    bc3_rgba
+    bc4_r
+    bc4_rsn
+    bc5_rg
+    bc5_rgsn
+    bc6h_rgbf
+    bc6h_rgbuf
+    bc7_rgba
+    pvrtc_rgb_2bpp
+    pvrtc_rgb_4bpp
+    pvrtc_rgba_2bpp
+    pvrtc_rgba_4bpp
+    etc2_rgb8
+    etc2_rgb8a1
+    etc2_rgba8
+    etc2_rg11
+    etc2_rg11sn
 
     num
 }

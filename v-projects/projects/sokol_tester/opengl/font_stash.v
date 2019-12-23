@@ -1,6 +1,6 @@
 import prime31.sokol
-import prime31.sokol.gfx
 import prime31.sokol.app
+import prime31.sokol.gfx
 import prime31.sokol.sgl
 import prime31.sokol.fontstash
 import os

@@ -44,3 +44,4 @@ v-projects/projects/sokol_tester/opengl/*
 !v-projects/projects/sokol_tester/opengl/*.*
 !v-projects/projects/sokol_tester/opengl/*/
 sokol/thirdparty/flextgl/flextGL.o
+a.out

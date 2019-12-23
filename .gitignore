@@ -45,3 +45,6 @@ v-projects/projects/sokol_tester/opengl/*
 !v-projects/projects/sokol_tester/opengl/*/
 sokol/thirdparty/flextgl/flextGL.o
 a.out
+sokol/generator/obj
+sokol/generator/bin
+sokol/cimgui_git

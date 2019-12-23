@@ -1,4 +1,4 @@
-module c
+module fontstash
 
 pub enum FonsFlags {
 	top_left = 1

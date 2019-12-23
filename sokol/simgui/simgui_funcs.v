@@ -1,4 +1,4 @@
-module c
+module imgui
 
 pub struct C.simgui_desc_t {
     max_vertices int

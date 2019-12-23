@@ -1,4 +1,4 @@
-module c
+module fontstash
 
 // Contructor and destructor.
 fn C.fonsCreateInternal(params &C.FONSparams) &C.FONScontext

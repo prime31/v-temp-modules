@@ -1,4 +1,4 @@
-module c
+module sgl
 
 // should be in a proper module
 pub enum SglError {

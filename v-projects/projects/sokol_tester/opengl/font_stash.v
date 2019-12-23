@@ -1,14 +1,13 @@
 import prime31.sokol
+import prime31.sokol.gfx
+import prime31.sokol.app
+import prime31.sokol.sgl
+import prime31.sokol.fontstash
 import os
-
-#define FONTSTASH_IMPLEMENTATION
-#include "fontstash/fontstash.h"
-#define SOKOL_FONTSTASH_IMPL
-#include "util/sokol_fontstash.h"
 
 struct AppState {
 mut:
-	pass_action sg_pass_action
+	pass_action C.sg_pass_action
 	fons &C.FONScontext
 	font_normal int
 }
@@ -27,6 +26,7 @@ fn main() {
 
 	state := &AppState{
 		pass_action: pass_action
+		fons: &C.FONScontext(0)
 	}
 
 	sapp_run(&sapp_desc{
@@ -57,9 +57,8 @@ fn init(user_data voidptr) {
     state.fons = C.sfons_create(512, 512, 1)
 
 	if bytes := os.read_bytes('assets/DroidSerif-Regular.ttf') {
-		println('loaded $bytes.len')
+		println('loaded font: $bytes.len')
 		state.font_normal = C.fonsAddFontMem(state.fons, "sans", bytes.data, bytes.len, false)
-		println('fnt $state.font_normal')
 	}
 }
 

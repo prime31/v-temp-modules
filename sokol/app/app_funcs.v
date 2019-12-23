@@ -1,5 +1,4 @@
-module c
-
+module app
 
 /* returns true after sokol-app has been initialized */
 fn C.sapp_isvalid() bool

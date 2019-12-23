@@ -1,4 +1,4 @@
-module c
+module sgl
 
 /* setup/shutdown/misc */
 fn C.sgl_setup(desc &C.sgl_desc_t)

@@ -1,4 +1,4 @@
-module c
+module app
 
 pub struct C.sapp_desc {
 	init_cb fn()					/* these are the user-provided callbacks without user data */

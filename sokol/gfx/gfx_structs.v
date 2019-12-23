@@ -1,4 +1,4 @@
-module c
+module gfx
 
 pub struct C.sg_desc {
     _start_canary u32
@@ -33,7 +33,7 @@ pub mut:
 	_start_canary u32
     layout C.sg_layout_desc
     shader C.sg_shader
-    primitive_type C.sg_primitive_type
+    primitive_type int // TODO: sg_primitive_type
     index_type int // TODO: sg_index_type
     depth_stencil C.sg_depth_stencil_state
     blend sg_blend_state
@@ -65,11 +65,17 @@ pub mut:
 pub struct C.sg_shader_desc {
 pub mut:
     _start_canary u32
-    attrs [16]sg_shader_attr_desc
+    attrs [16]C.sg_shader_attr_desc
     vs C.sg_shader_stage_desc
     fs C.sg_shader_stage_desc
     label byteptr
     _end_canary u32
+}
+
+pub struct C.sg_shader_attr_desc {
+    name byteptr           /* GLSL vertex attribute name (only required for GLES2) */
+    sem_name byteptr       /* HLSL semantic name */
+    sem_index int              /* HLSL semantic index */
 }
 
 pub struct C.sg_shader_stage_desc {
@@ -78,14 +84,20 @@ pub mut:
     byte_code &byte
     byte_code_size int
     entry byteptr
-    uniform_blocks [4]sg_shader_uniform_block_desc
-    images [12]sg_shader_image_desc
+    uniform_blocks [4]C.sg_shader_uniform_block_desc
+    images [12]C.sg_shader_image_desc
 }
 
 pub struct C.sg_shader_uniform_block_desc {
 pub mut:
     size int
-    uniforms [16]sg_shader_uniform_desc
+    uniforms [16]C.sg_shader_uniform_desc
+}
+
+pub struct C.sg_shader_uniform_desc {
+    name byteptr
+    @type C.sg_uniform_type
+    array_count int
 }
 
 pub struct C.sg_shader_image_desc {
@@ -155,7 +167,38 @@ pub struct C.sg_buffer {
 }
 
 pub struct C.sg_image_desc {
-
+    _start_canary u32
+    @type ImageType
+    render_target bool
+    width int
+    height int
+    dept int
+    // union {
+    //     int depth;
+    //     int layers;
+    // };
+    num_mipmaps int
+    usage Usage
+    pixel_format PixelFormat
+    sample_count int
+    min_filter Filter
+    mag_filter Filter
+    wrap_u Wrap
+    wrap_v Wrap
+    wrap_w Wrap
+    border_color BorderColor
+    max_anisotropy u32
+    min_lod f32
+    max_lod f32
+    content sg_image_content
+    label byteptr
+    /* GL specific */
+    gl_textures [2]u32
+    /* Metal specific */
+    mtl_textures [2]voidptr
+    /* D3D11 specific */
+    d3d11_texture voidptr
+    _end_canary u32
 }
 
 pub struct C.sg_image_info {
@@ -171,27 +214,32 @@ pub struct C.sg_image_content {
 }
 
 pub struct C.sg_features {
-
+    instancing bool
+    origin_top_left bool
+    multiple_render_targets bool
+    msaa_render_targets bool
+    imagetype_3d bool          /* creation of SG_IMAGETYPE_3D images is supported */
+    imagetype_array bool       /* creation of SG_IMAGETYPE_ARRAY images is supported */
+    image_clamp_to_border bool /* border color and clamp-to-border UV-wrap mode is supported */
 }
 
 pub struct C.sg_limits {
-
-}
-
-pub struct C.sg_pixel_format {
-
+    max_image_size_2d u32         /* max width/height of SG_IMAGETYPE_2D images */
+    max_image_size_cube u32       /* max width/height of SG_IMAGETYPE_CUBE images */
+    max_image_size_3d u32         /* max width/height/depth of SG_IMAGETYPE_3D images */
+    max_image_size_array u32
+    max_image_array_layers u32
+    max_vertex_attrs u32          /* <= SG_MAX_VERTEX_ATTRIBUTES (only on some GLES2 impls) */
 }
 
 pub struct C.g_pixelformat_info {
 
 }
 
-pub struct C.sg_backend {}
-
 pub struct C.sg_layout_desc {
 pub mut:
-    buffers [8]sg_buffer_layout_desc
-    attrs [16]sg_vertex_attr_desc
+    buffers [8]C.sg_buffer_layout_desc
+    attrs [16]C.sg_vertex_attr_desc
 }
 
 pub struct C.sg_buffer_layout_desc {
@@ -207,8 +255,6 @@ pub mut:
     offset int
     format int // TODO: sg_vertex_format
 }
-
-pub struct C.sg_primitive_type {}
 
 pub struct C.sg_depth_stencil_state {
     stencil_front sg_stencil_state

@@ -88,7 +88,7 @@ fn (state &AppState) render_font() {
     black := C.sfons_rgba(0, 0, 0, 255)
     brown := C.sfons_rgba(192, 128, 0, 128)
     blue := C.sfons_rgba(0, 192, 255, 255)
-    C.fonsClearState(state.fons)
+    state.fons.clear_state()
 
 	C.sgl_defaults()
     C.sgl_matrix_mode_projection()
@@ -99,9 +99,11 @@ fn (state &AppState) render_font() {
     dx = sx
 	dy = sy
 
-	C.fonsSetFont(state.fons, state.font_normal)
-	C.fonsSetSize(state.fons, 100.0)
-	C.fonsVertMetrics(state.fons, C.NULL, C.NULL, &lh)
+	state.fons.set_font(state.font_normal)
+	state.fons.set_size(100.0)
+	ascender := 0.0
+	descender := 0.0
+	state.fons.vert_metrics(&ascender, &descender, &lh)
 	dx = sx
 	dy += lh
 	C.fonsSetColor(state.fons, white)

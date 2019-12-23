@@ -22,7 +22,7 @@ fn C.sapp_mouse_shown() bool
 /* return the userdata pointer optionally provided in sapp_desc */
 fn C.sapp_userdata() voidptr
 /* return a copy of the sapp_desc structure */
-fn C.sapp_query_desc() sapp_desc
+fn C.sapp_query_desc() C.sapp_desc
 /* initiate a "soft quit" (sends SAPP_EVENTTYPE_QUIT_REQUESTED) */
 fn C.sapp_request_quit()
 /* cancel a pending quit (when SAPP_EVENTTYPE_QUIT_REQUESTED has been received) */
@@ -39,7 +39,7 @@ fn C.sapp_set_clipboard_string(str byteptr)
 fn C.sapp_get_clipboard_string() byteptr
 
 /* special run-function for SOKOL_NO_ENTRY (in standard mode this is an empty stub) */
-fn C.sapp_run(desc &sapp_desc) int
+fn C.sapp_run(desc &C.sapp_desc) int
 
 /* GL: return true when GLES2 fallback is active (to detect fallback from GLES3) */
 fn C.sapp_gles2() bool

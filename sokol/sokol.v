@@ -1,6 +1,7 @@
 module sokol
 
 #flag -I @VMOD/prime31/sokol/thirdparty
+#flag -I @VMOD/prime31/sokol/thirdparty/util
 
 #flag darwin -fobjc-arc
 

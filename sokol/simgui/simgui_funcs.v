@@ -1,4 +1,4 @@
-module imgui
+module simgui
 
 pub struct C.simgui_desc_t {
     max_vertices int
@@ -15,5 +15,5 @@ fn C.simgui_setup(desc &C.simgui_desc_t)
 fn C.simgui_new_frame(width int, height int, delta_time f64)
 fn C.simgui_render()
 // remove if not using Sokol app and ensure SOKOL_IMGUI_NO_SOKOL_APP is defined
-fn C.simgui_handle_event(ev &sapp_event) bool
+fn C.simgui_handle_event(ev &C.sapp_event) bool
 fn C.simgui_shutdown()

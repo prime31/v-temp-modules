@@ -1,9 +1,22 @@
-module imgui
+module simgui
 
-#define SOKOL_IMGUI_IMPL
-// don't depend on sokol_app.h
+// imgui
+#flag -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1
+#flag -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS=1
+#flag -DIMGUI_IMPL_API=
+
+#flag -I @VMOD/prime31/imgui
+#flag linux @VMOD/prime31/imgui/thirdparty/cimgui.a
+#flag linux -lGL -lstdc++
+#flag darwin @VMOD/prime31/imgui/thirdparty/cimgui.a
+#flag darwin -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
+#flag darwin -lm -lc++
+#include "thirdparty/cimgui.h"
+
+// optionally don't depend on sokol_app.h
 // #define SOKOL_IMGUI_NO_SOKOL_APP
-// #include "util/sokol_imgui.h"
+#define SOKOL_IMGUI_IMPL
+#include "sokol_imgui.h"
 
 [inline]
 pub fn setup(desc &C.simgui_desc_t) {
@@ -22,7 +35,7 @@ pub fn render() {
 
 // remove if not using Sokol app and ensure SOKOL_IMGUI_NO_SOKOL_APP is defined
 [inline]
-pub fn handle_event(ev &sapp_event) bool {
+pub fn handle_event(ev &C.sapp_event) bool {
 	return C.simgui_handle_event(ev)
 }
 

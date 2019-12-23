@@ -10,7 +10,7 @@ fn C.sgl_deg(rad f32) f32
 
 /* create and destroy pipeline objects */
 fn C.sgl_make_pipeline(desc &C.sg_pipeline_desc) C.sgl_pipeline
-fn C.sgl_destroy_pipeline(pip &C.sgl_pipeline)
+fn C.sgl_destroy_pipeline(pip C.sgl_pipeline)
 
 /* render state functions */
 fn C.sgl_viewport(x int, y int, w int, h int, origin_top_left bool)

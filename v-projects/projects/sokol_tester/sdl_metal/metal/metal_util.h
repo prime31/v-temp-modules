@@ -7,7 +7,6 @@
 
 static void* _window;
 static bool _is_high_dpi;
-static id<MTLDevice> _metal_device;
 static CAMetalLayer* _metal_layer;
 static id<CAMetalDrawable> _drawable;
 MTLRenderPassDescriptor* _render_pass_descriptor;
@@ -40,14 +39,11 @@ void create_metal_layer(void* window, void* cametal_layer, bool is_high_dpi) {
     _is_high_dpi = is_high_dpi;
 
     _metal_layer = (__bridge __typeof__ (CAMetalLayer*))cametal_layer;
-    _metal_device = MTLCreateSystemDefaultDevice();
-
-    _metal_layer.device = _metal_device;
     _metal_layer.framebufferOnly = YES;
 }
 
 const void* get_metal_device() {
-    return (__bridge const void*)_metal_device;
+    return (__bridge const void*)_metal_layer.device;
 }
 
 const void* get_render_pass_descriptor() {

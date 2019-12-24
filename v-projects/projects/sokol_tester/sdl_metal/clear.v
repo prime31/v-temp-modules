@@ -1,7 +1,7 @@
 import prime31.sdl2
 import prime31.sokol
 import prime31.sokol.gfx
-import sdl_metal_util
+import prime31.sokol.sdl_metal_util
 
 struct AppState {
 mut:

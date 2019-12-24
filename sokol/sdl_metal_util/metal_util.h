@@ -1,14 +1,16 @@
+#if defined(SOKOL_METAL)
 #import <Cocoa/Cocoa.h>
 #import <Metal/Metal.h>
 #import <MetalKit/MetalKit.h>
 #import <SDL.h>
 
-
 static void* _window;
 static CAMetalLayer* _metal_layer;
 static id<CAMetalDrawable> _drawable;
 MTLRenderPassDescriptor* _render_pass_descriptor;
+#endif
 
+#if defined(SOKOL_METAL)
 CGSize _mu_calculate_drawable_size() {
     static float content_scale = 0;
     if (content_scale < 0)
@@ -61,3 +63,21 @@ void mu_set_drawable_size(int width, int height) {
 void mu_set_display_sync_enabled(bool enabled) {
     _metal_layer.displaySyncEnabled = enabled;
 }
+
+#else
+
+void mu_create_metal_layer(void* window) {}
+
+const void* mu_get_metal_device() { return 0; }
+
+const void* mu_get_render_pass_descriptor() { return 0; }
+
+const void* mu_get_drawable() { return 0; }
+
+void mu_set_framebuffer_only(bool framebuffer_only) {}
+
+void mu_set_drawable_size(int width, int height) {}
+
+void mu_set_display_sync_enabled(bool enabled) {}
+
+#endif

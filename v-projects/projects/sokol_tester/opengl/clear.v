@@ -1,4 +1,6 @@
 import prime31.sokol
+import prime31.sokol.app
+import prime31.sokol.gfx
 
 struct AppState {
 	pass_action sg_pass_action

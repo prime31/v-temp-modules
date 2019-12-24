@@ -1,7 +1,7 @@
 import prime31.sdl2
 import prime31.sokol
 import prime31.sokol.gfx
-import metal
+import sdl_metal_util
 
 struct AppState {
 mut:
@@ -30,12 +30,12 @@ fn main() {
 	window_flags := C.SDL_WINDOW_RESIZABLE | C.SDL_WINDOW_ALLOW_HIGHDPI
 	state.window = C.SDL_CreateWindow("V SDL2 + Metal + Sokol demo", C.SDL_WINDOWPOS_CENTERED, C.SDL_WINDOWPOS_CENTERED, 512, 384, window_flags)
 
-	metal.shit(state.window)
+	sdl_metal_util.init_metal(state.window)
 
 	sg_setup(&sg_desc {
-		mtl_device: C.get_metal_device()
-		mtl_renderpass_descriptor_cb: C.get_render_pass_descriptor
-		mtl_drawable_cb: C.get_drawable
+		mtl_device: sdl_metal_util.get_metal_device()
+		mtl_renderpass_descriptor_cb: C.mu_get_render_pass_descriptor
+		mtl_drawable_cb: C.mu_get_drawable
 	})
 
 	mut done := false

@@ -2,16 +2,14 @@
 #import <Metal/Metal.h>
 #import <MetalKit/MetalKit.h>
 #import <SDL.h>
-#include "SDL_syswm.h"
 
 
 static void* _window;
-static bool _is_high_dpi;
 static CAMetalLayer* _metal_layer;
 static id<CAMetalDrawable> _drawable;
 MTLRenderPassDescriptor* _render_pass_descriptor;
 
-CGSize _calculate_drawable_size() {
+CGSize _mu_calculate_drawable_size() {
     static float content_scale = 0;
     if (content_scale < 0)
         content_scale = _metal_layer.contentsScale;
@@ -22,21 +20,22 @@ CGSize _calculate_drawable_size() {
     return CGSizeMake(width * _metal_layer.contentsScale, height * _metal_layer.contentsScale);
 }
 
-void create_metal_layer(void* window, void* cametal_layer, bool is_high_dpi) {
+void mu_create_metal_layer(void* window) {
     _window = window;
-    _is_high_dpi = is_high_dpi;
+	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
+	_metal_layer = (__bridge __typeof__ (CAMetalLayer*))SDL_RenderGetMetalLayer(renderer);
+    SDL_DestroyRenderer(renderer);
 
-    _metal_layer = (__bridge __typeof__ (CAMetalLayer*))cametal_layer;
     _metal_layer.framebufferOnly = YES;
 }
 
-const void* get_metal_device() {
+const void* mu_get_metal_device() {
     return (__bridge const void*)_metal_layer.device;
 }
 
-const void* get_render_pass_descriptor() {
+const void* mu_get_render_pass_descriptor() {
     // todo: do we need to set the drawableSize? doesnt seem like we do...
-    //_metal_layer.drawableSize = _calculate_drawable_size();
+    //_metal_layer.drawableSize = _mu_calculate_drawable_size();
 
     _drawable = [_metal_layer nextDrawable];
 
@@ -47,6 +46,18 @@ const void* get_render_pass_descriptor() {
     return (__bridge const void*)_render_pass_descriptor;
 }
 
-const void* get_drawable() {
+const void* mu_get_drawable() {
     return (__bridge const void*)_drawable;
+}
+
+void mu_set_framebuffer_only(bool framebuffer_only) {
+    _metal_layer.framebufferOnly = framebuffer_only;
+}
+
+void mu_set_drawable_size(int width, int height) {
+    _metal_layer.drawableSize = CGSizeMake(width, height);
+}
+
+void mu_set_display_sync_enabled(bool enabled) {
+    _metal_layer.displaySyncEnabled = enabled;
 }

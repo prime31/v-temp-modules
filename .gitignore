@@ -43,6 +43,9 @@ v-projects/projects/sokol_tester/metal/*
 v-projects/projects/sokol_tester/opengl/*
 !v-projects/projects/sokol_tester/opengl/*.*
 !v-projects/projects/sokol_tester/opengl/*/
+v-projects/projects/sokol_tester/sapp/*
+!v-projects/projects/sokol_tester/sapp/*.*
+!v-projects/projects/sokol_tester/sapp/*/
 sokol/thirdparty/flextgl/flextGL.o
 a.out
 sokol/generator/obj

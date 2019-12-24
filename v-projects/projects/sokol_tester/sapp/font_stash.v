@@ -34,7 +34,7 @@ fn main() {
 		init_userdata_cb: init
 		frame_userdata_cb: frame
 		cleanup_cb: cleanup
-		window_title: 'V Metal Text Rendering'.str
+		window_title: 'V Metal/GL Text Rendering'.str
 	})
 }
 
@@ -56,7 +56,8 @@ fn init(user_data voidptr) {
 
     state.fons = C.sfons_create(512, 512, 1)
 
-	if bytes := os.read_bytes('assets/DroidSerif-Regular.ttf') {
+	// or use DroidSerif-Regular.ttf
+	if bytes := os.read_bytes('assets/ProggyTiny.ttf') {
 		println('loaded font: $bytes.len')
 		state.font_normal = C.fonsAddFontMem(state.fons, "sans", bytes.data, bytes.len, false)
 	}
@@ -120,7 +121,7 @@ fn (state &AppState) render_font() {
 
 	dx = sx
 	dy += lh * 1.2
-	C.fonsSetSize(state.fons, 22.0)
+	C.fonsSetSize(state.fons, 20.0)
 	C.fonsSetFont(state.fons, state.font_normal)
 	C.fonsSetColor(state.fons, blue)
 	C.fonsDrawText(state.fons, dx, dy, c"Now is the time for all good men to come to the aid of the party.", C.NULL)

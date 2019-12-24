@@ -1,8 +1,9 @@
 module flextgl
 
-#flag -I @VMOD/prime31/sokol/thirdparty/flextgl
 #flag darwin -framework OpenGL -framework Cocoa -framework QuartzCore
-#flag @VMOD/prime31/sokol/thirdparty/flextgl/flextGL.o
+
+#flag -I @VMOD/prime31/flextgl/thirdparty
+#flag @VMOD/prime31/flextgl/thirdparty/flextGL.o
 #include "flextGL.h"
 
 fn C.flextInit() int

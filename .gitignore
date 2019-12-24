@@ -40,9 +40,9 @@ v-projects/projects/gl3w_tester/gl3w_quad
 v-projects/projects/sokol_tester/metal/*
 !v-projects/projects/sokol_tester/metal/*.*
 !v-projects/projects/sokol_tester/metal/*/
-v-projects/projects/sokol_tester/opengl/*
-!v-projects/projects/sokol_tester/opengl/*.*
-!v-projects/projects/sokol_tester/opengl/*/
+v-projects/projects/sokol_tester/sdl_gl/*
+!v-projects/projects/sokol_tester/sdl_gl/*.*
+!v-projects/projects/sokol_tester/sdl_gl/*/
 v-projects/projects/sokol_tester/sapp/*
 !v-projects/projects/sokol_tester/sapp/*.*
 !v-projects/projects/sokol_tester/sapp/*/

@@ -12,29 +12,17 @@ static id<CAMetalDrawable> _drawable;
 MTLRenderPassDescriptor* _render_pass_descriptor;
 
 CGSize _calculate_drawable_size() {
+    static float content_scale = 0;
+    if (content_scale < 0)
+        content_scale = _metal_layer.contentsScale;
+
     int width, height;
     SDL_GetWindowSize(_window, &width, &height);
 
-    CGSize size;
-    if (_is_high_dpi) {
-        //var point = _nsView.convertToBacking(new CGPoint(width, height));
-        CGPoint point = CGPointMake(width, height);
-        size = CGSizeMake(point.x * 2, point.y * 2);
-        size = CGSizeMake(width * 2, height * 2);
-    } else {
-        size = CGSizeMake(width, height);
-    }
-
-    return size;
+    return CGSizeMake(width * _metal_layer.contentsScale, height * _metal_layer.contentsScale);
 }
 
 void create_metal_layer(void* window, void* cametal_layer, bool is_high_dpi) {
-    // SDL_SysWMinfo sys_info;
-    // SDL_GetWindowWMInfo(window, &sys_info);
-    // void* cocoa_window = info.info.cocoa.window;
-    // void* cocoa_window = (__bridge const void*)sys_info.info.cocoa.window;
-    // NSView* content_view = info.info.cocoa.window.contentView;
-
     _window = window;
     _is_high_dpi = is_high_dpi;
 
@@ -47,7 +35,8 @@ const void* get_metal_device() {
 }
 
 const void* get_render_pass_descriptor() {
-    _metal_layer.drawableSize = _calculate_drawable_size();
+    // todo: do we need to set the drawableSize? doesnt seem like we do...
+    //_metal_layer.drawableSize = _calculate_drawable_size();
 
     _drawable = [_metal_layer nextDrawable];
 

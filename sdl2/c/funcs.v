@@ -91,3 +91,4 @@ fn C.SDL_GL_MakeCurrent(window voidptr, context voidptr) int
 fn C.SDL_GL_SetSwapInterval(interval int) int
 fn C.SDL_GL_SwapWindow(window voidptr)
 fn C.SDL_GL_DeleteContext(context voidptr)
+fn C.SDL_GL_GetDrawableSize(window voidptr, w &int, h &int)

@@ -65,7 +65,7 @@ pub mut:
 pub struct C.sg_shader_desc {
 pub mut:
     _start_canary u32
-    attrs [16]C.sg_shader_attr_desc
+    attrs [16]sg_shader_attr_desc
     vs C.sg_shader_stage_desc
     fs C.sg_shader_stage_desc
     label byteptr
@@ -84,14 +84,14 @@ pub mut:
     byte_code &byte
     byte_code_size int
     entry byteptr
-    uniform_blocks [4]C.sg_shader_uniform_block_desc
-    images [12]C.sg_shader_image_desc
+    uniform_blocks [4]sg_shader_uniform_block_desc
+    images [12]sg_shader_image_desc
 }
 
 pub struct C.sg_shader_uniform_block_desc {
 pub mut:
     size int
-    uniforms [16]C.sg_shader_uniform_desc
+    uniforms [16]sg_shader_uniform_desc
 }
 
 pub struct C.sg_shader_uniform_desc {
@@ -238,8 +238,8 @@ pub struct C.g_pixelformat_info {
 
 pub struct C.sg_layout_desc {
 pub mut:
-    buffers [8]C.sg_buffer_layout_desc
-    attrs [16]C.sg_vertex_attr_desc
+    buffers [8]sg_buffer_layout_desc
+    attrs [16]sg_vertex_attr_desc
 }
 
 pub struct C.sg_buffer_layout_desc {

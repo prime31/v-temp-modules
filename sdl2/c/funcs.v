@@ -38,8 +38,11 @@ fn C.SDL_CreateWindowAndRenderer(width int, height int, window_flags u32, window
 fn C.SDL_CreateRenderer(window &SDL_Window, index int, flags u32) voidptr
 fn C.SDL_DestroyWindow(window voidptr)
 fn C.SDL_DestroyRenderer(renderer voidptr)
+fn C.SDL_RenderGetMetalLayer(renderer voidptr) voidptr
+fn C.SDL_GetRendererOutputSize(renderer voidptr, w &int, h &int) int
 fn C.SDL_GetWindowSize(window voidptr, w &int, h &int)
 fn C.SDL_SetHint(name byteptr, value byteptr) C.SDL_bool
+fn C.SDL_GetWindowFlags(window voidptr) u32
 //fn C.SDL_RWFromFile(byteptr, byteptr) &RwOps
 //fn C.SDL_CreateTextureFromSurface(renderer &C.SDL_Renderer, surface &C.SDL_Surface) &C.SDL_Texture
 fn C.SDL_CreateTextureFromSurface(renderer voidptr, surface voidptr) voidptr

@@ -1,4 +1,6 @@
 import prime31.sokol
+import prime31.sokol.app
+import prime31.sokol.gfx
 
 const (
 	vert = '#include <metal_stdlib>

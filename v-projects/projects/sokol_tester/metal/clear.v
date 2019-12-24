@@ -1,4 +1,6 @@
 import prime31.sokol
+import prime31.sokol.app
+import prime31.sokol.gfx
 
 struct AppState {
 	pass_action sg_pass_action
@@ -28,7 +30,7 @@ fn main() {
 
 fn init(user_data voidptr) {
 	state := &AppState(user_data)
-	
+
 	sg_setup(&sg_desc {
 		mtl_device: C.sapp_metal_get_device()
 		mtl_renderpass_descriptor_cb: sapp_metal_get_renderpass_descriptor

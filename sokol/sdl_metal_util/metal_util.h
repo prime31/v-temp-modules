@@ -7,7 +7,8 @@
 static void* _window;
 static CAMetalLayer* _metal_layer;
 static id<CAMetalDrawable> _drawable;
-MTLRenderPassDescriptor* _render_pass_descriptor;
+static MTLRenderPassDescriptor* _render_pass_descriptor;
+static CGSize _fb_size;
 #endif
 
 #if defined(SOKOL_METAL)
@@ -40,6 +41,7 @@ const void* mu_get_render_pass_descriptor() {
     //_metal_layer.drawableSize = _mu_calculate_drawable_size();
 
     _drawable = [_metal_layer nextDrawable];
+    _fb_size = _metal_layer.drawableSize;
 
     _render_pass_descriptor = NULL;
     _render_pass_descriptor = [[MTLRenderPassDescriptor alloc] init];
@@ -50,6 +52,18 @@ const void* mu_get_render_pass_descriptor() {
 
 const void* mu_get_drawable() {
     return (__bridge const void*)_drawable;
+}
+
+float mu_dpi_scale() {
+    return _metal_layer.contentsScale;
+}
+
+float mu_width() {
+    return _fb_size.width;
+}
+
+float mu_height() {
+    return _fb_size.height;
 }
 
 void mu_set_framebuffer_only(bool framebuffer_only) {

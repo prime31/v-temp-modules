@@ -54,7 +54,7 @@ fn main() {
 		g := state.pass_action.colors[0].val[1] + 0.01
 		state.pass_action.colors[0].val[1] = if g > 1.0 { 0.0 } else { g }
 
-		sg_begin_default_pass(&state.pass_action, 512 * 2, 384 * 2)
+		sg_begin_default_pass(&state.pass_action, sdl_metal_util.width(), sdl_metal_util.height())
 		sg_end_pass()
 		sg_commit()
 	}

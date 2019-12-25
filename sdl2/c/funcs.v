@@ -43,8 +43,7 @@ fn C.SDL_GetRendererOutputSize(renderer voidptr, w &int, h &int) int
 fn C.SDL_GetWindowSize(window voidptr, w &int, h &int)
 fn C.SDL_SetHint(name byteptr, value byteptr) C.SDL_bool
 fn C.SDL_GetWindowFlags(window voidptr) u32
-//fn C.SDL_RWFromFile(byteptr, byteptr) &RwOps
-//fn C.SDL_CreateTextureFromSurface(renderer &C.SDL_Renderer, surface &C.SDL_Surface) &C.SDL_Texture
+fn C.SDL_VideoQuit()
 fn C.SDL_CreateTextureFromSurface(renderer voidptr, surface voidptr) voidptr
 fn C.SDL_CreateTexture(renderer &SDL_Renderer, format u32, access int, w int, h int) voidptr
 fn C.SDL_SetRenderTarget(renderer &SDL_Renderer, texture &SDL_Texture) int

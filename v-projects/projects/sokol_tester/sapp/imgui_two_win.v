@@ -70,11 +70,10 @@ fn on_event(evt &C.sapp_event, user_data voidptr) {
 
 fn cleanup() {
 	printf('cleanup time')
-    C.SDL_Quit()
 }
 
 fn (state mut AppState) imgui_init() {
-	C.SDL_Init(C.SDL_INIT_VIDEO | C.SDL_INIT_AUDIO)
+	C.SDL_Init(C.SDL_INIT_VIDEO)
 
     C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_FLAGS, C.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG)
     C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_PROFILE_MASK, C.SDL_GL_CONTEXT_PROFILE_CORE)
@@ -105,12 +104,11 @@ fn (state mut AppState) imgui_tick() {
 				state.done = true
 				imgui.shutdown()
 
-				C.SDL_DestroyWindow(state.window)
 				C.SDL_GL_DeleteContext(state.gl_context)
-				app.quit()
+				C.SDL_VideoQuit()
 				C.SDL_Quit()
-
-				return
+				app.quit()
+				exit(1)
 			}
 			else {}
 		}

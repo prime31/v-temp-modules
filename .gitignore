@@ -56,3 +56,4 @@ sokol/generator/bin
 sokol/cimgui_git
 sokol/thirdparty/cimgui
 .DS_Store
+imgui.ini

@@ -1,6 +1,7 @@
 module simgui
 
 pub struct C.simgui_desc_t {
+pub mut:
     max_vertices int
     color_format C.sg_pixel_format
     depth_format C.sg_pixel_format

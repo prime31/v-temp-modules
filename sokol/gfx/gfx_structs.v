@@ -103,7 +103,7 @@ pub mut:
 
 pub struct C.sg_shader_image_desc {
     name byteptr
-    @type int // TODO: sg_image_type
+    @type ImageType
 }
 
 pub struct C.sg_shader_info {
@@ -168,12 +168,13 @@ pub struct C.sg_buffer {
 }
 
 pub struct C.sg_image_desc {
+pub mut:
     _start_canary u32
     @type ImageType
     render_target bool
     width int
     height int
-    dept int
+    depth int
     // union {
     //     int depth;
     //     int layers;
@@ -191,7 +192,7 @@ pub struct C.sg_image_desc {
     max_anisotropy u32
     min_lod f32
     max_lod f32
-    content sg_image_content
+    content C.sg_image_content
     label byteptr
     /* GL specific */
     gl_textures [2]u32
@@ -203,7 +204,11 @@ pub struct C.sg_image_desc {
 }
 
 pub struct C.sg_image_info {
-
+pub mut:
+    slot C.sg_slot_info            /* resource pool slot info */
+    upd_frame_index u32            /* frame index of last sg_update_image() */
+    num_slots int                  /* number of renaming-slots for dynamically updated images */
+    active_slot int                /* currently active write-slot for dynamically updated images */
 }
 
 pub struct C.sg_image {
@@ -211,7 +216,17 @@ pub struct C.sg_image {
 }
 
 pub struct C.sg_image_content {
+pub mut:
+    subimage [6][16]sg_subimage_content
+}
+// pub fn (ic  C.sg_image_content) set_shit() {
+//     wtf := ic.subimage[0]
+// }
 
+pub struct C.sg_subimage_content {
+pub mut:
+    ptr voidptr     /* pointer to subimage data */
+    size int        /* size in bytes of pointed-to subimage data */
 }
 
 pub struct C.sg_features {
@@ -254,7 +269,7 @@ pub struct C.sg_vertex_attr_desc {
 pub mut:
     buffer_index int
     offset int
-    format int // TODO: sg_vertex_format
+    format VertexFormat
 }
 
 pub struct C.sg_depth_stencil_state {

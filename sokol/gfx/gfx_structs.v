@@ -33,10 +33,10 @@ pub mut:
 	_start_canary u32
     layout C.sg_layout_desc
     shader C.sg_shader
-    primitive_type int // TODO: sg_primitive_type
-    index_type int // TODO: sg_index_type
+    primitive_type PrimitiveType
+    index_type IndexType
     depth_stencil C.sg_depth_stencil_state
-    blend sg_blend_state
+    blend C.sg_blend_state
     rasterizer C.sg_rasterizer_state
     label byteptr
     _end_canary u32
@@ -119,9 +119,10 @@ pub struct C.sg_shader {
 }
 
 pub struct C.sg_pass_desc {
+pub mut:
     _start_canary u32
-    color_attachment [4]sg_attachment_desc
-    depth_stencil_attachment sg_attachment_desc
+    color_attachments [4]sg_attachment_desc
+    depth_stencil_attachment C.sg_attachment_desc
     label byteptr
     _end_canary u32
 }
@@ -230,6 +231,7 @@ pub mut:
 }
 
 pub struct C.sg_features {
+pub:
     instancing bool
     origin_top_left bool
     multiple_render_targets bool
@@ -240,16 +242,13 @@ pub struct C.sg_features {
 }
 
 pub struct C.sg_limits {
+pub:
     max_image_size_2d u32         /* max width/height of SG_IMAGETYPE_2D images */
     max_image_size_cube u32       /* max width/height of SG_IMAGETYPE_CUBE images */
     max_image_size_3d u32         /* max width/height/depth of SG_IMAGETYPE_3D images */
     max_image_size_array u32
     max_image_array_layers u32
     max_vertex_attrs u32          /* <= SG_MAX_VERTEX_ATTRIBUTES (only on some GLES2 impls) */
-}
-
-pub struct C.g_pixelformat_info {
-
 }
 
 pub struct C.sg_layout_desc {
@@ -275,7 +274,7 @@ pub mut:
 pub struct C.sg_depth_stencil_state {
     stencil_front sg_stencil_state
     stencil_back sg_stencil_state
-    depth_compare_func int // TODO: sg_compare_func
+    depth_compare_func CompareFunc
     depth_write_enabled bool
     stencil_enabled bool
     stencil_read_mask byte
@@ -290,13 +289,26 @@ pub struct C.sg_stencil_state {
     compare_func int // TODO: sg_compare_func
 }
 
-pub struct C.sg_blend_state {}
+pub struct C.sg_blend_state {
+    enabled bool
+    src_factor_rgb BlendFactor
+    dst_factor_rgb BlendFactor
+    op_rgb BlendOp
+    src_factor_alpha BlendFactor
+    dst_factor_alpha BlendFactor
+    op_alpha BlendOp
+    color_write_mask byte
+    color_attachment_count int
+    color_format PixelFormat
+    depth_format PixelFormat
+    blend_color [4]f32
+}
 
 pub struct C.sg_rasterizer_state {
 pub mut:
     alpha_to_coverage_enabled bool
-    cull_mode int // TODO: sg_cull_mode
-    face_winding int // TODO: sg_face_winding
+    cull_mode CullMode
+    face_winding FaceWinding
     sample_count int
     depth_bias f32
     depth_bias_slope_scale f32
@@ -323,6 +335,7 @@ pub mut:
 }
 
 pub struct C.sg_pixelformat_info {
+pub:
     sample bool        /* pixel format can be sampled in shaders */
     filter bool        /* pixel format can be sampled with filtering */
     render bool        /* pixel format can be used as render target */
@@ -332,6 +345,11 @@ pub struct C.sg_pixelformat_info {
 }
 
 pub struct C.sg_attachment_desc {
+pub mut:
+    image C.sg_image
+    mip_level int
+    face int
+
     // image sg_image
     // mip_level int
     // union {

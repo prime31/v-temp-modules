@@ -95,8 +95,9 @@ pub mut:
 }
 
 pub struct C.sg_shader_uniform_desc {
+pub mut:
     name byteptr
-    @type C.sg_uniform_type
+    @type UniformType
     array_count int
 }
 

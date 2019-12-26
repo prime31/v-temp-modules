@@ -139,7 +139,6 @@ fn (state mut AppState) imgui_tick() {
 }
 
 fn (state &AppState) imgui_frame() {
-	println('real frame')
 	imgui.new_frame(state.window)
 	C.igShowDemoWindow(1)
 

@@ -660,7 +660,7 @@ fn C.igGetFrameHeightWithSpacing() f32
 
 fn C.igGetID(str_id byteptr) ImGuiID
 
-fn C.igGetIO() &ImGuiIO
+fn C.igGetIO() &C.ImGuiIO
 
 fn C.igGetItemRectMax() ImVec2
 
@@ -690,7 +690,7 @@ fn C.igGetScrollY() f32
 
 fn C.igGetStateStorage() &ImGuiStorage
 
-fn C.igGetStyle() &ImGuiStyle
+fn C.igGetStyle() &C.ImGuiStyle
 
 fn C.igGetStyleColorName(idx ImGuiCol) byteptr
 

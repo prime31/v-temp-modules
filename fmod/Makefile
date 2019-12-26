@@ -12,9 +12,7 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
 	FMOD_FOLDER := fmodstudioapi20006linux
 	TARGET += copy_files_linux
-endif
-
-ifeq ($(UNAME_S), Darwin)
+else ifeq ($(UNAME_S), Darwin)
 	FMOD_FOLDER := FMOD Programmers API
 	TARGET += copy_files_macos
 endif

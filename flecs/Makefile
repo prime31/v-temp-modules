@@ -13,9 +13,7 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
 	SED := sed -i
 	TARGET += copy_linux_shared
-endif
-
-ifeq ($(UNAME_S), Darwin)
+else ifeq ($(UNAME_S), Darwin)
 	SED := sed -i ''
 	TARGET += copy_mac_shared
 endif

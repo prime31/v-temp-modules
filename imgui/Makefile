@@ -6,6 +6,9 @@ $(shell mkdir -p $(MODULE_FOLDER))
 CIMGUI := cimgui_git
 IMGUI := $(CIMGUI)/imgui
 
+# might as well use docking branch since its stable now
+IMGUI_BRANCH := --single-branch --branch docking
+
 LIBS :=
 
 CFLAGS := -I.
@@ -35,9 +38,7 @@ ifeq ($(UNAME_S), Linux) #LINUX
 
 	SED := sed -i
 	#TARGET += cimgui.so not yet supported
-endif
-
-ifeq ($(UNAME_S), Darwin) #APPLE
+else ifeq ($(UNAME_S), Darwin) #APPLE
 	LIBS += -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo `sdl2-config --libs`
 	LIBS += -L/usr/local/lib
 
@@ -63,7 +64,7 @@ cimgui.dylib: cimgui_git/build/cimgui.dylib
 	$(CP) cimgui_git/build/cimgui.dylib $(MODULE_FOLDER)/cimgui.dylib
 
 cimgui_git/build/cimgui.dylib:
-	[ -d cimgui_git ] || git clone --recursive --depth 1 https://github.com/cimgui/cimgui.git cimgui_git
+	[ -d cimgui_git ] || git clone --recursive --depth 1 $(IMGUI_BRANCH) https://github.com/cimgui/cimgui.git cimgui_git
 	(export CFLAGS= CXXFLAGS= ; cd cimgui_git ; mkdir build ; cd build ; cmake -DIMGUI_STATIC=OFF .. ; make)
 
 cimgui.a: cimgui_git/build/cimgui.a
@@ -71,7 +72,7 @@ cimgui.a: cimgui_git/build/cimgui.a
 	$(CP) cimgui_git/build/cimgui.a $(MODULE_FOLDER)/cimgui.a
 
 cimgui_git/build/cimgui.a:
-	[ -d cimgui_git ] || git clone --recursive --depth 1 https://github.com/cimgui/cimgui.git cimgui_git
+	[ -d cimgui_git ] || git clone --recursive --depth 1 $(IMGUI_BRANCH) https://github.com/cimgui/cimgui.git cimgui_git
 	(export CFLAGS= CXXFLAGS= ; cd cimgui_git ; mkdir build ; cd build ; cmake -DIMGUI_STATIC=ON .. ; make)
 
 imgui_impl_sdl.o: $(IMGUI)/examples/imgui_impl_sdl.cpp

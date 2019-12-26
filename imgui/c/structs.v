@@ -19,7 +19,7 @@ type ImGuiBackendFlags int
 
 pub struct C.ImGuiIO {
 pub mut:
-    ConfigFlags ImGuiConfigFlags
+    ConfigFlags int
     BackendFlags ImGuiBackendFlags
     DisplaySize ImVec2
     DeltaTime f32

@@ -6,6 +6,9 @@ $(shell mkdir -p $(MODULE_FOLDER))
 CIMGUI := cimgui_git
 IMGUI := $(CIMGUI)/imgui
 
+# might as well use docking branch since its stable now
+IMGUI_BRANCH := --single-branch --branch docking
+
 LIBS :=
 
 CFLAGS := -I.
@@ -42,7 +45,7 @@ cimgui.dylib: cimgui_git/build/cimgui.dylib
 	cp cimgui_git/build/cimgui.dylib $(MODULE_FOLDER)/cimgui.dylib
 
 cimgui_git/build/cimgui.dylib:
-	[ -d cimgui_git ] || git clone --recursive --depth 1 https://github.com/cimgui/cimgui.git cimgui_git
+	[ -d cimgui_git ] || git clone --recursive --depth 1 $(IMGUI_BRANCH) https://github.com/cimgui/cimgui.git cimgui_git
 	(export CFLAGS= CXXFLAGS= ; cd cimgui_git ; mkdir build ; cd build ; cmake -DIMGUI_STATIC=OFF .. ; make)
 
 cimgui.a: cimgui_git/build/cimgui.a
@@ -50,7 +53,7 @@ cimgui.a: cimgui_git/build/cimgui.a
 	cp cimgui_git/build/cimgui.a $(MODULE_FOLDER)/cimgui.a
 
 cimgui_git/build/cimgui.a:
-	[ -d cimgui_git ] || git clone --recursive --depth 1 https://github.com/cimgui/cimgui.git cimgui_git
+	[ -d cimgui_git ] || git clone --recursive --depth 1 $(IMGUI_BRANCH) https://github.com/cimgui/cimgui.git cimgui_git
 	(export CFLAGS= CXXFLAGS= ; cd cimgui_git ; mkdir build ; cd build ; cmake -DIMGUI_STATIC=ON .. ; make)
 
 generate_v_bindings:

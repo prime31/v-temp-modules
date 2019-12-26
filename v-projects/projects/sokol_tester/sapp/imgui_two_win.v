@@ -93,6 +93,8 @@ fn (state mut AppState) imgui_init() {
 
 	imgui.init_for_gl('#version 150'.str, state.window, state.gl_context)
 	C.igStyleColorsDark(C.NULL)
+	mut io := imgui.get_io()
+	io.ConfigFlags |= C.ImGuiConfigFlags_DockingEnable
 }
 
 fn (state mut AppState) imgui_tick() {

@@ -35,6 +35,7 @@ fn C.SDL_JoystickNameForIndex(device_index int) voidptr
 fn C.SDL_RenderCopy(renderer &SDL_Renderer, texture voidptr, srcrect voidptr, dstrect voidptr) int
 fn C.SDL_CreateWindow(title byteptr, x int, y int, w int, h int, flags u32) voidptr
 fn C.SDL_CreateWindowAndRenderer(width int, height int, window_flags u32, window &SDL_Window, renderer &SDL_Renderer) int
+fn C.SDL_GetWindowID(window &SDL_Window) u32
 fn C.SDL_CreateRenderer(window &SDL_Window, index int, flags u32) voidptr
 fn C.SDL_DestroyWindow(window voidptr)
 fn C.SDL_DestroyRenderer(renderer voidptr)

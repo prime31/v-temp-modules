@@ -107,3 +107,42 @@ pub mut:
     ImVector_ImWchar InputQueueCharacters
 */
 }
+
+pub struct C.ImGuiStyle {
+pub mut:
+	Alpha f32
+	WindowPadding ImVec2
+	WindowRounding f32
+	WindowBorderSize f32
+	WindowMinSize ImVec2
+	WindowTitleAlign ImVec2
+	WindowMenuButtonPosition int
+	ChildRounding f32
+	ChildBorderSize f32
+	PopupRounding f32
+	PopupBorderSize f32
+	FramePadding ImVec2
+	FrameRounding f32
+	FrameBorderSize f32
+	ItemSpacing ImVec2
+	ItemInnerSpacing ImVec2
+	TouchExtraPadding ImVec2
+	IndentSpacing f32
+	ColumnsMinSpacing f32
+	ScrollbarSize f32
+	ScrollbarRounding f32
+	GrabMinSize f32
+	GrabRounding f32
+	TabRounding f32
+	TabBorderSize f32
+	ColorButtonPosition int
+	ButtonTextAlign ImVec2
+	SelectableTextAlign ImVec2
+	DisplayWindowPadding ImVec2
+	DisplaySafeAreaPadding ImVec2
+	MouseCursorScale f32
+	AntiAliasedLines bool
+	AntiAliasedFill bool
+	CurveTessellationTol f32
+	Colors [49]ImVec4
+}

@@ -91,10 +91,20 @@ fn (state mut AppState) imgui_init() {
 	C.SDL_GL_MakeCurrent(state.window, state.gl_context)
 	C.SDL_GL_SetSwapInterval(1) // Enable vsync
 
+	C.igCreateContext(C.NULL)
+
+	mut io := imgui.get_io()
+	io.ConfigFlags |= C.ImGuiConfigFlags_NavEnableKeyboard
+	io.ConfigFlags |= C.ImGuiConfigFlags_DockingEnable
+	io.ConfigFlags |= C.ImGuiConfigFlags_ViewportsEnable
+
+	if (io.ConfigFlags & C.ImGuiConfigFlags_ViewportsEnable) != 0 {
+		mut style := igGetStyle()
+		style.WindowRounding = 0
+	}
+
 	imgui.init_for_gl('#version 150'.str, state.window, state.gl_context)
 	C.igStyleColorsDark(C.NULL)
-	mut io := imgui.get_io()
-	io.ConfigFlags |= C.ImGuiConfigFlags_DockingEnable
 }
 
 fn (state mut AppState) imgui_tick() {
@@ -108,9 +118,18 @@ fn (state mut AppState) imgui_tick() {
 
 				C.SDL_GL_DeleteContext(state.gl_context)
 				C.SDL_VideoQuit()
-				C.SDL_Quit()
 				app.quit()
 				exit(1)
+			}
+			C.SDL_WINDOWEVENT {
+				if ev.window.event == C.SDL_WINDOWEVENT_CLOSE && ev.window.windowID == C.SDL_GetWindowID(state.window) {
+					state.done = true
+					imgui.shutdown()
+
+					C.SDL_GL_DeleteContext(state.gl_context)
+					C.SDL_VideoQuit()
+					return
+				}
 			}
 			else {}
 		}
@@ -120,6 +139,7 @@ fn (state mut AppState) imgui_tick() {
 }
 
 fn (state &AppState) imgui_frame() {
+	println('real frame')
 	imgui.new_frame(state.window)
 	C.igShowDemoWindow(1)
 
@@ -131,5 +151,12 @@ fn (state &AppState) imgui_frame() {
 	C.glClearColor(0.2, 0.2, 0.2, 1.0)
 	C.glClear(C.GL_COLOR_BUFFER_BIT)
 	C.ImGui_ImplOpenGL3_RenderDrawData(C.igGetDrawData())
+
+	if (io.ConfigFlags & C.ImGuiConfigFlags_ViewportsEnable) != 0 {
+		C.igUpdatePlatformWindows()
+		C.igRenderPlatformWindowsDefault(C.NULL, C.NULL)
+		C.SDL_GL_MakeCurrent(state.window, state.gl_context)
+	}
+
 	C.SDL_GL_SwapWindow(state.window)
 }

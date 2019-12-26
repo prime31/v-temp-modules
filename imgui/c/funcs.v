@@ -16,6 +16,11 @@ fn C.igEnd()
 fn C.igRender()
 fn C.igGetDrawData() voidptr
 fn C.igDestroyContext(igui_context voidptr)
+fn C.igGetStyle() &C.ImGuiStyle
+
+// multiple viewport
+fn C.igUpdatePlatformWindows()
+fn C.igRenderPlatformWindowsDefault(voidptr, voidptr)
 
 // ImGui SDL2 and OpenGL3 implementation
 fn C.ImGui_ImplSDL2_InitForOpenGL(window voidptr, sdl_gl_context voidptr) bool

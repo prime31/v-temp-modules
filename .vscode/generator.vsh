@@ -9,8 +9,8 @@ struct Arg {
 
 fn main() {
     src := os.args[1]
-    src_dir := os.dir(src)
-    src_name := os.filename(src)
+    src_dir := filepath.dir(src)
+    src_name := filepath.filename(src)
     dst_name := src_name.replace('.v', '_gen.v')
     dst := filepath.join(src_dir, dst_name)
 

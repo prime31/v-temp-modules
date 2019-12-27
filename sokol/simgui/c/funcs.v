@@ -848,6 +848,8 @@ fn C.igMemAlloc(size u32) voidptr
 
 fn C.igMemFree(ptr voidptr)
 
+fn C.igMenuItemBool(label byteptr, shortcut byteptr, selected bool, enabled bool) bool
+fn C.igMenuItemBoolPtr(label byteptr, shortcut byteptr, p_selected &bool, enabled bool) bool
 fn C.igMenuItem(label byteptr, shortcut byteptr, selected bool, enabled bool) bool
 
 fn C.igNewFrame()

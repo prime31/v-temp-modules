@@ -147,8 +147,8 @@ pub struct C.sg_pass {
 pub struct C.sg_buffer_desc {
     _start_canary u32
     size int
-    @type int // TODO: sg_buffer_type
-    usage int // TODO: sg_usage
+    @type BufferType
+    usage Usage
     content byteptr
     label byteptr
     /* GL specific */
@@ -260,7 +260,7 @@ pub mut:
 pub struct C.sg_buffer_layout_desc {
 pub mut:
     stride int
-    step_func int // TODO: sg_vertex_step
+    step_func VertexStep
     step_rate int
 }
 
@@ -283,10 +283,10 @@ pub struct C.sg_depth_stencil_state {
 }
 
 pub struct C.sg_stencil_state {
-    fail_op int // TODO: sg_stencil_op
-    depth_fail_op int // TODO: sg_stencil_op
-    pass_op int // TODO: sg_stencil_op
-    compare_func int // TODO: sg_compare_func
+    fail_op StencilOp
+    depth_fail_op StencilOp
+    pass_op StencilOp
+    compare_func CompareFunc
 }
 
 pub struct C.sg_blend_state {
@@ -318,19 +318,19 @@ pub mut:
 
 pub struct C.sg_color_attachment_action {
 pub mut:
-    action int // TODO: sg_action
+    action Action
     val [4]f32
 }
 
 pub struct C.sg_depth_attachment_action {
 pub mut:
-    action int // TODO: sg_action
+    action Action
     val f32
 }
 
 pub struct C.sg_stencil_attachment_action {
 pub mut:
-    action int // TODO: sg_action
+    action Action
     val byte
 }
 

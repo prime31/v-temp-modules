@@ -53,8 +53,8 @@ pub fn (s &C.FONScontext) add_fallback_font(base int, fallback int) int {
 }
 
 [inline]
-pub fn (s &C.FONScontext) add_font_mem(name byteptr, data byteptr, dataSize int, freeData int) int {
-	return C.fonsAddFontMem(s, name, data, dataSize, freeData)
+pub fn (s &C.FONScontext) add_font_mem(name byteptr, data byteptr, data_size int, free_data int) int {
+	return C.fonsAddFontMem(s, name, data, data_size, free_data)
 }
 
 // State handling

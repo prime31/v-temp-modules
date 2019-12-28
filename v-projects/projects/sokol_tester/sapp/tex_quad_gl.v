@@ -2,17 +2,13 @@ import prime31.sokol
 import prime31.sokol.sapp
 import prime31.sokol.gfx
 import prime31.stb.image
+import prime31.math
 
 #flag -I.
 #define HANDMADE_MATH_IMPLEMENTATION
 #include "HandmadeMath.h"
 
 fn C.HMM_Orthographic(Left f32, Right f32, Bottom f32, Top f32, Near f32, Far f32) C.hmm_mat4
-fn C.HMM_Perspective(FOV f32, AspectRatio f32, Near f32, Far f32) C.hmm_mat4
-fn C.HMM_LookAt() C.hmm_mat4
-fn C.HMM_MultiplyMat4() C.hmm_mat4
-fn C.HMM_Rotate() C.hmm_mat4
-fn C.HMM_Vec3() C.hmm_vec3
 
 const (
 	vert = '#version 330
@@ -70,8 +66,11 @@ mut:
 	beach_img C.sg_image
 }
 
-struct VsParams {
-    mvp C.hmm_mat4
+struct Vertex {
+pub mut:
+	pos math.Vec2
+	texcoords math.Vec2
+	color math.Vec4
 }
 
 fn main() {
@@ -112,12 +111,14 @@ fn init(user_data voidptr) {
 	})
 
 	verts := [
-	-1.0, -1.0,    0.0, 0.0,	1.0, 1.0, 1.0, 1.0,
-	1.0, -1.0,     1.0, 0.0,	1.0, 1.0, 1.0, 1.0,
-	1.0,  1.0,     1.0, 1.0,	1.0, 1.0, 1.0, 1.0,
-	-1.0,  1.0,    0.0, 1.0,	1.0, 1.0, 1.0, 1.0]!
+		Vertex{ math.Vec2{-1,-1}, 	math.Vec2{0,0},	math.Vec4{1,1,1,1} },
+		Vertex{ math.Vec2{1,-1}, 	math.Vec2{1,0},	math.Vec4{1,1,1,1} },
+		Vertex{ math.Vec2{1,1}, 	math.Vec2{1,1},	math.Vec4{1,1,1,1} },
+		Vertex{ math.Vec2{-1,1}, 	math.Vec2{0,1},	math.Vec4{1,1,1,1} }
+	]!
+
 	state.bind.vertex_buffers[0] = sg_make_buffer(&sg_buffer_desc{
-		size: sizeof(f32) * verts.len
+		size: sizeof(Vertex) * verts.len
 		content: verts.data
 	})
 
@@ -238,7 +239,7 @@ fn frame(user_data voidptr) {
 	sg_begin_default_pass(&state.pass_action, sapp_width(), sapp_height())
 	sg_apply_pipeline(state.pip)
 	sg_apply_bindings(&state.bind)
-	sg_apply_uniforms(C.SG_SHADERSTAGE_VS, 0, &state.view_proj, sizeof(VsParams))
+	sg_apply_uniforms(C.SG_SHADERSTAGE_VS, 0, &state.view_proj, sizeof(C.hmm_mat4))
 	sg_draw(0, 8, 1)
 	sg_end_pass()
 	sg_commit()

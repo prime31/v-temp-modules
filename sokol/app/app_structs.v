@@ -1,6 +1,7 @@
 module app
 
 pub struct C.sapp_desc {
+pub:
 	init_cb fn()					/* these are the user-provided callbacks without user data */
 	frame_cb fn()
 	cleanup_cb fn()
@@ -36,13 +37,14 @@ pub struct C.sapp_desc {
 }
 
 pub struct C.sapp_event {
+pub:
     frame_count u64
-    @type int // TODO: sapp_event_type
-    key_code int // TODO: sapp_keycode
+    @type EventType
+    key_code KeyCode
     char_code u32
     key_repeat bool
     modifiers u32
-    mouse_button int // TODO: sapp_mousebutton
+    mouse_button MouseButton
     mouse_x f32
     mouse_y f32
     scroll_x f32
@@ -59,6 +61,7 @@ pub fn (e &C.sapp_event) str() string {
 }
 
 pub struct C.sapp_touchpoint {
+pub:
     identifier u64
     pos_x f32
     pos_y f32

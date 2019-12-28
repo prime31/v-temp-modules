@@ -70,7 +70,7 @@ struct Vertex {
 pub mut:
 	pos math.Vec2
 	texcoords math.Vec2
-	color math.Vec4
+	color math.Color
 }
 
 fn main() {
@@ -111,10 +111,10 @@ fn init(user_data voidptr) {
 	})
 
 	verts := [
-		Vertex{ math.Vec2{-1,-1}, 	math.Vec2{0,0},	math.Vec4{1,1,1,1} },
-		Vertex{ math.Vec2{1,-1}, 	math.Vec2{1,0},	math.Vec4{1,1,1,1} },
-		Vertex{ math.Vec2{1,1}, 	math.Vec2{1,1},	math.Vec4{1,1,1,1} },
-		Vertex{ math.Vec2{-1,1}, 	math.Vec2{0,1},	math.Vec4{1,1,1,1} }
+		Vertex{ math.Vec2{-1,-1}, 	math.Vec2{0,0},		math.Color{} },
+		Vertex{ math.Vec2{1,-1}, 	math.Vec2{1,0},		math.Color{} },
+		Vertex{ math.Vec2{1,1}, 	math.Vec2{1,1},		math.Color{} },
+		Vertex{ math.Vec2{-1,1}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }
 	]!
 
 	state.bind.vertex_buffers[0] = sg_make_buffer(&sg_buffer_desc{
@@ -168,7 +168,7 @@ fn init(user_data voidptr) {
 		format: .float2
 	}
 	layout.attrs[2] = sg_vertex_attr_desc{
-		format: .float4
+		format: .ubyte4n
 	}
 
 	rasterizer := sg_rasterizer_state{

@@ -1,4 +1,4 @@
-module app
+module sapp
 
 pub enum EventType {
     invalid

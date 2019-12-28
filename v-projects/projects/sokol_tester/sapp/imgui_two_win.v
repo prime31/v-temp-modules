@@ -1,5 +1,5 @@
 import prime31.sokol
-import prime31.sokol.app
+import prime31.sokol.sapp
 import prime31.sokol.gfx
 import prime31.imgui
 import prime31.sdl2 as sdl2

@@ -1,5 +1,5 @@
 import prime31.sokol
-import prime31.sokol.app
+import prime31.sokol.sapp
 import prime31.sokol.gfx
 
 struct AppState {

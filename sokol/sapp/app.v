@@ -1,4 +1,4 @@
-module app
+module sapp
 
 #define SOKOL_IMPL
 #define SOKOL_NO_ENTRY

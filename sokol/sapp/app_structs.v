@@ -1,4 +1,4 @@
-module app
+module sapp
 
 pub struct C.sapp_desc {
 pub:

@@ -4,12 +4,6 @@ import prime31.sokol.gfx
 import prime31.stb.image
 import prime31.math
 
-#flag -I.
-#define HANDMADE_MATH_IMPLEMENTATION
-#include "HandmadeMath.h"
-
-fn C.HMM_Orthographic(Left f32, Right f32, Bottom f32, Top f32, Near f32, Far f32) C.hmm_mat4
-
 const (
 	vert = '#version 330
 uniform mat4 TransformProjectionMatrix;
@@ -60,7 +54,7 @@ mut:
 	pass_action sg_pass_action
 	rx f32
 	ry f32
-	view_proj C.hmm_mat4
+	trans_mat math.Mat44
 
 	checker_img C.sg_image
 	beach_img C.sg_image
@@ -137,7 +131,7 @@ fn init(user_data voidptr) {
 	mut vs_desc := sg_shader_stage_desc{
 		source: vert.str
 	}
-	vs_desc.uniform_blocks[0].size = sizeof(C.hmm_mat4)
+	vs_desc.uniform_blocks[0].size = sizeof(math.Mat44)
 
 	mut uniform := vs_desc.uniform_blocks[0].uniforms[0]
 	uniform.name = 'TransformProjectionMatrix'.str
@@ -187,8 +181,7 @@ fn init(user_data voidptr) {
 	})
 
 	// view-projection matrix
-	// state.view_proj = HMM_Orthographic(Left f32, Right f32, Bottom f32, Top f32, -5.0, 5.0)
-	state.view_proj = HMM_Orthographic(-2, 2, 2, -2, -5.0, 5.0)
+	state.trans_mat = math.mat44_ortho2d(-2, 2, 2, -2)
 }
 
 fn create_image() C.sg_image {
@@ -239,7 +232,7 @@ fn frame(user_data voidptr) {
 	sg_begin_default_pass(&state.pass_action, sapp_width(), sapp_height())
 	sg_apply_pipeline(state.pip)
 	sg_apply_bindings(&state.bind)
-	sg_apply_uniforms(C.SG_SHADERSTAGE_VS, 0, &state.view_proj, sizeof(C.hmm_mat4))
+	sg_apply_uniforms(C.SG_SHADERSTAGE_VS, 0, &state.trans_mat, sizeof(math.Mat44))
 	sg_draw(0, 8, 1)
 	sg_end_pass()
 	sg_commit()

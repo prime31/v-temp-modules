@@ -7,8 +7,8 @@ module math
  * m[2] m[6] m[10] m[14]
  * m[3] m[7] m[11] m[15]
  */
-struct Mat44 {
-pub:
+pub struct Mat44 {
+pub mut:
     data [16]f32
 }
 
@@ -99,11 +99,11 @@ pub fn ma44_scale(sx f32, sy f32, sz f32) Mat44 {
     return result
 }
 
-pub fn mat44_rotate(angle f32, unnormalizedAxis Vec3) Mat44 {
+pub fn mat44_rotate(angle f32, unnormalized_axis Vec3) Mat44 {
     c := C.cosf(angle)
     s := C.sinf(angle)
 
-    axis := unnormalizedAxis.normalize()
+    axis := unnormalized_axis.normalize()
     temp := axis.scale(1.0 - c)
 
     mut result := mat44_identity()
@@ -126,29 +126,29 @@ pub fn mat44_ortho2d(left f32, right f32, bottom f32, top f32) Mat44 {
     return mat44_ortho(left, right, bottom, top, -1.0, 1.0)
 }
 
-pub fn mat44_ortho(left f32, right f32, bottom f32, top f32, zNear f32, zFar f32) Mat44 {
+pub fn mat44_ortho(left f32, right f32, bottom f32, top f32, z_near f32, z_far f32) Mat44 {
     mut result := mat44_identity()
 
     result.data[0] = 2.0 / (right - left)
     result.data[5] = 2.0 / (top - bottom)
-    result.data[10] = - 2.0 / (zFar - zNear)
+    result.data[10] = - 2.0 / (z_far - z_near)
     result.data[12] = - (right + left) / (right - left)
     result.data[13] = - (top + bottom) / (top - bottom)
-    result.data[14] = - (zFar + zNear) / (zFar - zNear)
+    result.data[14] = - (z_far + z_near) / (z_far - z_near)
 
     return result
 }
 
-pub fn mat44_perspective(fovy f32, aspect f32, zNear f32, zFar f32) Mat44 {
+pub fn mat44_perspective(fovy f32, aspect f32, z_near f32, z_far f32) Mat44 {
     tan_half_fovy := C.tanf(fovy / 2.0)
 
     mut result := mat44_zero()
 
     result.data[0] = 1.0 / (aspect * tan_half_fovy)
     result.data[5] = 1.0 / tan_half_fovy
-    result.data[10] = - (zFar + zNear) / (zFar - zNear)
+    result.data[10] = - (z_far + z_near) / (z_far - z_near)
     result.data[11] = -1.0
-    result.data[14] = - (2.0 * zFar * zNear) / (zFar - zNear)
+    result.data[14] = - (2.0 * z_far * z_near) / (z_far - z_near)
 
     return result
 }

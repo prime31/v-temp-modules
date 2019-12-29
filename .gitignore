@@ -10,8 +10,8 @@ v-projects/projects/gl3w_tester/gl3w_cube
 v-projects/projects/fmod_tester/fmod_tester
 v-projects/projects/fmod_tester/fmod_physfs_tester
 imgui/thirdparty
-imgui/Generator/bin
-imgui/Generator/obj
+imgui/generator/bin
+imgui/generator/obj
 imgui/cimgui_git
 gl3w/thirdparty
 gl3w/generator/bin

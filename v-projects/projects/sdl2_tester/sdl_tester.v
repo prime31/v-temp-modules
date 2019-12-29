@@ -97,13 +97,13 @@ fn main() {
 
 		draw_text(renderer, 200, 100, 'holy fucking shit', SDL_Color{255, 100, 155, 255})
 
-		mut rect := SDL_FRect {0, 0, 50, 30}
+		mut rect := SDL_Rect {0, 0, 50, 30}
 		C.SDL_SetRenderDrawColor(renderer, 155, 155, 55, 255)
-		C.SDL_RenderDrawRectF(renderer, &rect)
+		C.SDL_RenderDrawRect(renderer, &rect)
 
 		rect.x = 100
 		rect.y = 100
-		C.SDL_RenderFillRectF(renderer, &rect)
+		C.SDL_RenderFillRect(renderer, &rect)
 
 		dstrect := SDL_Rect { 200, 200, 30, 30 }
 		C.SDL_RenderCopy(renderer, tv_logo, voidptr(0), voidptr(&dstrect))

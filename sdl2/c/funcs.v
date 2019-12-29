@@ -56,6 +56,7 @@ fn C.SDL_UpdateTexture(texture voidptr, rect voidptr, pixels voidptr, pitch int)
 fn C.SDL_QueryTexture(texture voidptr, format voidptr, access voidptr, w voidptr, h voidptr) int
 fn C.SDL_DestroyTexture(texture voidptr)
 
+fn C.SDL_RenderDrawRect(renderer voidptr, rect voidptr)
 fn C.SDL_RenderDrawRectF(renderer voidptr, rect voidptr)
 fn C.SDL_RenderFillRect(renderer voidptr, rect voidptr)
 fn C.SDL_RenderFillRectF(renderer voidptr, rect voidptr)

@@ -28,9 +28,7 @@ UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S), Linux) #LINUX
 	LIBS += -lGL -ldl
-endif
-
-ifeq ($(UNAME_S), Darwin) #APPLE
+else ifeq ($(UNAME_S), Darwin) #APPLE
 	LIBS += -framework OpenGL
 	LIBS += -L/usr/local/lib
 

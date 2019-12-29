@@ -10,7 +10,7 @@ TARGET += copy_files
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S), Linux)
-	FMOD_FOLDER := fmodstudioapi20006linux
+	FMOD_FOLDER := fmodstudioapi
 	TARGET += copy_files_linux
 else ifeq ($(UNAME_S), Darwin)
 	FMOD_FOLDER := FMOD Programmers API

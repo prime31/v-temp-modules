@@ -27,7 +27,7 @@ fmod/generator/obj
 fmod/generator/bin
 fmod/core/*gen.v
 fmod/studio/*gen.v
-fmod/fmodstudioapi20006linux
+fmod/fmodstudioapi
 fmod/core/c
 fmod/studio/c
 v-projects/projects/stb/*.png

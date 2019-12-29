@@ -8,7 +8,7 @@ import os
 
 fn main() {
 	physfs.initialize()
-	physfs.mount(os.dir(os.realpath(os.executable())), '', 1)
+	physfs.mount(os.dir(os.realpath(os.executable())), '', true)
 
 	sys := fmod.create(32, C.FMOD_INIT_NORMAL)
 

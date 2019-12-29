@@ -4,6 +4,7 @@ module sokol
 #flag -I @VMOD/prime31/sokol/thirdparty/util
 
 #flag darwin -fobjc-arc
+#flag linux -lX11 -lGL
 
 // METAL
 // #define SOKOL_METAL // which one? depends on import order...

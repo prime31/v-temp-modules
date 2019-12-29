@@ -56,7 +56,7 @@ fn frame(user_data voidptr) {
 	state.pass_action.colors[0].val[1] = if g > 1.0 { 0.0 } else { g }
 
     delta_time := time.sec(time.laptime(&state.last_time))
-    simgui.new_frame(app.width(), app.height(), delta_time)
+    simgui.new_frame(sapp.width(), sapp.height(), delta_time)
 	C.igShowDemoWindow(true)
 
 	sg_begin_default_pass(&state.pass_action, sapp_width(), sapp_height())

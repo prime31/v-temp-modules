@@ -4,7 +4,7 @@ import prime31.sokol.gfx
 
 #flag -I.
 #define HANDMADE_MATH_IMPLEMENTATION
-#include "HandmadeMath.h"
+#include "HandMadeMath.h"
 
 fn C.HMM_Perspective(FOV f32, AspectRatio f32, Near f32, Far f32) C.hmm_mat4
 fn C.HMM_LookAt() C.hmm_mat4

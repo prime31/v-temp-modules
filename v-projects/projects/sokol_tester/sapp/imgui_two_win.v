@@ -118,7 +118,7 @@ fn (state mut AppState) imgui_tick() {
 
 				C.SDL_GL_DeleteContext(state.gl_context)
 				C.SDL_VideoQuit()
-				app.quit()
+				sapp.quit()
 				exit(1)
 			}
 			C.SDL_WINDOWEVENT {

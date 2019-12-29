@@ -49,7 +49,7 @@ v-projects/projects/sokol_tester/sapp/*
 v-projects/projects/sokol_tester/sdl_metal/*
 !v-projects/projects/sokol_tester/sdl_metal/*.*
 !v-projects/projects/sokol_tester/sdl_metal/*/
-sokol/thirdparty/flextgl/flextGL.o
+flextgl/thirdparty/flextGL.o
 a.out
 sokol/generator/obj
 sokol/generator/bin

@@ -118,7 +118,7 @@ fn (state mut AppState) create_shader() {
 	name, size, typ := gl.get_active_attrib(state.program, 0)
 	println('att: $name')
 
-	prog_res := gl.get_programiv(state.program, C.GL_LINK_STATUS)
+	prog_res := gl.get_programiv(state.program, .link_status)
 	println('prog link res=$prog_res')
 
 	println('gl version=${gl.get_string(.version)}')

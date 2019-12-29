@@ -128,13 +128,13 @@ fn (state mut AppState) create_shader() {
 		exit(1)
 	}
 
-	prog_res := gl.get_programiv(state.program, C.GL_LINK_STATUS)
+	prog_res := gl.get_programiv(state.program, .link_status)
 	println('prog link res=$prog_res')
 
-	println('gl version=${gl.get_string(C.GL_VERSION)}')
-	println('glsl version=${gl.get_string(C.GL_SHADING_LANGUAGE_VERSION)}')
-	println('vendor=${gl.get_string(C.GL_VENDOR)}')
-	println('renderer=${gl.get_string(C.GL_RENDERER)}')
+	println('gl version=${gl.get_string(.version)}')
+	println('glsl version=${gl.get_string(.shading_language_version)}')
+	println('vendor=${gl.get_string(.vendor)}')
+	println('renderer=${gl.get_string(.renderer)}')
 }
 
 [live]

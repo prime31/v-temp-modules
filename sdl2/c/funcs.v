@@ -92,6 +92,7 @@ fn C.SDL_Delay(ms u32)
 fn C.SDL_GL_SetAttribute(attr int, value int) int
 fn C.SDL_GL_CreateContext(window voidptr) voidptr
 fn C.SDL_GL_MakeCurrent(window voidptr, context voidptr) int
+fn C.SDL_GL_GetCurrentContext() voidptr
 fn C.SDL_GL_SetSwapInterval(interval int) int
 fn C.SDL_GL_SwapWindow(window voidptr)
 fn C.SDL_GL_DeleteContext(context voidptr)

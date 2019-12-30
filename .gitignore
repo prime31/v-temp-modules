@@ -57,3 +57,6 @@ sokol/cimgui_git
 sokol/thirdparty/cimgui
 .DS_Store
 imgui.ini
+yoga/yoga_git
+yoga/thirdparty
+v-projects/projects/yoga_tester/yoga_tester

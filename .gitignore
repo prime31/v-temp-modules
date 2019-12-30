@@ -59,4 +59,6 @@ sokol/thirdparty/cimgui
 imgui.ini
 yoga/yoga_git
 yoga/thirdparty
+yoga/generator/bin
+yoga/generator/obj
 v-projects/projects/yoga_tester/yoga_tester

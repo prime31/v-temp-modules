@@ -1,24 +1,24 @@
-import prime31.yoga.c
+import prime31.yoga
 
 fn main() {
 	root := YGNodeNew()
 	println('alive. node: ${&root}')
 
 	for i := 0; i < 10; i++ {
-		child := YGNodeNew()
-		YGNodeStyleSetHeight(child, 20)
-		YGNodeSetMeasureFunc(child, measure)
-		YGNodeInsertChild(root, child, 0)
+		child := yoga.node_new()
+		child.style_set_height(20)
+		child.set_measure_func(measure)
+		root.insert_child(child, 0)
 	}
 
-	YGNodeCalculateLayout(root, C.YGUndefined, C.YGUndefined, C.YGDirectionLTR)
-    YGNodeFreeRecursive(root)
+	root.calculate_layout(C.YGUndefined, C.YGUndefined, .ltr)
+    root.free_recursive()
 }
 
-fn measure(node C.YGNodeRef, width f32, widthMode int, height f32, heightMode int) YGSize {
-	println('node: ${&node}, w=$width, wMode=$widthMode, h=$height, hMode=$heightMode')
+fn measure(node C.YGNodeRef, width f32, width_mode yoga.YGMeasureMode, height f32, height_mode yoga.YGMeasureMode) C.YGSize {
+	println('node: ${&node}, w=$width, wMode=$width_mode, h=$height, hMode=$height_mode')
 	return YGSize{
-		width: if widthMode == C.YGMeasureModeUndefined { 10 } else { width }
-		height: if heightMode == C.YGMeasureModeUndefined { 10 } else { width }
+		width: if width_mode == .undefined { 10 } else { width }
+		height: if height_mode == .undefined { 10 } else { width }
 	}
 }

@@ -1,4 +1,6 @@
 # Yoga Flexbox Layout
 
-TODO: make a generator project and generate the V bindings
-TODO: make a nice wrapper API
+## Setup
+- run `make` in the yoga directory to download and build yoga. The headers are also copied by the Makefile.
+
+Running the generator is only required when a new Yoga version is used. The generated files are included with the module.

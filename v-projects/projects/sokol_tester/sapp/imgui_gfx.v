@@ -35,6 +35,8 @@ fn main() {
 		cleanup_cb: cleanup
 		window_title: 'Sokol ImGui'.str
 		high_dpi: false
+		width: 1024
+		height: 768
 	})
 }
 
@@ -54,9 +56,10 @@ fn init(user_data voidptr) {
 	gfx_imgui.initialize(state.sg_imgui)
 
 	time.setup()
-	mut d := &C.simgui_desc_t{}
-	d.dpi_scale = C.sapp_dpi_scale()
-	simgui.setup(d)
+	d := C.simgui_desc_t{
+		dpi_scale: C.sapp_dpi_scale()
+	}
+	simgui.setup(&d)
 }
 
 fn frame(user_data voidptr) {

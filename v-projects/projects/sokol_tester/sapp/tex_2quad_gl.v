@@ -3,6 +3,7 @@ import prime31.sokol.sapp
 import prime31.sokol.gfx
 import prime31.stb.image
 import prime31.math
+import rand
 
 const (
 	vert = '#version 330
@@ -116,8 +117,9 @@ fn init(user_data voidptr) {
 
 	state.bind.vertex_buffers[0] = sg_make_buffer(&sg_buffer_desc{
 		size: sizeof(Vertex) * verts.len
-		content: verts.data
+		usage: .dynamic
 	})
+	sg_update_buffer(state.bind.vertex_buffers[0], verts.data, sizeof(Vertex) * verts.len)
 
 	indices := [u16(0), 1, 2, 0, 2, 3,  4, 5, 6, 4, 6, 7]!
 	state.bind.index_buffer = sg_make_buffer(&sg_buffer_desc{
@@ -150,12 +152,12 @@ fn init(user_data voidptr) {
 		@type: ._2d
 	}
 
-	mut shader_desc := &sg_shader_desc{
+	shader_desc := sg_shader_desc{
 		vs: vs_desc
 		fs: fs_desc
 	}
 
-	shd := sg_make_shader(shader_desc)
+	shd := sg_make_shader(&shader_desc)
 
 	mut layout := sg_layout_desc{}
 	layout.attrs[0] = sg_vertex_attr_desc{
@@ -168,10 +170,7 @@ fn init(user_data voidptr) {
 		format: .ubyte4n
 	}
 
-	rasterizer := sg_rasterizer_state{
-		cull_mode: C.SG_CULLMODE_BACK
-		sample_count: 4
-	}
+
 	state.pip = sg_make_pipeline(&sg_pipeline_desc{
 		layout: layout
 		shader: shd
@@ -180,7 +179,10 @@ fn init(user_data voidptr) {
 			depth_compare_func: C.SG_COMPAREFUNC_LESS_EQUAL
 			depth_write_enabled: true
 		}
-		rasterizer: rasterizer
+		rasterizer: sg_rasterizer_state{
+			cull_mode: C.SG_CULLMODE_BACK
+			sample_count: 4
+		}
 	})
 
 	// view-projection matrix
@@ -251,6 +253,25 @@ fn on_event(evt &C.sapp_event, user_data voidptr) {
 			.g {
 				mut state := &AppState(user_data)
 				state.bind.fs_images[0] = state.checker_img
+			}
+			.v {
+				state := &AppState(user_data)
+				mut verts := [
+					Vertex{ math.Vec2{-1,-1}, 	math.Vec2{0,0},		math.Color{} }, // tl
+					Vertex{ math.Vec2{1,-1}, 	math.Vec2{1,0},		math.Color{} }, // tr
+					Vertex{ math.Vec2{1,1}, 	math.Vec2{1,1},		math.Color{} }, // br
+					Vertex{ math.Vec2{-1,1}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }, // bl
+
+					Vertex{ math.Vec2{-2,-2}, 	math.Vec2{0,0},		math.Color{} },
+					Vertex{ math.Vec2{0,-2}, 	math.Vec2{1,0},		math.Color{} },
+					Vertex{ math.Vec2{0,0}, 	math.Vec2{1,1},		math.Color{} },
+					Vertex{ math.Vec2{-2,0}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }
+				]!
+				for i, _ in verts {
+					verts[i].pos.x += f32(rand.next(100)) / 100
+					verts[i].pos.y += f32(rand.next(100)) / 100
+				}
+				sg_update_buffer(state.bind.vertex_buffers[0], verts.data, sizeof(Vertex) * verts.len)
 			}
 			else {}
 		}

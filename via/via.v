@@ -1,6 +1,6 @@
 module via
 
-struct Via {
+pub struct Via {
 pub:
 	audio &Audio
 	filesystem &FileSystem
@@ -21,6 +21,11 @@ pub fn create(config &ViaConfig) &Via {
 	}
 
 	return via
+}
+
+pub fn (v &Via) run<T>(ctx &T) {
+	ctx.update(v)
+	ctx.draw(v)
 }
 
 pub fn (v &Via) free() {

@@ -1,5 +1,6 @@
 module via
 import os
+import filepath
 import prime31.physfs
 
 struct FileSystem {
@@ -10,11 +11,11 @@ fn create_filesystem(config ViaConfig) &FileSystem {
 	if physfs.initialize() != 1 { panic('could not initialize PhysFS') }
 
 	physfs.permit_symbolic_links(1)
-	physfs.mount(os.dir(os.realpath(os.executable())), '', true)
+	physfs.mount(filepath.dir(os.realpath(os.executable())), '', true)
 
 	mut identity := config.identity
 	if identity.len == 0 {
-		identity = os.filename(os.executable())
+		identity = filepath.filename(os.executable())
 	}
 
 	// setup save directory and add it to search path

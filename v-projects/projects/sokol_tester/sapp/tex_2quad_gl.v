@@ -68,14 +68,12 @@ pub mut:
 }
 
 fn main() {
-	mut color_action := sg_color_attachment_action {
+	mut pass_action := sg_pass_action{}
+	pass_action.colors[0] = sg_color_attachment_action {
 		action: C.SG_ACTION_CLEAR
 	}
-	color_action.val[0] = 0.3
-	color_action.val[1] = 0.3
-
-	mut pass_action := sg_pass_action{}
-	pass_action.colors[0] = color_action
+	pass_action.colors[0].val[0] = 0.3
+	pass_action.colors[0].val[1] = 0.3
 
 	state := &AppState{
 		pass_action: pass_action
@@ -105,10 +103,15 @@ fn init(user_data voidptr) {
 	})
 
 	verts := [
-		Vertex{ math.Vec2{-1,-1}, 	math.Vec2{0,0},		math.Color{} },
-		Vertex{ math.Vec2{1,-1}, 	math.Vec2{1,0},		math.Color{} },
-		Vertex{ math.Vec2{1,1}, 	math.Vec2{1,1},		math.Color{} },
-		Vertex{ math.Vec2{-1,1}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }
+		Vertex{ math.Vec2{-1,-1}, 	math.Vec2{0,0},		math.Color{} }, // tl
+		Vertex{ math.Vec2{1,-1}, 	math.Vec2{1,0},		math.Color{} }, // tr
+		Vertex{ math.Vec2{1,1}, 	math.Vec2{1,1},		math.Color{} }, // br
+		Vertex{ math.Vec2{-1,1}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }, // bl
+
+		Vertex{ math.Vec2{-2,-2}, 	math.Vec2{0,0},		math.Color{} },
+		Vertex{ math.Vec2{0,-2}, 	math.Vec2{1,0},		math.Color{} },
+		Vertex{ math.Vec2{0,0}, 	math.Vec2{1,1},		math.Color{} },
+		Vertex{ math.Vec2{-2,0}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }
 	]!
 
 	state.bind.vertex_buffers[0] = sg_make_buffer(&sg_buffer_desc{
@@ -116,7 +119,7 @@ fn init(user_data voidptr) {
 		content: verts.data
 	})
 
-	indices := [u16(0), 1, 2, 0, 2, 3]!
+	indices := [u16(0), 1, 2, 0, 2, 3,  4, 5, 6, 4, 6, 7]!
 	state.bind.index_buffer = sg_make_buffer(&sg_buffer_desc{
         @type: C.SG_BUFFERTYPE_INDEXBUFFER
         size: sizeof(u16) * indices.len
@@ -233,7 +236,7 @@ fn frame(user_data voidptr) {
 	sg_apply_pipeline(state.pip)
 	sg_apply_bindings(&state.bind)
 	sg_apply_uniforms(C.SG_SHADERSTAGE_VS, 0, &state.trans_mat, sizeof(math.Mat44))
-	sg_draw(0, 6, 1)
+	sg_draw(0, 12, 1)
 	sg_end_pass()
 	sg_commit()
 }

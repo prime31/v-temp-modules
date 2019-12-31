@@ -30,11 +30,12 @@ fmod/studio/*gen.v
 fmod/fmodstudioapi
 fmod/core/c
 fmod/studio/c
-v-projects/projects/stb/*.png
-v-projects/projects/stb/*.jpg
-v-projects/projects/stb/stb_tester
-v-projects/projects/stb/truetype_tester
+v-projects/projects/stb_tester/*.png
+v-projects/projects/stb_tester/*.jpg
+v-projects/projects/stb_tester/stb_tester
+v-projects/projects/stb_tester/truetype_tester
 v-projects/projects/gl3w_tester/gl3w_quad
+v-projects/projects/via_tester/via_tester
 
 # ignore files with no extension
 v-projects/projects/sokol_tester/metal/*

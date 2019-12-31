@@ -1,13 +1,5 @@
 module gfx
 
-// for the gfx_helper, as long as we need it
-#flag -I @VMOD/prime31/sokol/gfx
-
-#define SOKOL_IMPL
-#define SOKOL_NO_DEPRECATED
-#include "sokol_gfx.h"
-#include "gfx_helper.h"
-
 // setup and misc functions
 [inline]
 pub fn setup(desc &C.sg_desc) {

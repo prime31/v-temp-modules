@@ -1,9 +1,5 @@
 module sapp
 
-#define SOKOL_IMPL
-#define SOKOL_NO_ENTRY
-#include "sokol_app.h"
-
 /* returns true after sokol-app has been initialized */
 [inline]
 pub fn isvalid() bool {

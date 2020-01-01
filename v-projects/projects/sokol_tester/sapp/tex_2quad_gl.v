@@ -50,6 +50,8 @@ vec4 effect(vec4 vcolor, sampler2D tex, vec2 texcoord) {
 
 struct AppState {
 mut:
+	draw_calls []DrawCall
+
 	pip sg_pipeline
 	bind sg_bindings
 	pass_action sg_pass_action
@@ -66,6 +68,15 @@ pub mut:
 	pos math.Vec2
 	texcoords math.Vec2
 	color math.Color
+}
+
+struct DrawCall {
+pub mut:
+	pipeline sg_pipeline
+	img sg_image
+	base_vertex int
+	num_verts int
+	bindings &sg_bindings
 }
 
 fn main() {
@@ -187,6 +198,22 @@ fn init(user_data voidptr) {
 
 	// view-projection matrix
 	state.trans_mat = math.mat44_ortho2d(-2, 2, 2, -2)
+
+	state.draw_calls << DrawCall{
+		pipeline: state.pip
+		img: state.beach_img
+		base_vertex: 0
+		num_verts: 6
+		bindings: &state.bind
+	}
+
+	state.draw_calls << DrawCall{
+		pipeline: state.pip
+		img: state.checker_img
+		base_vertex: 6
+		num_verts: 6
+		bindings: &state.bind
+	}
 }
 
 fn create_image() C.sg_image {
@@ -235,10 +262,17 @@ fn frame(user_data voidptr) {
 	state := &AppState(user_data)
 
 	sg_begin_default_pass(&state.pass_action, sapp_width(), sapp_height())
-	sg_apply_pipeline(state.pip)
-	sg_apply_bindings(&state.bind)
-	sg_apply_uniforms(C.SG_SHADERSTAGE_VS, 0, &state.trans_mat, sizeof(math.Mat44))
-	sg_draw(0, 12, 1)
+
+	for i, _ in state.draw_calls {
+		mut draw := state.draw_calls[i]
+		
+		sg_apply_pipeline(draw.pipeline)
+		draw.bindings.fs_images[0] = draw.img
+		sg_apply_bindings(draw.bindings)
+		sg_apply_uniforms(C.SG_SHADERSTAGE_VS, 0, &state.trans_mat, sizeof(math.Mat44))
+		sg_draw(draw.base_vertex, draw.num_verts, 1)
+	}
+
 	sg_end_pass()
 	sg_commit()
 }

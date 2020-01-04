@@ -63,3 +63,6 @@ yoga/thirdparty
 yoga/generator/bin
 yoga/generator/obj
 v-projects/projects/yoga_tester/yoga_tester
+VGenerator/bin
+VGenerator/obj
+v-projects/projects/kinc_tester/kinc_tester

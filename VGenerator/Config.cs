@@ -48,6 +48,9 @@ namespace Generator
 		/// </summary>
 		public Dictionary<string, string> CTypeToVType {get; set;} = new Dictionary<string, string>();
 
+		/// <summary>
+		/// All the header files that should be parsed and converted.
+		/// </summary>
 		public string[] Files {get; set;}
 
 		/// <summary>
@@ -75,9 +78,12 @@ namespace Generator
 		/// </summary>
 		public bool AutoSquashTypedef {get; set;} = true;
 
+		/// <summary>
+		/// Controls whether the codebase should be parsed as C or C++
+		/// </summary>
 		public bool ParseAsCpp {get; set;} = true;
 
-		public bool ParseComments {get; set;} = true;
+		public bool ParseComments {get; set;} = false;
 
 		/// <summary>
 		/// System Clang target. Default is "windows"
@@ -112,11 +118,36 @@ namespace Generator
 			}
 		}
 
-		public List<string> GetFiles() => ToAbsolutePaths(Files).ToList();
+		/// <summary>
+		/// Retuns all Files as absolute paths. If a file path is relative, it will try to resolve its location using
+		/// the IncludeFolders and the SrcDir.
+		/// </summary>
+		public List<string> GetFiles()
+			=> Files.Select(p => Path.IsPathRooted(p) ? p : IncludedFileToAbsPath(p)).ToList();
 
+		/// <summary>
+		/// If any of paths are relative, returns the path appended to SrcDir.
+		/// </summary>
 		string[] ToAbsolutePaths(string[] paths)
+			=> paths.Select(p => Path.IsPathRooted(p) ? p : Path.Combine(SrcDir, p)).ToArray();
+
+		/// <summary>
+		///	Attempts to resolve an included file path by checking all the IncludeFolder and SrcDir to get an absolute
+		/// path to the file.
+		/// </summary>
+		string IncludedFileToAbsPath(string path)
 		{
-			return paths.Select(p => Path.IsPathRooted(p) ? p : Path.Combine(SrcDir, p)).ToArray();
+			foreach (var incPath in ToAbsolutePaths(IncludeFolders))
+			{
+				var tmp = Path.Combine(incPath, path);
+				if (File.Exists(tmp))
+					return tmp;
+			}
+
+			var newPath = Path.Combine(SrcDir, path);
+			if (!File.Exists(newPath))
+				throw new FileNotFoundException($"Could not find file {path} from the Files array. Maybe your {nameof(IncludeFolders)} are not correct?");
+			return newPath;
 		}
 	}
 

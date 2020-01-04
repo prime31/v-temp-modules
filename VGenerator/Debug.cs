@@ -56,7 +56,6 @@ namespace Generator
 				Console.WriteLine("\n------ Functions ------");
 			foreach (var cppFunction in comp.Functions)
 			{
-				Console.WriteLine($"-- {FilenameFromSpan(cppFunction.Span)} --");
 				PrintComment(cppFunction.Comment);
 				Console.WriteLine(cppFunction);
 			}

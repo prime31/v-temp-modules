@@ -16,6 +16,12 @@ namespace Generator
 			}
 			else if (args.Contains("-c"))
 			{
+				if (args.Length != 2)
+				{
+					Console.WriteLine("Invalid arguments. The -c option requires a filename");
+					PrintHelp();
+					return;
+				}
 				var index = Array.IndexOf(args, "-c");
 				var file = args[index + 1];
 
@@ -28,6 +34,12 @@ namespace Generator
 			}
 			else if (args.Contains("-g"))
 			{
+				Console.WriteLine("Invalid arguments. The -g option requires a filename");
+				if (args.Length != 2)
+				{
+					PrintHelp();
+					return;
+				}
 				var index = Array.IndexOf(args, "-g");
 				var file = args[index + 1];
 
@@ -42,8 +54,14 @@ namespace Generator
 
 		private static void PrintHelp()
 		{
-			Console.WriteLine("-c FILE");
-			Console.WriteLine("-g FILE");
+			Console.WriteLine("VGenerator Help");
+			Console.WriteLine("Standard usage pattern is to first use the '-c' option to create an empty generator JSON file.");
+			Console.WriteLine("Fill in the details of the JSON file then use the '-g' option to generate the V bindings.");
+			Console.WriteLine("\nUsage:");
+			Console.WriteLine("\tWrite an empty generator configuration json file:");
+			Console.WriteLine("\tVGenerator -c FILENAME");
+			Console.WriteLine("\n\tGenerate V bindings from a generator configuration json file:");
+			Console.WriteLine("\tVGenerator -g CONFIG_FILENAME");
 		}
 
 		static void Run(Config config)
@@ -84,38 +102,38 @@ namespace Generator
 					"Backends/Audio3/A3onA2/Sources"
 				},
 				Files = new string[] {
-					"Sources/kinc/graphics1/graphics.h",
+					"kinc/graphics1/graphics.h",
 
-					"Sources/kinc/graphics4/constantlocation.h",
-					"Sources/kinc/graphics4/graphics.h",
-					"Sources/kinc/graphics4/indexbuffer.h",
-					// "Sources/kinc/graphics4/pipeline.h",
-					"Sources/kinc/graphics4/rendertarget.h",
-					"Sources/kinc/graphics4/shader.h",
-					"Sources/kinc/graphics4/texture.h",
-					"Sources/kinc/graphics4/texturearray.h",
-					"Sources/kinc/graphics4/textureunit.h",
-					// "Sources/kinc/graphics4/vertexbuffer.h",
-					// "Sources/kinc/graphics4/vertexstructure.h",
+					"kinc/graphics4/constantlocation.h",
+					"kinc/graphics4/graphics.h",
+					"kinc/graphics4/indexbuffer.h",
+					// "kinc/graphics4/pipeline.h",
+					"kinc/graphics4/rendertarget.h",
+					"kinc/graphics4/shader.h",
+					"kinc/graphics4/texture.h",
+					"kinc/graphics4/texturearray.h",
+					"kinc/graphics4/textureunit.h",
+					// "kinc/graphics4/vertexbuffer.h",
+					// "kinc/graphics4/vertexstructure.h",
 
-					"Sources/kinc/graphics5/commandlist.h",
-					"Sources/kinc/graphics5/constantbuffer.h",
+					"kinc/graphics5/commandlist.h",
+					"kinc/graphics5/constantbuffer.h",
 
-					"Sources/kinc/input/gamepad.h",
-					"Sources/kinc/input/keyboard.h",
-					"Sources/kinc/input/mouse.h",
-					"Sources/kinc/input/surface.h",
+					"kinc/input/gamepad.h",
+					"kinc/input/keyboard.h",
+					"kinc/input/mouse.h",
+					"kinc/input/surface.h",
 
-					"Sources/kinc/io/filereader.h",
-					"Sources/kinc/io/filewriter.h",
+					"kinc/io/filereader.h",
+					"kinc/io/filewriter.h",
 
-					// "Sources/kinc/math/matrix.h",
-					"Sources/kinc/math/random.h",
-					// "Sources/kinc/math/vector.h",
+					// "kinc/math/matrix.h",
+					"kinc/math/random.h",
+					// "kinc/math/vector.h",
 
-					"Sources/kinc/system.h",
-					// "Sources/kinc/image.h",
-					"Sources/kinc/window.h"
+					"kinc/system.h",
+					// "kinc/image.h",
+					"kinc/window.h"
 				}
 			};
 		}

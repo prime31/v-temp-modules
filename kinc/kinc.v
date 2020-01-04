@@ -14,8 +14,13 @@ import prime31.kinc.c
 #flag -lkinc -lm -lc++
 
 #include "Kore/pch.h"
-#include "kinc/system.h"
-#include "kinc/window.h"
-#include "kinc/image.h"
-#include "kinc/display.h"
-#include "kinc/graphics4/graphics.h"
+#include <kinc/io/filereader.h>
+#include <kinc/system.h>
+#include <kinc/window.h>
+#include <kinc/image.h>
+#include <kinc/display.h>
+#include <kinc/graphics4/graphics.h>
+#include <kinc/graphics4/indexbuffer.h>
+#include <kinc/graphics4/pipeline.h>
+#include <kinc/graphics4/shader.h>
+#include <kinc/graphics4/vertexbuffer.h>

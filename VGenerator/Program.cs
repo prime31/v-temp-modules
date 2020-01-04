@@ -72,7 +72,7 @@ namespace Generator
 				Defines = new string[] {
 					"KORE_MACOS", "KORE_METAL", "KORE_POSIX", "KORE_G1", "KORE_G2", "KORE_G3", "KORE_G4",
 					"KORE_G5", "KORE_G4ONG5", "KORE_MACOS", "KORE_METAL", "KORE_POSIX", "KORE_A1", "KORE_A2",
-					"KORE_A3"
+					"KORE_A3", "KORE_NO_MAIN"
 				},
 				IncludeFolders = new string[] {
 					"Sources",

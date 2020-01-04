@@ -1,0 +1,3 @@
+[submodule "kinc/thirdparty/Kinc"]
+	path = kinc/thirdparty/Kinc
+	url = https://github.com/Kode/Kinc.git

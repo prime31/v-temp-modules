@@ -50,8 +50,7 @@ vec4 effect(vec4 vcolor, sampler2D tex, vec2 texcoord) {
 
 struct AppState {
 mut:
-	draw_calls []DrawCall
-
+	update_verts bool
 	pip sg_pipeline
 	bind sg_bindings
 	pass_action sg_pass_action
@@ -61,6 +60,8 @@ mut:
 
 	checker_img C.sg_image
 	beach_img C.sg_image
+
+	draw_images [2]sg_image
 }
 
 struct Vertex {
@@ -70,14 +71,6 @@ pub mut:
 	color math.Color
 }
 
-struct DrawCall {
-pub mut:
-	pipeline sg_pipeline
-	img sg_image
-	base_vertex int
-	num_verts int
-	bindings &sg_bindings
-}
 
 fn main() {
 	mut pass_action := sg_pass_action{}
@@ -142,6 +135,8 @@ fn init(user_data voidptr) {
 
 	state.beach_img = state.bind.fs_images[0]
 	state.checker_img = create_checker_image()
+	state.draw_images[0] = state.beach_img
+	state.draw_images[1] = state.checker_img
 
 	// vert shader
 	mut vs_desc := sg_shader_stage_desc{
@@ -198,22 +193,6 @@ fn init(user_data voidptr) {
 
 	// view-projection matrix
 	state.trans_mat = math.mat44_ortho2d(-2, 2, 2, -2)
-
-	state.draw_calls << DrawCall{
-		pipeline: state.pip
-		img: state.beach_img
-		base_vertex: 0
-		num_verts: 6
-		bindings: &state.bind
-	}
-
-	state.draw_calls << DrawCall{
-		pipeline: state.pip
-		img: state.checker_img
-		base_vertex: 6
-		num_verts: 6
-		bindings: &state.bind
-	}
 }
 
 fn create_image() C.sg_image {
@@ -259,18 +238,21 @@ fn create_checker_image() C.sg_image {
 }
 
 fn frame(user_data voidptr) {
-	state := &AppState(user_data)
+	mut state := &AppState(user_data)
+
+	if state.update_verts {
+		state.update_verts = !state.update_verts
+		state.update_vert_buffer()
+	}
 
 	sg_begin_default_pass(&state.pass_action, sapp_width(), sapp_height())
+	sg_apply_pipeline(state.pip)
 
-	for i, _ in state.draw_calls {
-		mut draw := state.draw_calls[i]
-		
-		sg_apply_pipeline(draw.pipeline)
-		draw.bindings.fs_images[0] = draw.img
-		sg_apply_bindings(draw.bindings)
+	for i := 0; i < 2; i++ {
+		state.bind.fs_images[0] = state.draw_images[i]
+		sg_apply_bindings(&state.bind)
 		sg_apply_uniforms(C.SG_SHADERSTAGE_VS, 0, &state.trans_mat, sizeof(math.Mat44))
-		sg_draw(draw.base_vertex, draw.num_verts, 1)
+		sg_draw(i * 6, 6, 1)
 	}
 
 	sg_end_pass()
@@ -282,34 +264,42 @@ fn on_event(evt &C.sapp_event, user_data voidptr) {
 		match evt.key_code {
 			.f {
 				mut state := &AppState(user_data)
-				state.bind.fs_images[0] = state.beach_img
+				state.draw_images[0] = state.beach_img
 			}
 			.g {
 				mut state := &AppState(user_data)
-				state.bind.fs_images[0] = state.checker_img
+				state.draw_images[0] = state.checker_img
 			}
 			.v {
-				state := &AppState(user_data)
-				mut verts := [
-					Vertex{ math.Vec2{-1,-1}, 	math.Vec2{0,0},		math.Color{} }, // tl
-					Vertex{ math.Vec2{1,-1}, 	math.Vec2{1,0},		math.Color{} }, // tr
-					Vertex{ math.Vec2{1,1}, 	math.Vec2{1,1},		math.Color{} }, // br
-					Vertex{ math.Vec2{-1,1}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }, // bl
+				mut state := &AppState(user_data)
+				state.update_verts = !state.update_verts
 
-					Vertex{ math.Vec2{-2,-2}, 	math.Vec2{0,0},		math.Color{} },
-					Vertex{ math.Vec2{0,-2}, 	math.Vec2{1,0},		math.Color{} },
-					Vertex{ math.Vec2{0,0}, 	math.Vec2{1,1},		math.Color{} },
-					Vertex{ math.Vec2{-2,0}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }
-				]!
-				for i, _ in verts {
-					verts[i].pos.x += f32(rand.next(100)) / 100
-					verts[i].pos.y += f32(rand.next(100)) / 100
-				}
-				sg_update_buffer(state.bind.vertex_buffers[0], verts.data, sizeof(Vertex) * verts.len)
+				// comment these two lines out to cause the vert update to occur in frame
+				state.update_verts = false
+				state.update_vert_buffer()
 			}
 			else {}
 		}
 	}
+}
+
+fn (state &AppState) update_vert_buffer() {
+	mut verts := [
+		Vertex{ math.Vec2{-1,-1}, 	math.Vec2{0,0},		math.Color{} }, // tl
+		Vertex{ math.Vec2{1,-1}, 	math.Vec2{1,0},		math.Color{} }, // tr
+		Vertex{ math.Vec2{1,1}, 	math.Vec2{1,1},		math.Color{} }, // br
+		Vertex{ math.Vec2{-1,1}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }, // bl
+
+		Vertex{ math.Vec2{-2,-2}, 	math.Vec2{0,0},		math.Color{} },
+		Vertex{ math.Vec2{0,-2}, 	math.Vec2{1,0},		math.Color{} },
+		Vertex{ math.Vec2{0,0}, 	math.Vec2{1,1},		math.Color{} },
+		Vertex{ math.Vec2{-2,0}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }
+	]!
+	for i, _ in verts {
+		verts[i].pos.x += f32(rand.next(100)) / 100
+		verts[i].pos.y += f32(rand.next(100)) / 100
+	}
+	sg_update_buffer(state.bind.vertex_buffers[0], verts.data, sizeof(Vertex) * verts.len)
 }
 
 fn cleanup() {

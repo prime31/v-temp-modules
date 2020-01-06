@@ -1,3 +1,5 @@
+GL_LOADER_FLEXT := 1
+
 TARGET :=
 
 CP := cp
@@ -22,15 +24,20 @@ CFLAGS += `sdl2-config --cflags`
 ## OPEN GL FUNCTION LOADER
 ##---------------------------------------------------------------------
 
-# Using OpenGL loader gl3w. Depending on the Makefile for gl3w (it can build using imgui's libs/gl3w
-# or from gl3w directly) we will require a different header inclusion here
-# CFLAGS += -I cimgui_git/imgui/examples/libs/gl3w
-# CFLAGS += -I ../gl3w/thirdparty
-# CFLAGS += -DIMGUI_IMPL_OPENGL_LOADER_GL3W
-
-# Using OpenGL loader for FlextGL
-CFLAGS += -I ../flextgl/thirdparty
-CFLAGS += -DIMGUI_IMPL_OPENGL_LOADER_CUSTOM=\"flextGL.h\"
+MESSAGE :=
+ifeq ($(GL_LOADER_FLEXT), 1)
+	# Using OpenGL loader for FlextGL
+	CFLAGS += -I ../flextgl/thirdparty
+	CFLAGS += -DIMGUI_IMPL_OPENGL_LOADER_CUSTOM=\"flextGL.h\"
+	MESSAGE += using GL loader FlextGL
+else
+	# Using OpenGL loader gl3w. Depending on the Makefile for gl3w (it can build using imgui's libs/gl3w
+	# or from gl3w directly) we will require a different header inclusion here
+	# CFLAGS += -I cimgui_git/imgui/examples/libs/gl3w
+	CFLAGS += -I ../gl3w/thirdparty
+	CFLAGS += -DIMGUI_IMPL_OPENGL_LOADER_GL3W
+	MESSAGE += using GL loader gl3w
+endif
 
 
 # use can either a dylib or static lib, so we will generate both and let the c_imgui.v file decide
@@ -67,6 +74,7 @@ endif
 ##---------------------------------------------------------------------
 
 all: $(TARGET)
+	$(info $(MESSAGE))
 	@echo build complete
 
 cimgui.dylib: cimgui_git/build/cimgui.dylib

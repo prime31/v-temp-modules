@@ -1,7 +1,7 @@
-import prime31.fmod.core as fmod
-import prime31.fmod.physfs as fmod_physfs
-import prime31.physfs
-import prime31.sdl2
+import via.libs.fmod.core as fmod
+import via.libs.fmod.physfs as fmod_physfs
+import via.libs.physfs
+import via.libs.sdl2
 import time
 import os
 

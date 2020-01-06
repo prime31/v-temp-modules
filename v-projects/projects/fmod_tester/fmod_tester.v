@@ -1,4 +1,4 @@
-import prime31.fmod.core as fmod
+import via.libs.fmod.core as fmod
 import time
 
 fn main() {

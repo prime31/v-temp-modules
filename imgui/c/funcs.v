@@ -3,6 +3,8 @@ module c
 fn C.igCheckbox(label voidptr, p_open voidptr)
 fn C.igGetIO() voidptr
 fn C.igCreateContext(shared_font_atlas voidptr) voidptr
+fn C.igDestroyContext(igui_context voidptr)
+fn C.igSetCurrentContext(igui_context voidptr)
 fn C.igStyleColorsDark(dst voidptr)
 fn C.igNewFrame()
 fn C.igShowDemoWindow(p_open voidptr)
@@ -15,7 +17,6 @@ fn C.igSameLine(offset_from_start_x f32, spacing f32)
 fn C.igEnd()
 fn C.igRender()
 fn C.igGetDrawData() voidptr
-fn C.igDestroyContext(igui_context voidptr)
 fn C.igGetStyle() &C.ImGuiStyle
 
 // multiple viewport

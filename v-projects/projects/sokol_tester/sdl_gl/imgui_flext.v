@@ -1,8 +1,8 @@
-import prime31.imgui
-import prime31.sdl2
-import prime31.flextgl
-import via.sokol
-import via.sokol.gfx
+import via.libs.imgui
+import via.libs.sdl2
+import via.libs.flextgl
+import via.libs.sokol
+import via.libs.sokol.gfx
 
 const (
 	vert = '#version 330

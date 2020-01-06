@@ -64,6 +64,14 @@ namespace Generator
 			if (cppType.TypeKind == CppTypeKind.Enum || cppType.TypeKind == CppTypeKind.Primitive)
 				return GetVType(cppType.GetDisplayName());
 
+			if (cppType.TypeKind == CppTypeKind.Typedef && cppType is CppTypedef typeDefType)
+			{
+				if (typeDefType.IsPrimitiveType())
+					return typeDefType.ElementTypeAsPrimitive().GetVType();
+				else
+					Console.WriteLine($"Unhandled typedef: {typeDefType}");
+			}
+
 			if (cppType.TypeKind == CppTypeKind.Pointer)
 			{
 				var cppPtrType = cppType as CppPointerType;

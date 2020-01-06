@@ -48,7 +48,8 @@ namespace Generator
 			}
 			else
 			{
-				Run(GetKincConfig());
+				// Run(GetKincConfig());
+				Run(GetPhyFSConfig());
 			}
 		}
 
@@ -69,6 +70,29 @@ namespace Generator
 			var compilation = CppParser.ParseFiles(config.GetFiles(), config.ToParserOptions());
 			VGenerator.Generate(config, compilation);
 			compilation.Dump();
+		}
+
+		static Config GetPhyFSConfig()
+		{
+			return new Config
+			{
+				DstDir = "/Users/desaro/Desktop/PhysFSGen",
+				SrcDir = "/Users/desaro/Desktop/physfs/src",
+				BaseSourceFolder = "src",
+				ModuleName = "c",
+				SingleVFileExport = true,
+				ExcludeFunctionsThatContain = new string[] {},
+				StripPrefixFromFunctionNames = new string[] {},
+				CTypeToVType = {
+					{"kinc_ticks_t", "u64"}
+				},
+				TargetSystem = "darwin",
+				Defines = new string[] {},
+				IncludeFolders = new string[] {},
+				Files = new string[] {
+					"physfs.h"
+				}
+			};
 		}
 
 		static Config GetKincConfig()

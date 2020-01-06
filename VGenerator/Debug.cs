@@ -28,11 +28,10 @@ namespace Generator
 				Console.WriteLine(macro);
 			}
 
-			if (comp.Diagnostics.Messages.Count > 0)
+			if (comp.Typedefs.Count > 0)
 				Console.WriteLine("\n------ Typedefs ------");
 			foreach (var typedef in comp.Typedefs)
 			{
-				var s = typedef.Span.ToString();
 				PrintComment(typedef.Comment);
 				Console.WriteLine(typedef);
 			}

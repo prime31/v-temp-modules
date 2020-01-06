@@ -10,7 +10,13 @@ namespace Generator
 		public TypedefMap(CppContainerList<CppTypedef> types)
 		{
 			foreach (var t in types)
+			{
 				Add(t.ElementType.GetDisplayName(), t.Name);
+				Add(t.Name, t.ElementType.GetDisplayName());
+
+				if (t.IsPrimitiveType())
+					V.AddTypeConversion(t.Name, t.ElementTypeAsPrimitive().GetVType());
+			}
 		}
 
 		public void Add(string from, string to) => Map[from] = to;

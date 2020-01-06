@@ -9,6 +9,7 @@ namespace Generator
 		public static void Generate(Config config, CppCompilation comp)
 		{
 			var typeMap = new TypedefMap(comp.Typedefs);
+
 			V.AddTypeConversions(config.CTypeToVType);
 
 			// add conversions for any types in the lib

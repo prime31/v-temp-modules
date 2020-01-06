@@ -68,17 +68,8 @@ pub mut:
 }
 
 fn main() {
-	mut color_action := sg_color_attachment_action {
-		action: C.SG_ACTION_CLEAR
-	}
-	color_action.val[0] = 0.3
-	color_action.val[1] = 0.3
-
-	mut pass_action := sg_pass_action{}
-	pass_action.colors[0] = color_action
-
 	state := &AppState{
-		pass_action: pass_action
+		pass_action: gfx.create_clear_pass(0.3, 0.3, 1.0, 1.0)
 	}
 
 	sapp_run(&sapp_desc{

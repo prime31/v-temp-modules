@@ -128,7 +128,7 @@ pub mut:
 }
 
 pub struct C.sg_pass_info {
-
+    info C.sg_slot_info
 }
 
 pub struct C.sg_pass_action {
@@ -320,6 +320,13 @@ pub struct C.sg_color_attachment_action {
 pub mut:
     action Action
     val [4]f32
+}
+
+pub fn (action mut C.sg_color_attachment_action) set_color_values(r, g, b, a f32) {
+    action.val[0] = r
+    action.val[1] = g
+    action.val[2] = b
+    action.val[3] = a
 }
 
 pub struct C.sg_depth_attachment_action {

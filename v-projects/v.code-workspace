@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../../prime31"
+		},
+		{
+			"path": "../../via"
 		}
 	],
 	"settings": {}

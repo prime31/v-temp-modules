@@ -1,4 +1,4 @@
-import prime31.via
+import via
 
 struct AppState {
 	data int
@@ -6,8 +6,11 @@ struct AppState {
 
 fn main() {
 	state := AppState{}
-	via := via.create(via.ViaConfig{})
-	via.run(state)
+	via.run(via.ViaConfig{}, state)
+}
+
+pub fn (state &AppState) initialize(via &via.Via) {
+	println('initialize called')
 }
 
 pub fn (state &AppState) update(via &via.Via) {

@@ -1,7 +1,6 @@
-
 import prime31.imgui
 import prime31.sdl2
-import prime31.gl3w
+import prime31.flextgl
 import via.sokol
 import via.sokol.gfx
 
@@ -66,8 +65,6 @@ fn main() {
 	C.SDL_GL_MakeCurrent(state.window, state.gl_context)
 	C.SDL_GL_SetSwapInterval(1) // Enable vsync
 
-	gl3w.initialize()
-
 	C.igCreateContext(C.NULL)
 	mut io := imgui.get_io()
 	io.ConfigFlags |= C.ImGuiConfigFlags_NavEnableKeyboard
@@ -79,6 +76,7 @@ fn main() {
 		style.WindowRounding = 0
 	}
 
+	flextgl.flext_init()
 	imgui.init_for_gl('#version 150'.str, state.window, state.gl_context)
 
 	sg_setup(&sg_desc{})

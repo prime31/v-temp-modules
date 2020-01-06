@@ -1,7 +1,7 @@
 import prime31.sdl2
 import prime31.flextgl
-import prime31.sokol
-import prime31.sokol.gfx
+import via.sokol
+import via.sokol.gfx
 
 const (
 	vert = '#version 330

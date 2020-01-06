@@ -17,10 +17,21 @@ CFLAGS += -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS=1
 CFLAGS += -DIMGUI_IMPL_API=
 CFLAGS += `sdl2-config --cflags`
 
+
+##---------------------------------------------------------------------
+## OPEN GL FUNCTION LOADER
+##---------------------------------------------------------------------
+
 # Using OpenGL loader gl3w. Depending on the Makefile for gl3w (it can build using imgui's libs/gl3w
 # or from gl3w directly) we will require a different header inclusion here
 # CFLAGS += -I cimgui_git/imgui/examples/libs/gl3w
-CFLAGS += -I ../gl3w/thirdparty
+# CFLAGS += -I ../gl3w/thirdparty
+# CFLAGS += -DIMGUI_IMPL_OPENGL_LOADER_GL3W
+
+# Using OpenGL loader for FlextGL
+CFLAGS += -I ../flextgl/thirdparty
+CFLAGS += -DIMGUI_IMPL_OPENGL_LOADER_CUSTOM=\"flextGL.h\"
+
 
 # use can either a dylib or static lib, so we will generate both and let the c_imgui.v file decide
 TARGET += cimgui.a
@@ -44,7 +55,6 @@ else ifeq ($(UNAME_S), Darwin) #APPLE
 
 	CFLAGS += `sdl2-config --cflags`
 	CFLAGS += -I/usr/local/include
-	CFLAGS += -DIMGUI_IMPL_OPENGL_LOADER_GL3W
 
 	SED := sed -i ''
 	TARGET += cimgui.dylib

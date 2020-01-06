@@ -1,36 +1,29 @@
-import prime31.sokol
-import prime31.sokol.sapp
-import prime31.sokol.gfx
+import via.sokol
+import via.sokol.sapp
+import via.sokol.gfx
 
 struct AppState {
 	pass_action sg_pass_action
 }
 
 fn main() {
-	mut color_action := sg_color_attachment_action {
-		action: C.SG_ACTION_CLEAR
-	}
-	color_action.val[0] = 1.0
-
-	mut pass_action := sg_pass_action{}
-	pass_action.colors[0] = color_action
-
 	state := &AppState{
-		pass_action: pass_action
+		pass_action: gfx.create_clear_pass(1.3, 0.3, 1.0, 1.0)
 	}
 
-	sapp_run(&sapp_desc{
+	desc := sapp_desc{
 		user_data: state
 		init_userdata_cb: init
 		frame_userdata_cb: frame
 		event_userdata_cb: on_event
 		cleanup_cb: cleanup
 		window_title: 'Word up sapp'.str
-	})
+	}
+	sapp_run(&desc)
 }
 
 fn init(user_data voidptr) {
-	sg_setup(&sg_desc {
+	desc := sg_desc {
 		mtl_device: C.sapp_metal_get_device()
 		mtl_renderpass_descriptor_cb: sapp_metal_get_renderpass_descriptor
 		mtl_drawable_cb: sapp_metal_get_drawable
@@ -38,7 +31,8 @@ fn init(user_data voidptr) {
 		d3d11_device_context: sapp_d3d11_get_device_context()
 		d3d11_render_target_view_cb: sapp_d3d11_get_render_target_view
 		d3d11_depth_stencil_view_cb: sapp_d3d11_get_depth_stencil_view
-	})
+	}
+	sg_setup(&desc)
 }
 
 fn frame(user_data voidptr) {

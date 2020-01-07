@@ -111,6 +111,13 @@ namespace Generator
 
 		void Validate()
 		{
+			// resolve paths
+			var homeFolder = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+			if (!Path.IsPathRooted(SrcDir))
+				SrcDir = SrcDir.Replace("~", homeFolder);
+			if (!Path.IsPathRooted(DstDir))
+				DstDir = DstDir.Replace("~", homeFolder);
+
 			if (string.IsNullOrEmpty(VWrapperFileName))
 				throw new ArgumentException(nameof(VWrapperFileName));
 			if (string.IsNullOrEmpty(ModuleName))

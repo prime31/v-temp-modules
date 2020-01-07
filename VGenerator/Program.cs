@@ -72,6 +72,30 @@ namespace Generator
 			// compilation.Dump();
 		}
 
+		static Config GetSDLConfig()
+		{
+			return new Config
+			{
+				DstDir = "~/Desktop/SDL2",
+				SrcDir = "/usr/local/include/SDL2",
+				BaseSourceFolder = "src",
+				ModuleName = "sdl",
+				VWrapperFileName = "sdl",
+				SingleVFileExport = true,
+				ExcludeFunctionsThatContain = new string[] {},
+				StripPrefixFromFunctionNames = new string[] { "SDL2_"},
+				CTypeToVType = {
+					{"kinc_ticks_t", "u64"}
+				},
+				TargetSystem = "darwin",
+				Defines = new string[] {},
+				IncludeFolders = new string[] {},
+				Files = new string[] {
+					"SDL2.h"
+				}
+			};
+		}
+
 		static Config GetPhyFSConfig()
 		{
 			return new Config
@@ -83,7 +107,7 @@ namespace Generator
 				VWrapperFileName = "physfs",
 				SingleVFileExport = true,
 				ExcludeFunctionsThatContain = new string[] {},
-				StripPrefixFromFunctionNames = new string[] { "physfs_", "PHYSFS_"},
+				StripPrefixFromFunctionNames = new string[] { "PHYSFS_"},
 				CTypeToVType = {
 					{"kinc_ticks_t", "u64"}
 				},

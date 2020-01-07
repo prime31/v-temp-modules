@@ -1,13 +1,25 @@
 module simgui
-import via.libs.imgui.c
 
 
-#include "sokol_gfx.h"
+// imgui
+#flag -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS=1
+#flag -DIMGUI_DISABLE_OBSOLETE_FUNCTIONS=1
+#flag -DIMGUI_IMPL_API=
+
+#flag -I @VMOD/prime31/sokol
+#flag linux @VMOD/prime31/sokol/thirdparty/cimgui/cimgui.a
+#flag linux -lstdc++
+#flag darwin @VMOD/prime31/sokol/thirdparty/cimgui/cimgui.a
+// #flag darwin -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
+#flag darwin -lc++
+#include "thirdparty/cimgui/cimgui.h"
 
 // optionally don't depend on sokol_app.h
 // #define SOKOL_IMGUI_NO_SOKOL_APP
 #define SOKOL_IMGUI_IMPL
 #include "sokol_imgui.h"
+
+
 
 [inline]
 pub fn setup(desc &C.simgui_desc_t) {

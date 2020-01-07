@@ -73,3 +73,5 @@ fn on_event(evt &C.sapp_event, user_data voidptr) {
 fn cleanup() {
 	simgui.shutdown()
 }
+
+fn C.igShowDemoWindow(show bool)

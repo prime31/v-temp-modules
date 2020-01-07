@@ -1,6 +1,6 @@
-import prime31.sokol
+import via.libs.sokol
 import prime31.sokol.sapp
-import prime31.sokol.gfx
+import via.libs.sokol.gfx
 
 #flag -I.
 #define HANDMADE_MATH_IMPLEMENTATION

@@ -69,7 +69,7 @@ namespace Generator
 		{
 			var compilation = CppParser.ParseFiles(config.GetFiles(), config.ToParserOptions());
 			VGenerator.Generate(config, compilation);
-			compilation.Dump();
+			// compilation.Dump();
 		}
 
 		static Config GetPhyFSConfig()
@@ -80,9 +80,10 @@ namespace Generator
 				SrcDir = "/Users/desaro/Desktop/physfs/src",
 				BaseSourceFolder = "src",
 				ModuleName = "c",
+				VWrapperFileName = "physfs",
 				SingleVFileExport = true,
 				ExcludeFunctionsThatContain = new string[] {},
-				StripPrefixFromFunctionNames = new string[] {},
+				StripPrefixFromFunctionNames = new string[] { "physfs_", "PHYSFS_"},
 				CTypeToVType = {
 					{"kinc_ticks_t", "u64"}
 				},

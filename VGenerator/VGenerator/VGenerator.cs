@@ -42,6 +42,16 @@ namespace Generator
 			foreach (var file in ParsedFile.ParseIntoFiles(comp, config))
 				WriteFile(config, file, writer);
 			writer.Dispose();
+
+			// now we write the V wrapper
+			writer = new StreamWriter(File.Open(Path.Combine(config.DstDir, config.VWrapperFileName), FileMode.Create));
+			writer.WriteLine($"module {config.ModuleName}\n");
+			foreach (var file in ParsedFile.ParseIntoFiles(comp, config))
+			{
+				foreach (var func in file.ParsedFunctions)
+					WriteVFunction(writer, func);
+			}
+			writer.Dispose();
 		}
 
 		static void WriteFile(Config config, ParsedFile file, StreamWriter writer)
@@ -122,6 +132,7 @@ namespace Generator
 		static void WriteStruct(StreamWriter writer, CppClass s)
 		{
 			writer.WriteLine($"pub struct C.{V.GetVType(s.Name)} {{");
+			writer.WriteLine("pub:");
 
 			foreach (var f in s.Fields)
 			{
@@ -147,6 +158,43 @@ namespace Generator
 
 			if (func.RetType != null)
 				writer.Write($" {func.VRetType}");
+			writer.WriteLine();
+		}
+
+		static void WriteVFunction(StreamWriter writer, ParsedFunction func)
+		{
+			// first, V function def
+			writer.WriteLine("[inline]");
+			writer.Write($"pub fn {func.VName}(");
+			foreach (var p in func.Parameters)
+			{
+				writer.Write($"{p.VName} {p.VType}");
+				if (func.Parameters.Last() != p)
+					writer.Write(", ");
+			}
+			writer.Write(")");
+
+			if (func.RetType != null)
+				writer.WriteLine($" {func.VRetType} {{");
+			else
+				writer.WriteLine(" {");
+
+			// now the function body calling the C function
+			writer.Write("\t");
+			if (func.RetType != null)
+				writer.Write("return ");
+
+			writer.Write($"C.{func.Name}(");
+			foreach (var p in func.Parameters)
+			{
+				writer.Write($"{p.VName}");
+				if (func.Parameters.Last() != p)
+					writer.Write(", ");
+			}
+
+			writer.WriteLine(")");
+			writer.WriteLine("}");
+
 			writer.WriteLine();
 		}
 	}

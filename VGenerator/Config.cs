@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace Generator
 		public string SrcDir {get; set;}
 		public string DstDir {get; set;}
 		public string ModuleName {get; set;}
+		public string VWrapperFileName {get; set;}
 		public bool SingleVFileExport  {get; set;} = false;
 		public bool CopyHeadersToDstDir  {get; set;} = false;
 
@@ -21,7 +23,7 @@ namespace Generator
 
 		/// <summary>
 		/// if a function name starts with any prefix present, it will be stripped before writing the
-		/// V function.
+		/// V function. Note that this is the C function prefix.
 		/// </summary>
 		public string[] StripPrefixFromFunctionNames {get; set;} = new string[] {};
 
@@ -92,6 +94,7 @@ namespace Generator
 
 		public CppParserOptions ToParserOptions()
 		{
+			Validate();
 			AddSystemIncludes();
 
 			var opts = new CppParserOptions();
@@ -104,6 +107,24 @@ namespace Generator
 			opts.ParseComments = ParseComments;
 
 			return opts;
+		}
+
+		void Validate()
+		{
+			if (string.IsNullOrEmpty(VWrapperFileName))
+				throw new ArgumentException(nameof(VWrapperFileName));
+			if (string.IsNullOrEmpty(ModuleName))
+				throw new ArgumentException(nameof(ModuleName));
+			if (string.IsNullOrEmpty(SrcDir))
+				throw new ArgumentException(nameof(SrcDir));
+			if (string.IsNullOrEmpty(DstDir))
+				throw new ArgumentException(nameof(DstDir));
+
+			if (Files.Length == 0)
+				throw new ArgumentException(nameof(Files));
+
+			if (!VWrapperFileName.EndsWith(".v"))
+				VWrapperFileName = VWrapperFileName + ".v";
 		}
 
 		void AddSystemIncludes()

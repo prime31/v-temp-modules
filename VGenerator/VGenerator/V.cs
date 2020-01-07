@@ -38,6 +38,8 @@ namespace Generator
 			{"unsigned char", "byte"},
 			{"const char *", "byteptr"},
 			{"const char*", "byteptr"},
+			{"const void *", "voidptr"},
+			{"const void*", "voidptr"},
 			{"unsigned char*", "byteptr"},
 			{"unsigned char *", "byteptr"},
 			{"char*", "byteptr"},
@@ -76,16 +78,27 @@ namespace Generator
 			{
 				var cppPtrType = cppType as CppPointerType;
 
-				// double pointer check
-				if (cppPtrType.ElementType.TypeKind == CppTypeKind.Pointer)
-					return $"voidptr /* {cppPtrType.GetDisplayName()} */";
-
 				// special V types
 				if (cppPtrType.GetDisplayName() == "const char*" || cppPtrType.GetDisplayName() == "char*")
 					return "byteptr";
 
-				if (cppPtrType.GetDisplayName() == "void*")
+				if (cppPtrType.GetDisplayName() == "const void*" || cppPtrType.GetDisplayName() == "void*")
 					return "voidptr";
+
+				// double pointer check
+				if (cppPtrType.ElementType.TypeKind == CppTypeKind.Pointer)
+					return $"voidptr /* {cppPtrType.GetDisplayName()} */";
+
+				// unwrap any const vars
+				if (cppPtrType.ElementType.TypeKind == CppTypeKind.Qualified && cppPtrType.ElementType is CppQualifiedType qualType)
+				{
+					if (qualType.Qualifier == CppTypeQualifier.Const)
+					{
+						if (qualType.ElementType is CppPrimitiveType qualPrimType && qualPrimType.Kind == CppPrimitiveKind.Void)
+							return $"voidptr";
+						return GetVType(qualType.ElementType);
+					}
+				}
 
 				// function pointers
 				if (cppPtrType.ElementType.TypeKind == CppTypeKind.Function)

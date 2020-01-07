@@ -1,5 +1,5 @@
-import prime31.physfs
-import prime31.sdl2
+import via.libs.physfs
+import via.libs.sdl2
 import os
 
 
@@ -36,15 +36,11 @@ fn main() {
 	enum_res := physfs.enumerate('/', enum_callback, voidptr(0))
 	println('enum_res=$enum_res')
 
+	enum_files := physfs.enumerate_files('/')
+	for f in enum_files { println('enum: $f')}
+
 	println('is init: ${physfs.is_init()}')
 	read_txt_file()
-
-	C.IMG_Init(C.IMG_INIT_PNG)
-	surface := physfs.load_surface('assets/beach.png'.str)
-	println('surface=$surface')
-
-	out_file := os.home_dir() + 'Desktop/shit.png'
-	C.IMG_SavePNG(surface, out_file.str)
 
 	physfs.unmount(os.getwd())
 
@@ -62,6 +58,7 @@ fn enum_callback(data voidptr, dir byteptr, fname byteptr) int {
 
 fn read_txt_file() {
 	fp := physfs.open_read(c'assets/json.json')
+	// fp := physfs.open_read(charptr('assets/json.json'.str))
 	len := physfs.file_length(fp)
 	println('json file len=$len')
 
@@ -69,5 +66,5 @@ fn read_txt_file() {
 	buf := [`0`].repeat(int(len))
 	physfs.read_bytes(fp, buf.data, u64(len))
 	println('file contents: ${tos(buf.data, buf.len)}')
-	physfs.file_close(fp)
+	physfs.close(fp)
 }

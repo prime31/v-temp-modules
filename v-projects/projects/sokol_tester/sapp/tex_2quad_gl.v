@@ -1,8 +1,8 @@
-import prime31.sokol
+import via.libs.sokol
 import prime31.sokol.sapp
-import prime31.sokol.gfx
+import via.libs.sokol.gfx
+import via.math
 import prime31.stb.image
-import prime31.math
 import rand
 
 const (

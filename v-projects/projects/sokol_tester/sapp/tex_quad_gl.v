@@ -126,10 +126,10 @@ fn init(user_data voidptr) {
 	}
 	vs_desc.uniform_blocks[0].size = sizeof(math.Mat44)
 
-	mut uniform := vs_desc.uniform_blocks[0].uniforms[0]
-	uniform.name = 'TransformProjectionMatrix'.str
-	uniform.@type = .mat4
-	vs_desc.uniform_blocks[0].uniforms[0] = uniform
+	vs_desc.uniform_blocks[0].uniforms[0] = sg_shader_uniform_desc{
+		name: 'TransformProjectionMatrix'.str
+		@type: .mat4
+	}
 
 	// frag shader
 	mut fs_desc := sg_shader_stage_desc{

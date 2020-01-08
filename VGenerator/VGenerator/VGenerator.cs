@@ -168,29 +168,56 @@ namespace Generator
 			writer.Write($"pub fn {func.VName}(");
 			foreach (var p in func.Parameters)
 			{
-				writer.Write($"{p.VName} {p.VType}");
+				// special case for byteptr which we convert to string for the function def
+				if (p.VType == "byteptr")
+					writer.Write($"{p.VName} string");
+				else
+					writer.Write($"{p.VName} {p.VType}");
+
 				if (func.Parameters.Last() != p)
 					writer.Write(", ");
 			}
 			writer.Write(")");
 
 			if (func.RetType != null)
-				writer.WriteLine($" {func.VRetType} {{");
+			{
+				if (func.RetType == "byteptr")
+					writer.WriteLine(" string {");
+				else
+					writer.WriteLine($" {func.VRetType} {{");
+			}
 			else
+			{
 				writer.WriteLine(" {");
+			}
 
 			// now the function body calling the C function
 			writer.Write("\t");
 			if (func.RetType != null)
+			{
 				writer.Write("return ");
+
+				// special case for byteptr, which we cast to string
+				if (func.RetType == "byteptr")
+					writer.Write("string(");
+			}
 
 			writer.Write($"C.{func.Name}(");
 			foreach (var p in func.Parameters)
 			{
-				writer.Write($"{p.VName}");
+				// special case for byteptr which was converted to string above
+				if (p.VType == "byteptr")
+					writer.Write($"{p.VName}.str");
+				else
+					writer.Write($"{p.VName}");
+
 				if (func.Parameters.Last() != p)
 					writer.Write(", ");
 			}
+
+			// close the string cast if we are returning a byteptr cast to string
+			if (func.RetType == "byteptr")
+				writer.Write(")");
 
 			writer.WriteLine(")");
 			writer.WriteLine("}");

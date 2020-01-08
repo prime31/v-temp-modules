@@ -49,7 +49,8 @@ namespace Generator
 			else
 			{
 				// Run(GetKincConfig());
-				Run(GetPhyFSConfig());
+				// Run(GetPhyFSConfig());
+				Run(GetSDLConfig());
 			}
 		}
 
@@ -83,15 +84,20 @@ namespace Generator
 				VWrapperFileName = "sdl",
 				SingleVFileExport = true,
 				ExcludeFunctionsThatContain = new string[] {},
-				StripPrefixFromFunctionNames = new string[] { "SDL2_"},
-				CTypeToVType = {
-					{"kinc_ticks_t", "u64"}
-				},
-				TargetSystem = "darwin",
+				StripPrefixFromFunctionNames = new string[] { "SDL_"},
+				CTypeToVType = {},
 				Defines = new string[] {},
 				IncludeFolders = new string[] {},
 				Files = new string[] {
-					"SDL2.h"
+					"SDL.h"
+				},
+				ExcludedFiles = new string[] {
+					"SDL_main", "SDL_audio", "SDL_surface", "SDL_pixels", "SDL_assert", "SDL_atomic", "SDL_mutex",
+					"SDL_thread", "SDL_gesture", "SDL_sensor", "SDL_blendmode", "SDL_power", "SDL_render", "SDL_shape",
+					"SDL_endian", "SDL_rwops", "SDL_cpuinfo", "SDL_rect", "SDL_loadso", "SDL_system"
+				},
+				ExcludedFromVWrapperFiles = new string[] {
+
 				}
 			};
 		}
@@ -108,9 +114,7 @@ namespace Generator
 				SingleVFileExport = true,
 				ExcludeFunctionsThatContain = new string[] {},
 				StripPrefixFromFunctionNames = new string[] { "PHYSFS_"},
-				CTypeToVType = {
-					{"kinc_ticks_t", "u64"}
-				},
+				CTypeToVType = {},
 				TargetSystem = "darwin",
 				Defines = new string[] {},
 				IncludeFolders = new string[] {},

@@ -12,6 +12,7 @@ namespace Generator
 		public string DstDir {get; set;}
 		public string ModuleName {get; set;}
 		public string VWrapperFileName {get; set;}
+		public string CDeclarationFileName {get; set;}
 		public bool SingleVFileExport  {get; set;} = false;
 		public bool CopyHeadersToDstDir  {get; set;} = false;
 
@@ -56,6 +57,17 @@ namespace Generator
 		public string[] Files {get; set;}
 
 		/// <summary>
+		/// All the header files that should be excluded from conversion. If a file should be declared in the c declaration
+		/// but not wrapped it should be added to ExcludedFromVWrapperFiles
+		/// </summary>
+		public string[] ExcludedFiles {get; set;}
+
+		/// <summary>
+		/// All the header files that should be excluded from the V wrapper
+		/// </summary>
+		public string[] ExcludedFromVWrapperFiles {get; set;}
+
+		/// <summary>
 		/// List of the defines.
 		/// </summary>
 		public string[] Defines {get; set;} = new string[] {};
@@ -88,9 +100,9 @@ namespace Generator
 		public bool ParseComments {get; set;} = false;
 
 		/// <summary>
-		/// System Clang target. Default is "windows"
+		/// System Clang target. Default is "darwin"
 		/// </summary>
-		public string TargetSystem {get; set;} = "windows";
+		public string TargetSystem {get; set;} = "darwin";
 
 		public CppParserOptions ToParserOptions()
 		{
@@ -132,6 +144,16 @@ namespace Generator
 
 			if (!VWrapperFileName.EndsWith(".v"))
 				VWrapperFileName = VWrapperFileName + ".v";
+
+			if (string.IsNullOrEmpty(CDeclarationFileName))
+				CDeclarationFileName = "c.v";
+
+			if (!CDeclarationFileName.EndsWith(".v"))
+				CDeclarationFileName = CDeclarationFileName + ".v";
+			
+			// exlude filenames dont need extensions
+			ExcludedFiles = ExcludedFiles.Select(f => f.Replace(".h", "")).ToArray();
+			ExcludedFromVWrapperFiles = ExcludedFromVWrapperFiles.Select(f => f.Replace(".h", "")).ToArray();
 		}
 
 		void AddSystemIncludes()
@@ -195,6 +217,18 @@ namespace Generator
 				return function.Replace(longestPrefix, "");
 			}
 			return function;
+		}
+
+		public static bool IsFileExcluded(this Config config, ParsedFile file)
+		{
+			return config.ExcludedFiles.Contains(file.Filename)
+				|| config.ExcludedFiles.Contains(Path.Combine(file.Folder, file.Filename));
+		}
+
+		public static bool IsFileExcludedFromVWrapper(this Config config, ParsedFile file)
+		{
+			return config.ExcludedFromVWrapperFiles.Contains(file.Filename)
+				|| config.ExcludedFromVWrapperFiles.Contains(Path.Combine(file.Folder, file.Filename));
 		}
 	}
 }

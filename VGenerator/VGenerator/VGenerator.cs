@@ -35,18 +35,19 @@ namespace Generator
 			StreamWriter writer = null;
 			if (config.SingleVFileExport)
 			{
-				writer = new StreamWriter(File.Open(Path.Combine(config.DstDir, config.ModuleName + ".v"), FileMode.Create));
+				writer = new StreamWriter(File.Open(Path.Combine(config.DstDir, config.CDeclarationFileName), FileMode.Create));
 				writer.WriteLine($"module {config.ModuleName}");
 			}
 
-			foreach (var file in ParsedFile.ParseIntoFiles(comp, config))
+			var parsedFiles = ParsedFile.ParseIntoFiles(comp, config);
+			foreach (var file in parsedFiles)
 				WriteFile(config, file, writer);
 			writer.Dispose();
 
 			// now we write the V wrapper
 			writer = new StreamWriter(File.Open(Path.Combine(config.DstDir, config.VWrapperFileName), FileMode.Create));
 			writer.WriteLine($"module {config.ModuleName}\n");
-			foreach (var file in ParsedFile.ParseIntoFiles(comp, config))
+			foreach (var file in parsedFiles.Where(f => !config.IsFileExcludedFromVWrapper(f)))
 			{
 				foreach (var func in file.ParsedFunctions)
 					WriteVFunction(writer, func);
@@ -99,7 +100,7 @@ namespace Generator
 			var hasValue = e.Items.Where(i => i.ValueExpression != null && !string.IsNullOrEmpty(i.ValueExpression.ToString())).Any();
 
 			var enumItemNames = e.Items.Select(i => i.Name).ToArray();
-			if (config.StripEnumItemCommonPrefix)
+			if (config.StripEnumItemCommonPrefix && e.Items.Count > 1)
 			{
 				string CommonPrefix(string str, params string[] more)
 				{
@@ -179,9 +180,9 @@ namespace Generator
 			}
 			writer.Write(")");
 
-			if (func.RetType != null)
+			if (func.VRetType != null)
 			{
-				if (func.RetType == "byteptr")
+				if (func.VRetType == "byteptr")
 					writer.WriteLine(" string {");
 				else
 					writer.WriteLine($" {func.VRetType} {{");
@@ -193,12 +194,12 @@ namespace Generator
 
 			// now the function body calling the C function
 			writer.Write("\t");
-			if (func.RetType != null)
+			if (func.VRetType != null)
 			{
 				writer.Write("return ");
 
 				// special case for byteptr, which we cast to string
-				if (func.RetType == "byteptr")
+				if (func.VRetType == "byteptr")
 					writer.Write("string(");
 			}
 
@@ -216,7 +217,7 @@ namespace Generator
 			}
 
 			// close the string cast if we are returning a byteptr cast to string
-			if (func.RetType == "byteptr")
+			if (func.VRetType == "byteptr")
 				writer.Write(")");
 
 			writer.WriteLine(")");

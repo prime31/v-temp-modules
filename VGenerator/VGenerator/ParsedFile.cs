@@ -18,7 +18,7 @@ namespace Generator
 		public ParsedFile(string filename, string folder)
 		{
 			Filename = filename;
-			Folder = folder;
+			Folder = folder ?? "";
 		}
 
 
@@ -65,7 +65,7 @@ namespace Generator
 					span.CopyTo(config);
 			}
 
-			return files;
+			return files.Where(f => !config.IsFileExcluded(f)).ToList();
 		}
 
 		static ParsedFile GetOrCreateFile(List<ParsedFile> files, CppSourceSpan span, bool singleFileExport)

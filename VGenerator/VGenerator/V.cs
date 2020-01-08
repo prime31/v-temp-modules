@@ -15,6 +15,7 @@ namespace Generator
 			{"void*", "voidptr"},
 			{"void**", "voidptr"},
 			{"char", "byte"},
+			{"char*", "byteptr"},
 			{"wchar", "u16"},
 			{"int8_t", "i8"},
 			{"short", "i16"},
@@ -42,7 +43,6 @@ namespace Generator
 			{"const void*", "voidptr"},
 			{"unsigned char*", "byteptr"},
 			{"unsigned char *", "byteptr"},
-			{"char*", "byteptr"},
 			{"const char**", "voidptr"}
 		};
 
@@ -63,6 +63,15 @@ namespace Generator
 
 		public static string GetVType(CppType cppType)
 		{
+			// unwrap any const vars
+			if (cppType.TypeKind == CppTypeKind.Qualified && cppType is CppQualifiedType cppQualType)
+			{
+				if (cppQualType.Qualifier == CppTypeQualifier.Const)
+				{
+					return GetVType(cppQualType.ElementType);
+				}
+			}
+
 			if (cppType.TypeKind == CppTypeKind.Enum || cppType.TypeKind == CppTypeKind.Primitive)
 				return GetVType(cppType.GetDisplayName());
 
@@ -71,7 +80,7 @@ namespace Generator
 				if (typeDefType.IsPrimitiveType())
 					return typeDefType.ElementTypeAsPrimitive().GetVType();
 				else
-					Console.WriteLine($"Unhandled typedef: {typeDefType}");
+					return GetVType(typeDefType.ElementType);
 			}
 
 			if (cppType.TypeKind == CppTypeKind.Pointer)
@@ -96,7 +105,7 @@ namespace Generator
 					{
 						if (qualType.ElementType is CppPrimitiveType qualPrimType && qualPrimType.Kind == CppPrimitiveKind.Void)
 							return $"voidptr";
-						return GetVType(qualType.ElementType);
+						return "&" + GetVType(qualType.ElementType);
 					}
 				}
 
@@ -144,6 +153,10 @@ namespace Generator
 						sb.Append($" {ret}");
 
 					return sb.ToString();
+				}
+				else if (cppPtrType.ElementType.TypeKind == CppTypeKind.Typedef)
+				{
+					return GetVType(cppPtrType.ElementType);
 				}
 
 				return "&" + GetVType(cppPtrType.ElementType.GetDisplayName());
@@ -206,6 +219,18 @@ namespace Generator
 
 			if (name == "type")
 				return "typ";
+
+			if (name == "false")
+				return "no";
+
+			if (name == "true")
+				return "yes";
+
+			if (name == "return")
+				return "ret";
+
+			if (name == "select")
+				return "sel";
 
 			if (reserved.Contains(name))
 				throw new System.Exception($"need escape for {name}");

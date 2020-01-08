@@ -1,8 +1,8 @@
-import prime31.sokol
+import via.libs.sokol
 import prime31.sokol.sapp
-import prime31.sokol.gfx
+import via.libs.sokol.gfx
 import prime31.stb.image
-import prime31.math
+import via.math
 
 const (
 	vert = '#version 330
@@ -102,17 +102,19 @@ fn init(user_data voidptr) {
 		Vertex{ math.Vec2{-1,1}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }
 	]!
 
-	state.bind.vertex_buffers[0] = sg_make_buffer(&sg_buffer_desc{
+	vert_buff_desc := sg_buffer_desc{
 		size: sizeof(Vertex) * verts.len
 		content: verts.data
-	})
+	}
+	state.bind.vertex_buffers[0] = sg_make_buffer(&vert_buff_desc)
 
 	indices := [u16(0), 1, 2, 0, 2, 3]!
-	state.bind.index_buffer = sg_make_buffer(&sg_buffer_desc{
-        @type: C.SG_BUFFERTYPE_INDEXBUFFER
+	index_buff_desc := sg_buffer_desc{
+        @type: .indexbuffer
         size: sizeof(u16) * indices.len
         content: indices.data
-    })
+    }
+	state.bind.index_buffer = sg_make_buffer(&index_buff_desc)
 	state.bind.fs_images[0] = create_image()
 
 	state.beach_img = state.bind.fs_images[0]
@@ -156,19 +158,18 @@ fn init(user_data voidptr) {
 		format: .ubyte4n
 	}
 
-	rasterizer := sg_rasterizer_state{
-		cull_mode: C.SG_CULLMODE_BACK
-		sample_count: 4
-	}
 	state.pip = sg_make_pipeline(&sg_pipeline_desc{
 		layout: layout
 		shader: shd
-		index_type: C.SG_INDEXTYPE_UINT16
+		index_type: .uint16
 		depth_stencil: sg_depth_stencil_state{
-			depth_compare_func: C.SG_COMPAREFUNC_LESS_EQUAL
-			depth_write_enabled: true
+			depth_compare_func: .always
+			depth_write_enabled: false
 		}
-		rasterizer: rasterizer
+		rasterizer: sg_rasterizer_state{
+			cull_mode: .@none
+			sample_count: 4
+		}
 	})
 
 	// view-projection matrix

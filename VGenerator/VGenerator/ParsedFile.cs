@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -34,11 +35,17 @@ namespace Generator
 				spans.Add(typedef.Span);
 			}
 
-			foreach (var @enum in comp.Enums)
+			foreach (var e in comp.Enums)
 			{
-				var file = GetOrCreateFile(files, @enum.Span, false);
-				file.Enums.Add(@enum);
-				spans.Add(@enum.Span);
+				if (string.IsNullOrEmpty(e.Name))
+				{
+					Console.WriteLine($"Found nameless enum with {e.Items.Count} items! [{e.Span.FilePath()}]");
+					continue;
+				}
+
+				var file = GetOrCreateFile(files, e.Span, false);
+				file.Enums.Add(e);
+				spans.Add(e.Span);
 			}
 
 			foreach (var function in comp.Functions)
@@ -100,6 +107,10 @@ namespace Generator
 				Name = cFunc.Name,
 				VName = V.ToSnakeCase(config.StripFunctionPrefix(cFunc.Name))
 			};
+
+			// hack to fix ghetto forced 'init' module function
+			if (f.VName == "init")
+				f.VName = config.ModuleName + "_" + f.VName;
 
 			if (cFunc.ReturnType.GetDisplayName() != "void")
 			{

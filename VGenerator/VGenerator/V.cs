@@ -46,7 +46,7 @@ namespace Generator
 			{"const char**", "voidptr"}
 		};
 
-		static string[] reserved = new[] { "map", "string", "return", "or", "none", "type", "select", "false", "true" };
+		static string[] reserved = new[] { /*"map",*/ "string", "return", "or", "none", "type", "select", "false", "true" };
 
 		public static void AddTypeConversions(Dictionary<string, string> types)
 		{
@@ -67,9 +67,13 @@ namespace Generator
 			if (cppType.TypeKind == CppTypeKind.Qualified && cppType is CppQualifiedType cppQualType)
 			{
 				if (cppQualType.Qualifier == CppTypeQualifier.Const)
-				{
 					return GetVType(cppQualType.ElementType);
-				}
+			}
+
+			if (cppType is CppClass cppClass && cppClass.ClassKind == CppClassKind.Union)
+			{
+				Console.WriteLine($"Found union we can't handle! [{cppType.Span}]");
+				return "voidptr";
 			}
 
 			if (cppType.TypeKind == CppTypeKind.Enum || cppType.TypeKind == CppTypeKind.Primitive)
@@ -156,15 +160,26 @@ namespace Generator
 				}
 				else if (cppPtrType.ElementType.TypeKind == CppTypeKind.Typedef)
 				{
-					return GetVType(cppPtrType.ElementType);
+					// functions dont get passed with '&' so we have to see if this Typedef has a function in its lineage
+					if (cppPtrType.ElementType is CppTypedef td && td.IsFunctionType())
+						return GetVType(cppPtrType.ElementType);
+					return "&" + GetVType(cppPtrType.ElementType);
 				}
 
 				return "&" + GetVType(cppPtrType.ElementType.GetDisplayName());
-			}
+			} // end Pointer
 
 			if (cppType.TypeKind == CppTypeKind.Array)
 			{
 				var arrType = cppType as CppArrayType;
+				if (arrType.ElementType is CppClass arrParamClass)
+				{
+					if (arrParamClass.Name.Contains("va_"))
+					{
+						Console.WriteLine($"Found unhandled vararg param! [{cppType}]");
+						return "voidptr /* ...voidptr */";
+					}
+				}
 				var eleType = GetVType(arrType.ElementType);
 				if (arrType.Size > 0)
 					return $"[{arrType.Size}]{eleType}";
@@ -251,6 +266,9 @@ namespace Generator
 		{
 			if (name.IsLower())
 				return name;
+			
+			if (name.Contains("_"))
+				return name.ToLower();
 
 			name = string.Concat(name.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
 			return EscapeReserved(name);

@@ -9,5 +9,24 @@ namespace Generator
 
         public static CppPrimitiveType ElementTypeAsPrimitive(this CppTypedef typedef)
             => typedef.ElementType as CppPrimitiveType;
+        
+        public static bool IsFunctionType(this CppTypedef typedef)
+        {
+            // search the ElementType hiearchy for CppTypedefs and CppPointers until we finally get to a CppFunction or not
+            if (typedef.ElementType is CppTypedef td)
+                return td.IsFunctionType();
+            
+            if (typedef.ElementType is CppPointerType ptr)
+            {
+                if (ptr.ElementType.TypeKind == CppTypeKind.Function)
+                    return true;
+                System.Console.WriteLine("nah");
+            }
+
+            if (typedef.ElementType.TypeKind == CppTypeKind.Function)
+                return true;
+
+            return false;
+        }
 	}
 }

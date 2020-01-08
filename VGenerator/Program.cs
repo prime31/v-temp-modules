@@ -77,7 +77,7 @@ namespace Generator
 		{
 			return new Config
 			{
-				DstDir = "~/Desktop/SDL2",
+				DstDir = "~/Desktop/SDL2/sdl",
 				SrcDir = "/usr/local/include/SDL2",
 				BaseSourceFolder = "src",
 				ModuleName = "sdl",
@@ -85,19 +85,21 @@ namespace Generator
 				SingleVFileExport = true,
 				ExcludeFunctionsThatContain = new string[] {},
 				StripPrefixFromFunctionNames = new string[] { "SDL_"},
-				CTypeToVType = {},
+				CTypeToVType = {
+					{"__sFILE", "voidptr"}
+				},
 				Defines = new string[] {},
 				IncludeFolders = new string[] {},
 				Files = new string[] {
 					"SDL.h"
 				},
 				ExcludedFiles = new string[] {
-					"SDL_main", "SDL_audio", "SDL_surface", "SDL_pixels", "SDL_assert", "SDL_atomic", "SDL_mutex",
-					"SDL_thread", "SDL_gesture", "SDL_sensor", "SDL_blendmode", "SDL_power", "SDL_render", "SDL_shape",
-					"SDL_endian", "SDL_rwops", "SDL_cpuinfo", "SDL_rect", "SDL_loadso", "SDL_system"
+					"SDL_main", "SDL_audio", "SDL_assert", "SDL_atomic", "SDL_mutex",
+					"SDL_thread", "SDL_gesture", "SDL_sensor", "SDL_power", "SDL_render", "SDL_shape",
+					"SDL_endian", "SDL_cpuinfo", "SDL_loadso", "SDL_system"
 				},
 				ExcludedFromVWrapperFiles = new string[] {
-
+					"SDL_stdinc"
 				}
 			};
 		}

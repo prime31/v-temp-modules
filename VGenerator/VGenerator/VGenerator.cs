@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using CppAst;
@@ -133,7 +134,8 @@ namespace Generator
 		static void WriteStruct(StreamWriter writer, CppClass s)
 		{
 			writer.WriteLine($"pub struct C.{V.GetVType(s.Name)} {{");
-			writer.WriteLine("pub:");
+			if (s.Fields.Count > 0)
+				writer.WriteLine("pub:");
 
 			foreach (var f in s.Fields)
 			{

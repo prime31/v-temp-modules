@@ -1,15 +1,15 @@
 module graphics
 import via.math
 
-pub fn make_default_shader() C.sg_shader {
+pub fn shader_make_default() C.sg_shader {
 	shader_desc := C.sg_shader_desc{
-		vs: make_default_vert_desc()
-		fs: make_default_frag_desc()
+		vs: vert_desc_make_default()
+		fs: frag_desc_make_default()
 	}
 	return sg_make_shader(&shader_desc)
 }
 
-pub fn make_default_vert_desc() C.sg_shader_stage_desc {
+pub fn vert_desc_make_default() C.sg_shader_stage_desc {
 	mut vs_desc := sg_shader_stage_desc{
 		source: vert.str
 	}
@@ -22,7 +22,7 @@ pub fn make_default_vert_desc() C.sg_shader_stage_desc {
 	return vs_desc
 }
 
-pub fn make_default_frag_desc() C.sg_shader_stage_desc {
+pub fn frag_desc_make_default() C.sg_shader_stage_desc {
 	mut fs_desc := sg_shader_stage_desc{
 		source: frag.str
 	}

@@ -56,10 +56,10 @@ fn init(user_data voidptr) {
 		graphics.Vertex{ math.Vec2{-1,1}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }
 	]!
 	indices := [u16(0), 1, 2, 0, 2, 3]!
-	state.bind = graphics.create_bindings(verts, .immutable, indices, .immutable)
+	state.bind = graphics.bindings_create(verts, .immutable, indices, .immutable)
 
 	state.bind.fs_images[0] = create_image()
-	state.pip = graphics.make_default_pipeline()
+	state.pip = graphics.pipeline_make_default()
 
 	state.beach_img = state.bind.fs_images[0]
 	state.checker_img = create_checker_image()
@@ -68,8 +68,8 @@ fn init(user_data voidptr) {
 	state.trans_mat = math.mat44_ortho2d(-2, 2, 2, -2)
 
 	for i, _ in verts {
-		verts[i].pos.x -= 0.5
-		verts[i].pos.y -= 0.5
+		verts[i].pos.x -= 1
+		verts[i].pos.y -= 1
 	}
 	state.mesh = graphics.mesh_create_dynamic(verts, .dynamic, indices, .dynamic)
 	state.mesh.bind_image(state.checker_img, 0)

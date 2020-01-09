@@ -1,5 +1,4 @@
 module image
-import filepath
 
 #flag -I @VMOD/prime31/stb/image/thirdparty
 

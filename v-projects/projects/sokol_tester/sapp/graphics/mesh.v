@@ -24,7 +24,7 @@ pub fn mesh_create_dynamic(verts []Vertex, vert_usage gfx.Usage, indices []u16, 
 		indices: indices.clone()
 	}
 
-	mesh.bindings = create_bindings(mesh.verts, mesh.vert_usage, mesh.indices, mesh.indices_usage)
+	mesh.bindings = bindings_create(mesh.verts, mesh.vert_usage, mesh.indices, mesh.indices_usage)
 	mesh.update_verts()
 	mesh.update_indices()
 
@@ -37,7 +37,7 @@ pub fn mesh_create_immutable(verts []Vertex, indices []u16) &Mesh {
 		indices_usage: .immutable
 		verts: verts
 		indices: indices
-		bindings: create_bindings(verts, .immutable, indices, .immutable)
+		bindings: bindings_create(verts, .immutable, indices, .immutable)
 	}
 }
 

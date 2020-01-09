@@ -13,6 +13,7 @@ fn load_high_level_from_memory() {
 	data := os.read_bytes('assets/beach.png') or { panic('file not loaded') }
 	img := image.load_from_memory(data.data, data.len)
 	img.save_as_png('hl_mem_beach.png')
+	img.save_as_png_to_func(save_png_to_func, voidptr(0))
 	img.free()
 
 	w, h, comps := image.get_info_from_memory(data.data, data.len)
@@ -57,4 +58,9 @@ fn load_image_from_mem() {
 
 	C.stbi_info_from_memory(file_data.data, file_data.len, &w, &h, &channels)
 	println('loaded image info. w=$w, h=$h, channels=$channels')
+}
+
+fn save_png_to_func(ctx voidptr, data voidptr, size int) {
+	mut file := os.create('hl_mem_to_funcn_beach.png') or { panic('could not create file') }
+	file.write_bytes(data, size)
 }

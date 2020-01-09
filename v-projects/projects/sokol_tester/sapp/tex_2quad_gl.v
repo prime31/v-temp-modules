@@ -197,19 +197,19 @@ fn init(user_data voidptr) {
 
 fn create_image() C.sg_image {
 	img := image.load('assets/beach.png')
-
-	img_content := sg_subimage_content{
+	mut img_desc := sg_image_desc{
+		width: img.width
+		height: img.height
+		pixel_format: .rgba8
+		min_filter: .nearest
+		mag_filter: .nearest
+	}
+	img_desc.content.subimage[0][0] = sg_subimage_content{
 		ptr: img.data
 		size: sizeof(u32) * img.width * img.height
     }
-	mut img_desc := C.gfx_hack_make_image_desc(img_content)
-	img_desc.width = img.width
-	img_desc.height = img.height
-	img_desc.pixel_format = .rgba8
-	img_desc.min_filter = .nearest
-	img_desc.mag_filter = .nearest
 
-    sg_img := C.sg_make_image(img_desc)
+    sg_img := C.sg_make_image(&img_desc)
 	img.free()
 	return sg_img
 }
@@ -223,18 +223,19 @@ fn create_checker_image() C.sg_image {
         0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF,
 	]!
 
-	img_content := sg_subimage_content{
+	mut img_desc := sg_image_desc{
+		width: 4
+		height: 4
+		pixel_format: .rgba8
+		min_filter: .nearest
+		mag_filter: .nearest
+	}
+	img_desc.content.subimage[0][0] = sg_subimage_content{
 		ptr: pixels.data
 		size: sizeof(u32) * pixels.len
     }
-	mut img_desc := C.gfx_hack_make_image_desc(img_content)
-	img_desc.width = 4
-	img_desc.height = 4
-	img_desc.pixel_format = .rgba8
-	img_desc.min_filter = .nearest
-	img_desc.mag_filter = .nearest
 
-    return C.sg_make_image(img_desc)
+    return C.sg_make_image(&img_desc)
 }
 
 fn frame(user_data voidptr) {
@@ -275,8 +276,8 @@ fn on_event(evt &C.sapp_event, user_data voidptr) {
 				state.update_verts = !state.update_verts
 
 				// comment these two lines out to cause the vert update to occur in frame
-				state.update_verts = false
-				state.update_vert_buffer()
+				// state.update_verts = false
+				// state.update_vert_buffer()
 			}
 			else {}
 		}

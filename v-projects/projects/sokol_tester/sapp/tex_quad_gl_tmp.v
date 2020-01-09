@@ -4,6 +4,7 @@ import via.libs.sokol.gfx
 import prime31.stb.image
 import via.math
 import graphics
+import rand
 
 struct AppState {
 mut:
@@ -16,6 +17,8 @@ mut:
 
 	checker_img C.sg_image
 	beach_img C.sg_image
+
+	mesh &graphics.Mesh
 }
 
 fn main() {
@@ -46,14 +49,14 @@ fn init(user_data voidptr) {
 		d3d11_depth_stencil_view_cb: sapp_d3d11_get_depth_stencil_view
 	})
 
-	verts := [
+	mut verts := [
 		graphics.Vertex{ math.Vec2{-1,-1}, 	math.Vec2{0,0},		math.Color{} },
 		graphics.Vertex{ math.Vec2{1,-1}, 	math.Vec2{1,0},		math.Color{} },
 		graphics.Vertex{ math.Vec2{1,1}, 	math.Vec2{1,1},		math.Color{} },
 		graphics.Vertex{ math.Vec2{-1,1}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }
 	]!
 	indices := [u16(0), 1, 2, 0, 2, 3]!
-	state.bind = graphics.create_bindings(verts, .immutable, indices)
+	state.bind = graphics.create_bindings(verts, .immutable, indices, .immutable)
 
 	state.bind.fs_images[0] = create_image()
 	state.pip = graphics.make_default_pipeline()
@@ -63,6 +66,13 @@ fn init(user_data voidptr) {
 
 	// view-projection matrix
 	state.trans_mat = math.mat44_ortho2d(-2, 2, 2, -2)
+
+	for i, _ in verts {
+		verts[i].pos.x -= 0.5
+		verts[i].pos.y -= 0.5
+	}
+	state.mesh = graphics.mesh_create_dynamic(verts, .dynamic, indices, .dynamic)
+	state.mesh.bind_image(state.checker_img, 0)
 }
 
 fn create_image() C.sg_image {
@@ -99,6 +109,8 @@ fn create_checker_image() C.sg_image {
 		pixel_format: .rgba8
 		min_filter: .nearest
 		mag_filter: .nearest
+		wrap_u: .clamp_to_edge
+		wrap_v: .clamp_to_edge
 	}
 	img_desc.content.subimage[0][0] = sg_subimage_content{
 		ptr: pixels.data
@@ -109,13 +121,25 @@ fn create_checker_image() C.sg_image {
 }
 
 fn frame(user_data voidptr) {
-	state := &AppState(user_data)
+	mut state := &AppState(user_data)
 
 	sg_begin_default_pass(&state.pass_action, sapp_width(), sapp_height())
 	sg_apply_pipeline(state.pip)
+
 	sg_apply_bindings(&state.bind)
 	sg_apply_uniforms(C.SG_SHADERSTAGE_VS, 0, &state.trans_mat, sizeof(math.Mat44))
 	sg_draw(0, 6, 1)
+
+	for i, _ in state.mesh.verts {
+		state.mesh.verts[i].pos.x += math.rand_between(-0.01, 0.01)
+		state.mesh.verts[i].pos.y += math.rand_between(-0.01, 0.01)
+	}
+	state.mesh.update_verts()
+
+	state.mesh.apply_bindings()
+	state.mesh.apply_uniforms(.vs, 0, &state.trans_mat, sizeof(math.Mat44))
+	state.mesh.draw()
+
 	sg_end_pass()
 	sg_commit()
 }

@@ -35,6 +35,7 @@ pub fn make_default_layout_desc() C.sg_layout_desc {
 pub fn create_vert_bindings(verts []Vertex, usage gfx.Usage) sg_buffer {
 	mut vert_buff_desc := sg_buffer_desc{
 		@type: .vertexbuffer
+		usage: usage
 		size: sizeof(Vertex) * verts.len
 	}
 
@@ -45,18 +46,23 @@ pub fn create_vert_bindings(verts []Vertex, usage gfx.Usage) sg_buffer {
 	return sg_make_buffer(&vert_buff_desc)
 }
 
-pub fn create_index_bindings(indices []u16) sg_buffer {
-	index_buff_desc := sg_buffer_desc{
+pub fn create_index_bindings(indices []u16, usage gfx.Usage) sg_buffer {
+	mut index_buff_desc := sg_buffer_desc{
 		@type: .indexbuffer
+		usage: usage
 		size: sizeof(u16) * indices.len
-		content: indices.data
+	}
+
+	// dynamic and stream needs to be set some time after init
+	if usage != .dynamic && usage != .stream {
+		index_buff_desc.content = indices.data
 	}
 	return sg_make_buffer(&index_buff_desc)
 }
 
-pub fn create_bindings(verts []Vertex, vert_usage gfx.Usage, indices []u16) sg_bindings {
+pub fn create_bindings(verts []Vertex, vert_usage gfx.Usage, indices []u16, indices_usage gfx.Usage) sg_bindings {
 	mut bindings := sg_bindings{}
 	bindings.vertex_buffers[0] = create_vert_bindings(verts, vert_usage)
-	bindings.index_buffer = create_index_bindings(indices)
+	bindings.index_buffer = create_index_bindings(indices, indices_usage)
 	return bindings
 }

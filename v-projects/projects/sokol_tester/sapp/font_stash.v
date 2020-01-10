@@ -1,8 +1,9 @@
-import prime31.sokol
+import via.libs.sokol
 import prime31.sokol.sapp
-import prime31.sokol.gfx
+import via.libs.sokol.gfx
 import prime31.sokol.sgl
-import prime31.sokol.fontstash
+import via.libs.fontstash
+import prime31.sokol.sfons
 import os
 
 struct AppState {

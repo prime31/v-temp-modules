@@ -1,4 +1,12 @@
-module fontstash
+module sfons
+import via.libs.fontstash
+
+#flag -I @VMOD/via/libs/fontstash/thirdparty
+
+// this doesnt quite work due to sokol import order stuff
+#include "fontstash.h"
+#define SOKOL_FONTSTASH_IMPL
+#include "util/sokol_fontstash.h"
 
 [inline]
 pub fn sfons_create(width int, height int, flags int) &C.FONScontext {
@@ -6,7 +14,7 @@ pub fn sfons_create(width int, height int, flags int) &C.FONScontext {
 }
 
 [inline]
-pub fn sfons_destroy(ctx &FONScontext) {
+pub fn sfons_destroy(ctx &C.FONScontext) {
 	C.sfons_destroy(ctx)
 }
 
@@ -16,7 +24,7 @@ pub fn sfons_rgba(r byte, g byte, b byte, a byte) u32 {
 }
 
 [inline]
-pub fn sfons_flush(ctx &FONScontext) {
+pub fn sfons_flush(ctx &C.FONScontext) {
 	C.sfons_flush(ctx)
 }
 

@@ -1,5 +1,5 @@
 module truetype
-import prime31.math
+import via.math
 
 #flag -I @VMOD/prime31/stb/truetype/thirdparty
 

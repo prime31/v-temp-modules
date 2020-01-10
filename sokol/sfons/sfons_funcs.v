@@ -1,4 +1,4 @@
-module fontstash
+module sfons
 
 fn C.sfons_create(width int, height int, flags int) &C.FONScontext
 fn C.sfons_destroy(ctx &FONScontext)

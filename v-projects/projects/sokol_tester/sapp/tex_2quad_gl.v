@@ -2,7 +2,7 @@ import via.libs.sokol
 import prime31.sokol.sapp
 import via.libs.sokol.gfx
 import via.math
-import prime31.stb.image
+import via.libs.stb.image
 import rand
 
 const (

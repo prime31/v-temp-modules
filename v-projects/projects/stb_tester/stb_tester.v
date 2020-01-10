@@ -1,5 +1,5 @@
 import os
-import prime31.stb.image
+import via.libs.stb.image
 
 fn main() {
 	println('hi')
@@ -11,7 +11,7 @@ fn main() {
 
 fn load_high_level_from_memory() {
 	data := os.read_bytes('assets/beach.png') or { panic('file not loaded') }
-	img := image.load_from_memory(data.data, data.len)
+	img := image.load_from_memory(data.data, data.len) or { panic(err) }
 	img.save_as_png('hl_mem_beach.png')
 	img.save_as_png_to_func(save_png_to_func, voidptr(0))
 	img.free()

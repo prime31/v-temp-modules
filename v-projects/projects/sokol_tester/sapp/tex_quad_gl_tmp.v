@@ -3,8 +3,9 @@ import prime31.sokol.sapp
 import via.libs.sokol.gfx
 import via.libs.stb.image
 import via.math
-import graphics
+import via.graphics
 import rand
+import os
 
 struct AppState {
 mut:
@@ -16,7 +17,7 @@ mut:
 	trans_mat math.Mat44
 
 	checker_img C.sg_image
-	beach_img C.sg_image
+	beach_tex graphics.Texture
 
 	mesh &graphics.Mesh
 }
@@ -58,11 +59,11 @@ fn init(user_data voidptr) {
 	indices := [u16(0), 1, 2, 0, 2, 3]!
 	state.bind = graphics.bindings_create(verts, .immutable, indices, .immutable)
 
-	state.bind.fs_images[0] = create_image()
-	state.pip = graphics.pipeline_make_default()
-
-	state.beach_img = state.bind.fs_images[0]
+	state.beach_tex = create_image()
 	state.checker_img = create_checker_image()
+
+	state.bind.fs_images[0] = state.beach_tex.id
+	state.pip = graphics.pipeline_make_default()
 
 	// view-projection matrix
 	state.trans_mat = math.mat44_ortho2d(-2, 2, 2, -2)
@@ -75,23 +76,11 @@ fn init(user_data voidptr) {
 	state.mesh.bind_image(state.checker_img, 0)
 }
 
-fn create_image() C.sg_image {
-	img := image.load('assets/beach.png')
-	mut img_desc := sg_image_desc{
-		width: img.width
-		height: img.height
-		pixel_format: .rgba8
-		min_filter: .nearest
-		mag_filter: .nearest
-	}
-	img_desc.content.subimage[0][0] = sg_subimage_content{
-		ptr: img.data
-		size: sizeof(u32) * img.width * img.height
-    }
-
-    sg_img := sg_make_image(&img_desc)
-	img.free()
-	return sg_img
+fn create_image() graphics.Texture {
+	data := os.read_bytes('assets/beach.png') or { panic('file not loaded') }
+	tex := graphics.texture_load(data)
+	data.free()
+	return tex
 }
 
 fn create_checker_image() C.sg_image {
@@ -106,9 +95,6 @@ fn create_checker_image() C.sg_image {
 	mut img_desc := sg_image_desc{
 		width: 4
 		height: 4
-		pixel_format: .rgba8
-		min_filter: .nearest
-		mag_filter: .nearest
 		wrap_u: .clamp_to_edge
 		wrap_v: .clamp_to_edge
 	}
@@ -149,7 +135,7 @@ fn on_event(evt &C.sapp_event, user_data voidptr) {
 		match evt.key_code {
 			.f {
 				mut state := &AppState(user_data)
-				state.bind.fs_images[0] = state.beach_img
+				state.bind.fs_images[0] = state.beach_tex.id
 			}
 			.g {
 				mut state := &AppState(user_data)

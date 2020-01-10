@@ -7,7 +7,7 @@ import rand
 
 const (
 	vert = '#version 330
-uniform mat4 TransformProjectionMatrix;
+uniform vec4 TransformMatrix[2];
 
 layout (location=0) in vec2 VertPosition;
 layout (location=1) in vec2 VertTexCoord;
@@ -16,16 +16,17 @@ layout (location=2) in vec4 VertColor;
 out vec2 VaryingTexCoord;
 out vec4 VaryingColor;
 
-vec4 position(mat4 TransformProjectionMatrix, vec4 localPosition);
+vec4 position(mat3x2 transMat, vec2 localPosition);
 
 void main() {
 	VaryingTexCoord = VertTexCoord;
 	VaryingColor = VertColor;
-	gl_Position = position(TransformProjectionMatrix, vec4(VertPosition, 0, 1));
+	mat3x2 mat = mat3x2(TransformMatrix[0].xy, TransformMatrix[0].zw, TransformMatrix[1].xy);
+	gl_Position = position(mat, VertPosition + TransformMatrix[1].zw);
 }
 
-vec4 position(mat4 transformProjectionMatrix, vec4 localPosition) {
-	return transformProjectionMatrix * localPosition;
+vec4 position(mat3x2 transMat, vec2 localPosition) {
+	return vec4(transMat * vec3(localPosition, 0), 0, 1);
 }'
 	frag = '#version 330
 uniform sampler2D MainTex;
@@ -55,7 +56,8 @@ mut:
 	pass_action sg_pass_action
 	rx f32
 	ry f32
-	trans_mat math.Mat44
+	trans_mat32 math.Mat32
+	arr [8]f32
 
 	checker_img C.sg_image
 	beach_img C.sg_image
@@ -125,11 +127,12 @@ fn init(user_data voidptr) {
 	mut vs_desc := sg_shader_stage_desc{
 		source: vert.str
 	}
-	vs_desc.uniform_blocks[0].size = sizeof(math.Mat44)
 
+	vs_desc.uniform_blocks[0].size = sizeof(f32) * 8
 	vs_desc.uniform_blocks[0].uniforms[0] = sg_shader_uniform_desc{
-		name: 'TransformProjectionMatrix'.str
-		@type: .mat4
+		name: 'TransformMatrix'.str
+		@type: .float4
+		array_count: 2
 	}
 
 	// frag shader
@@ -174,7 +177,11 @@ fn init(user_data voidptr) {
 	})
 
 	// view-projection matrix
-	state.trans_mat = math.mat44_ortho2d(-2, 2, 2, -2)
+	state.trans_mat32 = math.mat32_ortho(-2, 2, 2, -2)
+	// C.memcpy((state.arr).data, state.trans_mat32.data, state.trans_mat32.len * sizeof(f32))
+	for i := 0; i < 6; i++ {
+		state.arr[i] = state.trans_mat32.data[i]
+	}
 }
 
 fn create_image() C.sg_image {
@@ -221,12 +228,14 @@ fn create_checker_image() C.sg_image {
 }
 
 fn frame(user_data voidptr) {
-	state := &AppState(user_data)
+	mut state := &AppState(user_data)
+	state.arr[6] = math.rand_between(-0.1, 0.1)
+	state.arr[7] = math.rand_between(-0.1, 0.1)
 
 	sg_begin_default_pass(&state.pass_action, sapp_width(), sapp_height())
 	sg_apply_pipeline(state.pip)
 	sg_apply_bindings(&state.bind)
-	sg_apply_uniforms(C.SG_SHADERSTAGE_VS, 0, &state.trans_mat, sizeof(math.Mat44))
+	sg_apply_uniforms(C.SG_SHADERSTAGE_VS, 0, &state.arr, sizeof(f32) * 8)
 	sg_draw(0, 6, 1)
 	sg_end_pass()
 	sg_commit()

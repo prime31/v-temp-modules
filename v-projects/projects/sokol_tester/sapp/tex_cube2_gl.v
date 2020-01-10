@@ -1,6 +1,6 @@
-import prime31.sokol
+import via.libs.sokol
 import prime31.sokol.sapp
-import prime31.sokol.gfx
+import via.libs.sokol.gfx
 import prime31.stb.image
 
 #flag -I.
@@ -200,19 +200,19 @@ fn init(user_data voidptr) {
 
 fn create_image() C.sg_image {
 	img := image.load('assets/beach.png')
-
-	img_content := sg_subimage_content{
+	mut img_desc := sg_image_desc{
+		width: img.width
+		height: img.height
+		pixel_format: .rgba8
+		min_filter: .nearest
+		mag_filter: .nearest
+	}
+	img_desc.content.subimage[0][0] = sg_subimage_content{
 		ptr: img.data
 		size: sizeof(u32) * img.width * img.height
     }
-	mut img_desc := C.gfx_hack_make_image_desc(img_content)
-	img_desc.width = img.width
-	img_desc.height = img.height
-	img_desc.pixel_format = .rgba8
-	img_desc.min_filter = .nearest
-	img_desc.mag_filter = .nearest
 
-    sg_img := C.sg_make_image(img_desc)
+    sg_img := sg_make_image(&img_desc)
 	img.free()
 	return sg_img
 }

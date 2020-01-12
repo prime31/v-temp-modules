@@ -15,10 +15,13 @@ pub fn (state &AppState) initialize(via &via.Via) {
 	println('t: $t')
 	t.free()
 
-	s := via.audio.new_sound('assets/skid.wav')
-	s.play(0)
+	s := via.audio.new_stream('assets/skid.wav')
+	_, channel := s.play(0)
+	s.set_loop_count(4)
 	_, name := s.get_name()
-	println('sound name: $name')
+	loops := 0
+	s.get_loop_count(&loops)
+	println('sound name: $name, loops: $loops')
 }
 
 pub fn (state &AppState) update(via &via.Via) {

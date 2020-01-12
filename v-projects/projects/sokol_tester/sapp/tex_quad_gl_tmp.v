@@ -62,7 +62,7 @@ fn init(user_data voidptr) {
 	state.beach_tex = create_image()
 	state.checker_img = create_checker_image()
 
-	state.bind.fs_images[0] = state.beach_tex.id
+	state.bind.set_frag_image(0, state.beach_tex.id)
 	state.pip = graphics.pipeline_make_default()
 
 	// view-projection matrix
@@ -73,7 +73,7 @@ fn init(user_data voidptr) {
 		verts[i].pos.y -= 1
 	}
 	state.mesh = graphics.mesh_create_dynamic(verts, .dynamic, indices, .dynamic)
-	state.mesh.bind_image(state.checker_img, 0)
+	state.mesh.bind_image(0, state.checker_img)
 }
 
 fn create_image() graphics.Texture {
@@ -135,11 +135,11 @@ fn on_event(evt &C.sapp_event, user_data voidptr) {
 		match evt.key_code {
 			.f {
 				mut state := &AppState(user_data)
-				state.bind.fs_images[0] = state.beach_tex.id
+				state.bind.set_frag_image(0, state.beach_tex.id)
 			}
 			.g {
 				mut state := &AppState(user_data)
-				state.bind.fs_images[0] = state.checker_img
+				state.bind.set_frag_image(0, state.checker_img)
 			}
 			else {}
 		}

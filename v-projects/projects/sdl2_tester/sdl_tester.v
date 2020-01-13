@@ -1,4 +1,4 @@
-import prime31.sdl2
+import via.libs.sdl2
 import prime31.sdl2.image
 import prime31.sdl2.mixer
 import prime31.sdl2.ttf

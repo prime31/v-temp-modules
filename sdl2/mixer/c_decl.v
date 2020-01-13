@@ -1,5 +1,5 @@
 module mixer
-import prime31.sdl2
+import via.libs.sdl2
 
 #flag -lSDL2_mixer
 #include <SDL_mixer.h>

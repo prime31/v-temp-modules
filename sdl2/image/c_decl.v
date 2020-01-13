@@ -1,5 +1,5 @@
 module image
-import prime31.sdl2
+import via.libs.sdl2
 
 #flag -lSDL2_image
 #include <SDL_image.h>

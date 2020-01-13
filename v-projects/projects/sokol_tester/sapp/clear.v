@@ -1,6 +1,6 @@
-import via.sokol
-import via.sokol.sapp
-import via.sokol.gfx
+import via.libs.sokol
+import prime31.sokol.sapp
+import via.libs.sokol.gfx
 
 struct AppState {
 	pass_action sg_pass_action

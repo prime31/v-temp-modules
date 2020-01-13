@@ -41,8 +41,8 @@ fn main() {
 
 fn (state mut AppState) make_pip(via &via.Via) {
 	mut shader_desc := graphics.shader_get_default_desc()
-	shader_desc.set_vert_uniform_block_size(1, sizeof(math.Vec4))
-		.set_vert_uniform(1, 0, 'via_ScreenSize', .float4, 0)
+	shader_desc.set_frag_uniform_block_size(0, sizeof(math.Vec4))
+		.set_frag_uniform(0, 0, 'via_ScreenSize', .float4, 0)
 	shader := via.graphics.new_shader(graphics.null_str, frag, shader_desc)
 
 	pip_desc := graphics.pipeline_desc_make_default(shader)
@@ -87,7 +87,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 
 	state.mesh.apply_bindings()
 	state.mesh.apply_uniforms(.vs, 0, &trans_mat, sizeof(math.Mat44))
-	state.mesh.apply_uniforms(.vs, 1, &screen_size, sizeof(math.Vec4))
+	state.mesh.apply_uniforms(.fs, 0, &screen_size, sizeof(math.Vec4))
 	state.mesh.draw()
 
 	sg_end_pass()

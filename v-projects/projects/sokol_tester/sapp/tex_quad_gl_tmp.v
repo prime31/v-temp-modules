@@ -72,7 +72,7 @@ fn init(user_data voidptr) {
 		verts[i].pos.x -= 1
 		verts[i].pos.y -= 1
 	}
-	state.mesh = graphics.mesh_create_dynamic(verts, .dynamic, indices, .dynamic)
+	state.mesh = graphics.mesh_new_quad()
 	state.mesh.bind_image(0, state.checker_img)
 }
 

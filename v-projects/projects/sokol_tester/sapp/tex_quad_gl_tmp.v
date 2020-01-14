@@ -73,7 +73,7 @@ fn init(user_data voidptr) {
 		verts[i].pos.y -= 1
 	}
 	state.mesh = graphics.mesh_new_quad()
-	state.mesh.bind_image(0, state.checker_img)
+	state.mesh.bind_texture(0, state.beach_tex)
 }
 
 fn create_image() graphics.Texture {

@@ -75,14 +75,15 @@ fn main() {
 		pass_action: gfx.create_clear_pass(0.3, 0.3, 1.0, 1.0)
 	}
 
-	sapp_run(&sapp_desc{
+	desc := sapp_desc{
 		user_data: state
 		init_userdata_cb: init
 		frame_userdata_cb: frame
 		event_userdata_cb: on_event
 		cleanup_cb: cleanup
-		window_title: 'Textured Cube'.str
-	})
+		window_title: 'Jiggly Dynamic Quad'.str
+	}
+	sapp_run(&desc)
 }
 
 fn init(user_data voidptr) {

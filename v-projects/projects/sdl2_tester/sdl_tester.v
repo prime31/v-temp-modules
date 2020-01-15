@@ -13,8 +13,13 @@ mut:
 fn main() {
 	C.SDL_Init(C.SDL_INIT_VIDEO | C.SDL_INIT_AUDIO | C.SDL_INIT_JOYSTICK)
 
-	window := C.SDL_CreateWindow('V + SDL2', 300, 300, 500, 300, 0)
+	window := C.SDL_CreateWindow('V + SDL2', 300, 300, 500, 300, C.SDL_WINDOW_OPENGL | C.SDL_WINDOW_MOUSE_FOCUS | C.SDL_WINDOW_ALLOW_HIGHDPI)
 	renderer := C.SDL_CreateRenderer(window, -1, C.SDL_RENDERER_ACCELERATED | C.SDL_RENDERER_PRESENTVSYNC)
+
+	x := 0
+	y := 0
+	SDL_GetRendererOutputSize(renderer, &x, &y)
+	println('size: $x, $y')
 
 	C.Mix_Init(0)
 	if C.Mix_OpenAudio(C.MIX_DEFAULT_FREQUENCY, C.MIX_DEFAULT_FORMAT, C.MIX_DEFAULT_CHANNELS, 4096) < 0 {

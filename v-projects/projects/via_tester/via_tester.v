@@ -45,14 +45,14 @@ fn make_pip(via &via.Via) sg_pipeline {
 	mut shader_desc := graphics.shader_get_default_desc()
 	shader_desc.set_frag_uniform_block_size(0, sizeof(math.Vec4))
 		.set_frag_uniform(0, 0, 'via_ScreenSize', .float4, 0)
-	shader := via.graphics.new_shader(graphics.null_str, frag, shader_desc)
+	shader := via.g.new_shader(graphics.null_str, frag, shader_desc)
 
 	pip_desc := graphics.pipeline_desc_make_default(shader)
-	return via.graphics.new_pipeline(pip_desc)
+	return via.g.new_pipeline(pip_desc)
 }
 
 pub fn (state mut AppState) initialize(via &via.Via) {
-	t := via.graphics.new_texture('assets/beach.png')
+	t := via.g.new_texture('assets/beach.png')
 	println('t: $t')
 
 	s := via.audio.new_stream('assets/skid.wav')
@@ -69,8 +69,8 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 	state.mesh = graphics.mesh_new_quad()
 	state.mesh.bind_texture(0, t)
 
-	tile := via.graphics.new_texture('assets/dude.png')
-	state.batch = via.graphics.new_spritebatch(tile, 10)
+	tile := via.g.new_texture('assets/dude.png')
+	state.batch = via.g.new_spritebatch(tile, 10)
 	state.batch.add(-2, -2)
 	state.batch.add(-1, -1)
 	state.batch.add(0, 0)
@@ -92,8 +92,8 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	state.mesh.update_verts()
 
 	trans_mat := math.mat44_ortho2d(-2, 2, 2, -2)
-	pass_action := via.graphics.new_clear_pass(1.0, 0.3, 1.0, 1.0)
-	w, h := via.window.get_drawable_size()
+	pass_action := via.g.new_clear_pass(1.0, 0.3, 1.0, 1.0)
+	w, h := via.win.get_drawable_size()
 	screen_size := math.Vec4{w, h, 0, 1}
 
 

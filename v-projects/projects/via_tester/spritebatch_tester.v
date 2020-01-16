@@ -1,6 +1,7 @@
 import via
 import via.math
 import via.graphics
+import via.libs.imgui
 
 struct AppState {
 mut:

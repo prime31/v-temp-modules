@@ -1,5 +1,6 @@
 import via.libs.physfs
 import via.libs.sdl2
+import via.utils
 import os
 
 
@@ -57,13 +58,13 @@ fn enum_callback(data voidptr, dir byteptr, fname byteptr) int {
 }
 
 fn read_txt_file() {
-	fp := physfs.open_read(c'assets/json.json')
+	fp := physfs.open_read('assets/json.json')
 	// fp := physfs.open_read(charptr('assets/json.json'.str))
 	len := physfs.file_length(fp)
 	println('json file len=$len')
 
 	// buf := [len]byte // doesnt work
-	buf := [`0`].repeat(int(len))
+	buf := utils.make_array<int>(int(len), int(len))
 	physfs.read_bytes(fp, buf.data, u64(len))
 	println('file contents: ${tos(buf.data, buf.len)}')
 	physfs.close(fp)

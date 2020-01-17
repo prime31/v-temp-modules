@@ -63,7 +63,7 @@ mut:
 	beach_img C.sg_image
 }
 
-struct Vertex {
+struct Vert {
 pub mut:
 	pos math.Vec2
 	texcoords math.Vec2
@@ -100,14 +100,14 @@ fn init(user_data voidptr) {
 	})
 
 	verts := [
-		Vertex{ math.Vec2{-1,-1}, 	math.Vec2{0,0},		math.Color{} },
-		Vertex{ math.Vec2{1,-1}, 	math.Vec2{1,0},		math.Color{} },
-		Vertex{ math.Vec2{1,1}, 	math.Vec2{1,1},		math.Color{} },
-		Vertex{ math.Vec2{-1,1}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }
+		Vert{ math.Vec2{-1,-1}, 	math.Vec2{0,0},		math.Color{} },
+		Vert{ math.Vec2{1,-1}, 	math.Vec2{1,0},		math.Color{} },
+		Vert{ math.Vec2{1,1}, 	math.Vec2{1,1},		math.Color{} },
+		Vert{ math.Vec2{-1,1}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }
 	]!
 
 	vert_buff_desc := sg_buffer_desc{
-		size: sizeof(Vertex) * verts.len
+		size: sizeof(Vert) * verts.len
 		content: verts.data
 	}
 	state.bind.vertex_buffers[0] = sg_make_buffer(&vert_buff_desc)

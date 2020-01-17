@@ -64,7 +64,7 @@ mut:
 	draw_images [2]sg_image
 }
 
-struct Vertex {
+struct Vert {
 pub mut:
 	pos math.Vec2
 	texcoords math.Vec2
@@ -108,22 +108,22 @@ fn init(user_data voidptr) {
 	})
 
 	verts := [
-		Vertex{ math.Vec2{-1,-1}, 	math.Vec2{0,0},		math.Color{} }, // tl
-		Vertex{ math.Vec2{1,-1}, 	math.Vec2{1,0},		math.Color{} }, // tr
-		Vertex{ math.Vec2{1,1}, 	math.Vec2{1,1},		math.Color{} }, // br
-		Vertex{ math.Vec2{-1,1}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }, // bl
+		Vert{ math.Vec2{-1,-1}, 	math.Vec2{0,0},		math.Color{} }, // tl
+		Vert{ math.Vec2{1,-1}, 	math.Vec2{1,0},		math.Color{} }, // tr
+		Vert{ math.Vec2{1,1}, 	math.Vec2{1,1},		math.Color{} }, // br
+		Vert{ math.Vec2{-1,1}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }, // bl
 
-		Vertex{ math.Vec2{-2,-2}, 	math.Vec2{0,0},		math.Color{} },
-		Vertex{ math.Vec2{0,-2}, 	math.Vec2{1,0},		math.Color{} },
-		Vertex{ math.Vec2{0,0}, 	math.Vec2{1,1},		math.Color{} },
-		Vertex{ math.Vec2{-2,0}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }
+		Vert{ math.Vec2{-2,-2}, 	math.Vec2{0,0},		math.Color{} },
+		Vert{ math.Vec2{0,-2}, 	math.Vec2{1,0},		math.Color{} },
+		Vert{ math.Vec2{0,0}, 	math.Vec2{1,1},		math.Color{} },
+		Vert{ math.Vec2{-2,0}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }
 	]!
 
 	state.bind.vertex_buffers[0] = sg_make_buffer(&sg_buffer_desc{
-		size: sizeof(Vertex) * verts.len
+		size: sizeof(Vert) * verts.len
 		usage: .dynamic
 	})
-	sg_update_buffer(state.bind.vertex_buffers[0], verts.data, sizeof(Vertex) * verts.len)
+	sg_update_buffer(state.bind.vertex_buffers[0], verts.data, sizeof(Vert) * verts.len)
 
 	indices := [u16(0), 1, 2, 0, 2, 3,  4, 5, 6, 4, 6, 7]!
 	state.bind.index_buffer = sg_make_buffer(&sg_buffer_desc{
@@ -286,21 +286,21 @@ fn on_event(evt &C.sapp_event, user_data voidptr) {
 
 fn (state &AppState) update_vert_buffer() {
 	mut verts := [
-		Vertex{ math.Vec2{-1,-1}, 	math.Vec2{0,0},		math.Color{} }, // tl
-		Vertex{ math.Vec2{1,-1}, 	math.Vec2{1,0},		math.Color{} }, // tr
-		Vertex{ math.Vec2{1,1}, 	math.Vec2{1,1},		math.Color{} }, // br
-		Vertex{ math.Vec2{-1,1}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }, // bl
+		Vert{ math.Vec2{-1,-1}, 	math.Vec2{0,0},		math.Color{} }, // tl
+		Vert{ math.Vec2{1,-1}, 	math.Vec2{1,0},		math.Color{} }, // tr
+		Vert{ math.Vec2{1,1}, 	math.Vec2{1,1},		math.Color{} }, // br
+		Vert{ math.Vec2{-1,1}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }, // bl
 
-		Vertex{ math.Vec2{-2,-2}, 	math.Vec2{0,0},		math.Color{} },
-		Vertex{ math.Vec2{0,-2}, 	math.Vec2{1,0},		math.Color{} },
-		Vertex{ math.Vec2{0,0}, 	math.Vec2{1,1},		math.Color{} },
-		Vertex{ math.Vec2{-2,0}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }
+		Vert{ math.Vec2{-2,-2}, 	math.Vec2{0,0},		math.Color{} },
+		Vert{ math.Vec2{0,-2}, 	math.Vec2{1,0},		math.Color{} },
+		Vert{ math.Vec2{0,0}, 	math.Vec2{1,1},		math.Color{} },
+		Vert{ math.Vec2{-2,0}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }
 	]!
 	for i, _ in verts {
 		verts[i].pos.x += f32(rand.next(100)) / 100
 		verts[i].pos.y += f32(rand.next(100)) / 100
 	}
-	sg_update_buffer(state.bind.vertex_buffers[0], verts.data, sizeof(Vertex) * verts.len)
+	sg_update_buffer(state.bind.vertex_buffers[0], verts.data, sizeof(Vert) * verts.len)
 }
 
 fn cleanup() {

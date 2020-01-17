@@ -51,10 +51,10 @@ fn init(user_data voidptr) {
 	})
 
 	mut verts := [
-		graphics.Vertex{ math.Vec2{-1,-1}, 	math.Vec2{0,0},		math.Color{} },
-		graphics.Vertex{ math.Vec2{1,-1}, 	math.Vec2{1,0},		math.Color{} },
-		graphics.Vertex{ math.Vec2{1,1}, 	math.Vec2{1,1},		math.Color{} },
-		graphics.Vertex{ math.Vec2{-1,1}, 	math.Vec2{0,1},		math.Color{0xff0000ff} }
+		math.Vertex{ -1,-1, 	0, 0,		math.Color{} },
+		math.Vertex{ 1,-1, 		1, 0,		math.Color{} },
+		math.Vertex{ 1,1, 		1, 1,		math.Color{} },
+		math.Vertex{ -1,1, 		0, 1,		math.Color{0xff0000ff} }
 	]!
 	indices := [u16(0), 1, 2, 0, 2, 3]!
 	state.bind = graphics.bindings_create(verts, .immutable, indices, .immutable)
@@ -69,8 +69,8 @@ fn init(user_data voidptr) {
 	state.trans_mat = math.mat44_ortho2d(-2, 2, 2, -2)
 
 	for i, _ in verts {
-		verts[i].pos.x -= 1
-		verts[i].pos.y -= 1
+		verts[i].x -= 1
+		verts[i].y -= 1
 	}
 	state.mesh = graphics.mesh_new_quad()
 	state.mesh.bind_texture(0, state.beach_tex)
@@ -117,8 +117,8 @@ fn frame(user_data voidptr) {
 	sg_draw(0, 6, 1)
 
 	for i, _ in state.mesh.verts {
-		state.mesh.verts[i].pos.x += math.rand_between(-0.01, 0.01)
-		state.mesh.verts[i].pos.y += math.rand_between(-0.01, 0.01)
+		state.mesh.verts[i].x += math.rand_between(-0.01, 0.01)
+		state.mesh.verts[i].y += math.rand_between(-0.01, 0.01)
 	}
 	state.mesh.update_verts()
 

@@ -25,6 +25,24 @@ const (
 
 		return finalColor;
 	}'
+
+	frag_noise = '
+	uniform float noise;
+
+	float rand(vec2 co){
+		return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+	}
+
+	vec4 effect(vec4 vcolor, sampler2D tex, vec2 texcoord) {
+		vec4 color = texture(tex, texcoord);
+		float diff = (rand(texcoord) - 0.5) * noise;
+
+		color.r += diff;
+		color.g += diff;
+		color.b += diff;
+
+		return color;
+	}'
 )
 
 struct AppState {
@@ -51,6 +69,16 @@ fn make_pip(via &via.Via) sg_pipeline {
 	return via.g.new_pipeline(pip_desc)
 }
 
+fn make_pip_noise(via &via.Via) sg_pipeline {
+	mut shader_desc := graphics.shader_get_default_desc()
+	shader_desc.set_frag_uniform_block_size(0, sizeof(f32))
+		.set_frag_uniform(0, 0, 'noise', .float, 0)
+	shader := via.g.new_shader(graphics.null_str, frag_noise, shader_desc)
+
+	pip_desc := graphics.pipeline_desc_make_default(shader)
+	return via.g.new_pipeline(pip_desc)
+}
+
 pub fn (state mut AppState) initialize(via &via.Via) {
 	t := via.g.new_texture('assets/beach.png')
 	println('t: $t')
@@ -65,6 +93,7 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 
 	state.default_pip = graphics.pipeline_make_default()
 	state.pip = make_pip(via)
+	// state.pip = make_pip_noise(via)
 
 	state.mesh = graphics.mesh_new_quad()
 	state.mesh.bind_texture(0, t)
@@ -95,7 +124,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	pass_action := via.g.new_clear_pass(1.0, 0.3, 1.0, 1.0)
 	w, h := via.win.get_drawable_size()
 	screen_size := math.Vec4{w, h, 0, 1}
-
+	noise := 2.0
 
 	sg_begin_default_pass(&pass_action, w, h)
 
@@ -106,6 +135,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	state.mesh.apply_bindings()
 	state.mesh.apply_uniforms(.vs, 0, &trans_mat, sizeof(math.Mat44))
 	state.mesh.apply_uniforms(.fs, 0, &screen_size, sizeof(math.Vec4))
+	// state.mesh.apply_uniforms(.fs, 0, &noise, sizeof(f32))
 	state.mesh.draw()
 
 	sg_end_pass()

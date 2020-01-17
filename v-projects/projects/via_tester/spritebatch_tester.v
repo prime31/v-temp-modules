@@ -15,18 +15,24 @@ fn main() {
 }
 
 pub fn (state mut AppState) initialize(via &via.Via) {
-	t := via.g.new_texture('assets/beach.png')
-
 	state.pip = graphics.pipeline_make_default()
 
+	beach := via.g.new_texture('assets/beach.png')
 	tile := via.g.new_texture('assets/dude.png')
+	img := math.rand_choose(beach, tile)
+
 	state.batch = via.g.new_spritebatch(tile, 20)
 	for i in 0..10 {
 		state.batch.add(i * 32, 0)
 	}
 
+	quad1 := math.quad_make(0, 0, 16, 16, 32, 32)
+	quad2 := math.quad_make(16, 0, 16, 16, 32, 32)
+	quad3 := math.quad_make(0, 16, 16, 16, 32, 32)
+	quad4 := math.quad_make(16, 16, 16, 16, 32, 32)
 	for i in 0..10 {
-		state.batch.add(0, (i + 1) * 32)
+		q := math.rand_choose4(quad1, quad2, quad3, quad4)
+		state.batch.add_q_trso(q, 0 + 8, (f32(i) + 2.0) * 24 + 8, math.rand_range(20, 340), 1, 1, 8, 8)
 	}
 }
 

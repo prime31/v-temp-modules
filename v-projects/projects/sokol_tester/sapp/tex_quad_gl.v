@@ -230,8 +230,8 @@ fn create_checker_image() C.sg_image {
 
 fn frame(user_data voidptr) {
 	mut state := &AppState(user_data)
-	state.arr[6] = math.rand_between(-0.1, 0.1)
-	state.arr[7] = math.rand_between(-0.1, 0.1)
+	state.arr[6] = math.rand_range(-0.1, 0.1)
+	state.arr[7] = math.rand_range(-0.1, 0.1)
 
 	sg_begin_default_pass(&state.pass_action, sapp_width(), sapp_height())
 	sg_apply_pipeline(state.pip)

@@ -115,8 +115,8 @@ pub fn (state mut AppState) update(via &via.Via) {
 
 pub fn (state mut AppState) draw(via &via.Via) {
 	for i, _ in state.mesh.verts {
-		state.mesh.verts[i].x += math.rand_between(-0.03, 0.03)
-		state.mesh.verts[i].y += math.rand_between(-0.03, 0.03)
+		state.mesh.verts[i].x += math.rand_range(-0.03, 0.03)
+		state.mesh.verts[i].y += math.rand_range(-0.03, 0.03)
 	}
 	state.mesh.update_verts()
 

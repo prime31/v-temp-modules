@@ -117,8 +117,8 @@ fn frame(user_data voidptr) {
 	sg_draw(0, 6, 1)
 
 	for i, _ in state.mesh.verts {
-		state.mesh.verts[i].x += math.rand_between(-0.01, 0.01)
-		state.mesh.verts[i].y += math.rand_between(-0.01, 0.01)
+		state.mesh.verts[i].x += math.rand_range(-0.01, 0.01)
+		state.mesh.verts[i].y += math.rand_range(-0.01, 0.01)
 	}
 	state.mesh.update_verts()
 

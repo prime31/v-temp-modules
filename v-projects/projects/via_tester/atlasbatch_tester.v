@@ -5,7 +5,7 @@ import via.libs.imgui
 
 struct AppState {
 mut:
-	batch &graphics.SpriteBatch
+	batch &graphics.AtlasBatch
 	pip sg_pipeline
 }
 
@@ -21,7 +21,7 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 	tile := via.g.new_texture('assets/dude.png')
 	img := math.rand_choose(beach, tile)
 
-	state.batch = via.g.new_spritebatch(tile, 20)
+	state.batch = via.g.new_atlasbatch(tile, 20)
 	for i in 0..10 {
 		state.batch.add(i * 32, 0)
 	}

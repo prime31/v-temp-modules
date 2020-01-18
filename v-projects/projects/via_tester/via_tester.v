@@ -49,7 +49,7 @@ struct AppState {
 mut:
 	data int
 	mesh &graphics.Mesh = &graphics.Mesh(0)
-	batch &graphics.SpriteBatch = &graphics.SpriteBatch(0)
+	batch &graphics.AtlasBatch = &graphics.AtlasBatch(0)
 	pip sg_pipeline
 	default_pip sg_pipeline
 }
@@ -99,7 +99,7 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 	state.mesh.bind_texture(0, t)
 
 	tile := via.g.new_texture('assets/dude.png')
-	state.batch = via.g.new_spritebatch(tile, 10)
+	state.batch = via.g.new_atlasbatch(tile, 10)
 	state.batch.add(-2, -2)
 	state.batch.add(-1, -1)
 	state.batch.add(0, 0)

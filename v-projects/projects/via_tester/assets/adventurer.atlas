@@ -1,0 +1,94 @@
+adventurer-run-00
+	0,0,50,37
+	0.5,0.5
+adventurer-run-01
+	51,0,50,37
+	0.5,0.5
+adventurer-run-02
+	0,38,50,37
+	0.5,0.5
+adventurer-run-03
+	0,76,50,37
+	0.5,0.5
+adventurer-run-04
+	51,38,50,37
+	0.5,0.5
+adventurer-run-05
+	51,76,50,37
+	0.5,0.5
+adventurer-slide-00
+	102,0,50,37
+	0.5,0.5
+adventurer-slide-01
+	102,38,50,37
+	0.5,0.5
+adventurer-attack1-00
+	153,0,50,37
+	0.5,0.5
+adventurer-attack1-01
+	102,76,50,37
+	0.5,0.5
+adventurer-attack1-02
+	153,38,50,37
+	0.5,0.5
+adventurer-attack1-03
+	204,0,50,37
+	0.5,0.5
+adventurer-attack1-04
+	153,76,50,37
+	0.5,0.5
+adventurer-attack2-00
+	204,38,50,37
+	0.5,0.5
+adventurer-attack2-01
+	204,76,50,37
+	0.5,0.5
+adventurer-attack2-02
+	0,114,50,37
+	0.5,0.5
+adventurer-attack2-03
+	0,152,50,37
+	0.5,0.5
+adventurer-attack2-04
+	51,114,50,37
+	0.5,0.5
+adventurer-attack2-05
+	0,190,50,37
+	0.5,0.5
+adventurer-crnr-grb-00
+	51,152,50,37
+	0.5,0.5
+adventurer-crnr-grb-01
+	102,114,50,37
+	0.5,0.5
+adventurer-crnr-grb-02
+	51,190,50,37
+	0.5,0.5
+adventurer-crnr-grb-03
+	102,152,50,37
+	0.5,0.5
+adventurer-jump-00
+	153,114,50,37
+	0.5,0.5
+adventurer-jump-01
+	102,190,50,37
+	0.5,0.5
+adventurer-jump-02
+	153,152,50,37
+	0.5,0.5
+adventurer-jump-03
+	204,114,50,37
+	0.5,0.5
+
+attack_1
+	7
+	8,9,10,11,12
+attack_2
+	7
+	13,14,15,16,17,18
+hang
+	7
+	19,20,21,22
+jump
+	7
+	23,24,25,26

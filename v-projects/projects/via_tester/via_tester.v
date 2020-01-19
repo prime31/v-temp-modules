@@ -51,7 +51,6 @@ mut:
 	mesh &graphics.Mesh = &graphics.Mesh(0)
 	batch &graphics.AtlasBatch = &graphics.AtlasBatch(0)
 	pip sg_pipeline
-	default_pip sg_pipeline
 }
 
 fn main() {
@@ -91,7 +90,6 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 	s.get_loop_count(&loops)
 	println('sound name: $name, loops: $loops')
 
-	state.default_pip = graphics.pipeline_make_default()
 	state.pip = make_pip(via)
 	// state.pip = make_pip_noise(via)
 
@@ -128,7 +126,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 
 	sg_begin_default_pass(&pass_action, w, h)
 
-	sg_apply_pipeline(state.default_pip)
+	sg_apply_pipeline(via.g.get_default_pipeline())
 	state.batch.draw(&trans_mat)
 
 	sg_apply_pipeline(state.pip)

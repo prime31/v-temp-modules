@@ -6,7 +6,6 @@ import via.libs.imgui
 struct AppState {
 mut:
 	batch &graphics.AtlasBatch
-	pip sg_pipeline
 }
 
 fn main() {
@@ -15,8 +14,6 @@ fn main() {
 }
 
 pub fn (state mut AppState) initialize(via &via.Via) {
-	state.pip = graphics.pipeline_make_default()
-
 	atlas := via.g.new_texture_atlas('assets/adventurer.atlas')
 	state.batch = via.g.new_atlasbatch(atlas.tex, 20)
 
@@ -47,7 +44,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 
 	sg_begin_default_pass(&pass_action, w, h)
 
-	sg_apply_pipeline(state.pip)
+	sg_apply_pipeline(via.g.get_default_pipeline())
 	state.batch.draw(&trans_mat)
 
 	sg_end_pass()

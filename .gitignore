@@ -19,7 +19,6 @@ gl3w/generator/obj
 gl3w/generator/xml/doc
 gl3w/gl41
 gl3w/gl33
-flecs/thirdparty
 flecs/flecs_git
 physfs/physfs_hg
 physfs/thirdparty

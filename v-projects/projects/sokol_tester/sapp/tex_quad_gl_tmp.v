@@ -78,7 +78,7 @@ fn init(user_data voidptr) {
 
 fn create_image() graphics.Texture {
 	data := os.read_bytes('assets/beach.png') or { panic('file not loaded') }
-	tex := graphics.texture_load(data, .nearest, .nearest)
+	tex := graphics.texture(data, .nearest, .nearest)
 	data.free()
 	return tex
 }

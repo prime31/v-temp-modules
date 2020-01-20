@@ -125,8 +125,6 @@ namespace Generator
 		{
 			// resolve paths
 			var homeFolder = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-			if (!Path.IsPathRooted(SrcDir))
-				SrcDir = SrcDir.Replace("~", homeFolder);
 			if (!Path.IsPathRooted(DstDir))
 				DstDir = DstDir.Replace("~", homeFolder);
 
@@ -150,7 +148,7 @@ namespace Generator
 
 			if (!CDeclarationFileName.EndsWith(".v"))
 				CDeclarationFileName = CDeclarationFileName + ".v";
-			
+
 			// exlude filenames dont need extensions
 			ExcludedFiles = ExcludedFiles.Select(f => f.Replace(".h", "")).ToArray();
 			ExcludedFromVWrapperFiles = ExcludedFromVWrapperFiles.Select(f => f.Replace(".h", "")).ToArray();
@@ -193,6 +191,9 @@ namespace Generator
 				if (File.Exists(tmp))
 					return tmp;
 			}
+
+			if (!Path.IsPathRooted(SrcDir))
+				SrcDir = SrcDir.Replace("~", Environment.GetFolderPath(Environment.SpecialFolder.Personal));
 
 			var newPath = Path.Combine(SrcDir, path);
 			if (!File.Exists(newPath))

@@ -50,7 +50,8 @@ namespace Generator
 			{
 				// Run(GetKincConfig());
 				// Run(GetPhyFSConfig());
-				Run(GetSDLConfig());
+				// Run(GetSDLConfig());
+				Run(GetLuaConfig());
 			}
 		}
 
@@ -71,6 +72,31 @@ namespace Generator
 			var compilation = CppParser.ParseFiles(config.GetFiles(), config.ToParserOptions());
 			VGenerator.Generate(config, compilation);
 			// compilation.Dump();
+		}
+
+		static Config GetLuaConfig()
+		{
+			return new Config
+			{
+				DstDir = "~/Desktop/lua",
+				SrcDir = "~/Desktop/lua-5.3.5/src",
+				BaseSourceFolder = "src",
+				ModuleName = "lua",
+				VWrapperFileName = "lua",
+				SingleVFileExport = true,
+				ExcludeFunctionsThatContain = new string[] {},
+				StripPrefixFromFunctionNames = new string[] {},
+				CTypeToVType = {
+					{"__sFILE", "voidptr"}
+				},
+				Defines = new string[] {},
+				IncludeFolders = new string[] { "src" },
+				Files = new string[] {
+					"lua.h", "lualib.h", "lauxlib.h"
+				},
+				ExcludedFiles = new string[] {},
+				ExcludedFromVWrapperFiles = new string[] {}
+			};
 		}
 
 		static Config GetSDLConfig()

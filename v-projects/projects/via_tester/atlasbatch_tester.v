@@ -5,7 +5,7 @@ import via.libs.imgui
 
 struct AppState {
 mut:
-	batch &graphics.AtlasBatch
+	batch &graphics.AtlasBatch = &graphics.AtlasBatch(0)
 }
 
 fn main() {
@@ -20,16 +20,16 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 
 	state.batch = via.g.new_atlasbatch(tile, 20)
 	for i in 0..10 {
-		state.batch.add(i * 32, 0)
+		state.batch.add({x: i * 32, y: 0})
 	}
 
-	quad1 := math.quad_make(0, 0, 16, 16, 32, 32)
-	quad2 := math.quad_make(16, 0, 16, 16, 32, 32)
-	quad3 := math.quad_make(0, 16, 16, 16, 32, 32)
-	quad4 := math.quad_make(16, 16, 16, 16, 32, 32)
+	quad1 := math.quad(0, 0, 16, 16, 32, 32)
+	quad2 := math.quad(16, 0, 16, 16, 32, 32)
+	quad3 := math.quad(0, 16, 16, 16, 32, 32)
+	quad4 := math.quad(16, 16, 16, 16, 32, 32)
 	for i in 0..10 {
 		q := math.rand_choose4(quad1, quad2, quad3, quad4)
-		state.batch.add_q_trso(q, 0 + 8, (f32(i) + 2.0) * 24 + 8, math.rand_range(20, 340), 1, 1, 8, 8)
+		state.batch.add_q(q, {x: 8, y: (f32(i) + 2.0) * 24 + 8, rot: math.rand_range(20, 340), sx: 1, sy: 1, ox: 8, oy: 8})
 	}
 }
 
@@ -38,9 +38,7 @@ pub fn (state mut AppState) update(via &via.Via) {}
 pub fn (state mut AppState) draw(via &via.Via) {
 	pass_action := via.g.new_clear_pass(1.0, 0.3, 1.0, 1.0)
 	w, h := via.win.get_drawable_size()
-	half_w := int(f32(w) / 2)
-	half_h := int(f32(h) / 2)
-	trans_mat := math.mat44_ortho2d(-half_w, half_w, half_h, -half_h)
+	trans_mat := math.mat44_ortho2d_off_center(w, h)
 
 	sg_begin_default_pass(&pass_action, w, h)
 

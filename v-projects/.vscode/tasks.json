@@ -88,6 +88,16 @@
             "command": "v -o ${fileBasenameNoExtension}.c ${fileBasename} && clang-format -style=microsoft -i ${fileBasenameNoExtension}.c && code ${fileBasenameNoExtension}.c",
             "group": "build",
             "problemMatcher": []
+        },
+        {
+            "label": "v generate c (WASM)",
+            "type": "shell",
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "command": "v -d wasm -o ${fileBasenameNoExtension}.c ${fileBasename} && cat <(echo \"#include <emscripten.h>\") ${fileBasenameNoExtension}.c > wasm.c && make build",
+            "group": "build",
+            "problemMatcher": []
         }
     ]
 }

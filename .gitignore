@@ -69,3 +69,10 @@ VGenerator/bin
 VGenerator/obj
 v-projects/projects/kinc_tester/kinc_tester
 flextgl/thirdparty/flextGL.o
+v-projects/projects/sdl_emsdk/wasm.wasm
+v-projects/projects/sdl_emsdk/wasm.js
+v-projects/projects/sdl_emsdk/wasm.html
+v-projects/projects/sdl_emsdk/wasm.data
+v-projects/projects/sdl_emsdk/wasm.c
+v-projects/projects/sdl_emsdk/sdl_render.c
+v-projects/projects/sdl_emsdk/sdl_render

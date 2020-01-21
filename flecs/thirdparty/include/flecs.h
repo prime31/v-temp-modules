@@ -20,7 +20,7 @@
 #undef bool
 #undef true
 #undef false
-////typedef char bool;
+//typedef char bool;
 #define false 0
 #define true !false
 #endif

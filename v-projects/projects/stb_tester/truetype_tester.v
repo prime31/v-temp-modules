@@ -1,6 +1,6 @@
 import prime31.stb.truetype as tt
-import prime31.stb.image
-import prime31.math
+import via.libs.stb.image
+import via.math
 import os
 
 fn main() {

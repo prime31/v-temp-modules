@@ -78,6 +78,16 @@
             ],
             "group": "build",
             "problemMatcher": []
+        },
+        {
+            "label": "v generate, format and open c",
+            "type": "shell",
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "command": "v -o ${fileBasenameNoExtension}.c ${fileBasename} && clang-format -style=microsoft -i ${fileBasenameNoExtension}.c && code ${fileBasenameNoExtension}.c",
+            "group": "build",
+            "problemMatcher": []
         }
     ]
 }

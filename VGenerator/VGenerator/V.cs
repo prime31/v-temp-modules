@@ -13,14 +13,14 @@ namespace Generator
 		{
 			{"bool", "bool"},
 			{"void*", "voidptr"},
-			{"void**", "voidptr"},
+			{"void**", "&voidptr"},
 			{"char", "byte"},
 			{"char*", "byteptr"},
 			{"wchar", "u16"},
 			{"int8_t", "i8"},
 			{"short", "i16"},
 			{"int16_t", "i16"},
-			{"size_t", "int"},
+			{"size_t", "size_t"},
 			{"int", "int"},
 			{"int*", "&int"},
 			{"int32_t", "int"},
@@ -43,7 +43,7 @@ namespace Generator
 			{"const void*", "voidptr"},
 			{"unsigned char*", "byteptr"},
 			{"unsigned char *", "byteptr"},
-			{"const char**", "voidptr"}
+			{"const char**", "&voidptr"}
 		};
 
 		static string[] reserved = new[] { /*"map",*/ "string", "return", "or", "none", "type", "select", "false", "true" };
@@ -100,7 +100,7 @@ namespace Generator
 
 				// double pointer check
 				if (cppPtrType.ElementType.TypeKind == CppTypeKind.Pointer)
-					return $"voidptr /* {cppPtrType.GetDisplayName()} */";
+					return $"&{GetVType(cppPtrType.ElementType)} /* {cppPtrType.GetDisplayName()} */";
 
 				// unwrap any const vars
 				if (cppPtrType.ElementType.TypeKind == CppTypeKind.Qualified && cppPtrType.ElementType is CppQualifiedType qualType)
@@ -266,7 +266,7 @@ namespace Generator
 		{
 			if (name.IsLower())
 				return name;
-			
+
 			if (name.Contains("_"))
 				return name.ToLower();
 

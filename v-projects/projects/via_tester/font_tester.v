@@ -53,7 +53,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 
 	state.font.set_color(math.color_orange())
 	state.font.set_size(24)
-	// state.font.set_align(.center)
+	state.font.set_align(.center)
 	state.font.set_font(state.roboto)
 	state.batch.draw_text(state.font, 'Rotate me', {x: state.pos.x, y: state.pos.y, rot: state.rot, sx: 4, sy: 4})
 	state.batch.end()

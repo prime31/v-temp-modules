@@ -76,3 +76,8 @@ v-projects/projects/sdl_emsdk/wasm.data
 v-projects/projects/sdl_emsdk/wasm.c
 v-projects/projects/sdl_emsdk/sdl_render.c
 v-projects/projects/sdl_emsdk/sdl_render
+v-projects/projects/flecs_tester/flecs_tester.c
+v-projects/projects/flecs_tester/wasm.data
+v-projects/projects/flecs_tester/wasm.c
+v-projects/projects/flecs_tester/wasm.js
+v-projects/projects/flecs_tester/wasm.wasm

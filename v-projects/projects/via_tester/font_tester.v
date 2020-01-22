@@ -17,6 +17,8 @@ fn main() {
 }
 
 pub fn (state mut AppState) initialize(via &via.Via) {
+	via.fs.mount('../assets', 'assets', true)
+
 	state.batch = graphics.quadbatch(2000)
 	state.font = via.g.new_fontstash(512, 512)
 	state.proggy = state.font.add_font('assets/ProggyTiny.ttf')

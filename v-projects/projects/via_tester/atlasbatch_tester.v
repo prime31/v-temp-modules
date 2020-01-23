@@ -36,7 +36,7 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 pub fn (state mut AppState) update(via &via.Via) {}
 
 pub fn (state mut AppState) draw(via &via.Via) {
-	pass_action := via.g.new_clear_pass(1.0, 0.3, 1.0, 1.0)
+	pass_action := via.g.make_clear_pass(1.0, 0.3, 1.0, 1.0)
 	w, h := via.win.get_drawable_size()
 	trans_mat := math.mat44_ortho2d_off_center(w, h)
 

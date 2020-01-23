@@ -328,18 +328,18 @@ fn create_image() C.sg_image {
         0x00000000, 0xFFFFFFFF, 0x00000000, 0xFFFFFFFF,
 	]!
 
-	img_content := sg_subimage_content{
+	mut img_desc := sg_image_desc{
+		width: 4
+		height: 4
+		wrap_u: .clamp_to_edge
+		wrap_v: .clamp_to_edge
+	}
+	img_desc.content.subimage[0][0] = sg_subimage_content{
 		ptr: pixels.data
 		size: sizeof(u32) * pixels.len
     }
-	mut img_desc := C.gfx_hack_make_image_desc(img_content)
-	img_desc.width = 4
-	img_desc.height = 4
-	img_desc.pixel_format = .rgba8
-	img_desc.min_filter = .nearest
-	img_desc.mag_filter = .nearest
 
-    return C.sg_make_image(img_desc)
+    return C.sg_make_image(&img_desc)
 }
 
 fn frame(user_data voidptr) {

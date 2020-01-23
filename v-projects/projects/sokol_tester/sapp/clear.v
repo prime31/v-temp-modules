@@ -8,7 +8,7 @@ struct AppState {
 
 fn main() {
 	state := &AppState{
-		pass_action: gfx.create_clear_pass(1.3, 0.3, 1.0, 1.0)
+		pass_action: gfx.make_clear_pass(1.3, 0.3, 1.0, 1.0)
 	}
 
 	desc := sapp_desc{

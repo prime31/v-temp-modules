@@ -11,7 +11,7 @@ mut:
 	proggy int
 	roboto int
 	rot f32
-	pos math.Vec2 = math.Vec2{0,0}
+	scale f32
 }
 
 fn main() {
@@ -32,13 +32,11 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 
 pub fn (state mut AppState) update(via &via.Via) {
 	state.rot += 0.5
-
-	C.igSliderFloat('x', &state.pos.x, -200, 200, C.NULL, 1)
-	C.igSliderFloat('y', &state.pos.y, -200, 200, C.NULL, 1)
+	state.scale = 1.0 + math.ping_pong(via.clock.get_seconds() as f32, 5)
 }
 
 pub fn (state mut AppState) draw(via &via.Via) {
-	pass_action := via.g.new_clear_pass(0.5, 0.4, 0.6, 1.0)
+	pass_action := via.g.make_clear_pass(0.5, 0.4, 0.6, 1.0)
 	w, h := via.win.get_drawable_size()
 	trans_mat := math.mat44_ortho2d_off_center(w, h)
 
@@ -48,14 +46,20 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	state.batch.begin(trans_mat)
 	state.font.clear_state()
 	state.font.set_size(10)
-	state.batch.draw_text(state.font, 'in your sleep you fool', {x: 0, y: -150, sx: 4, sy: 4})
-	state.batch.draw_text(state.font, 'IN YOUR SLEEP YOU FOOL', {x: 0, y: -250, sx: 1, sy: 1})
+	state.font.set_align(.left_middle)
+	state.batch.draw_text(state.font, 'left aligned', {x: 400, y: -400, rot: 0, sx: state.scale, sy: state.scale})
+	state.batch.draw_text(state.font, 'left aligned', {x: -400, y: -400, rot: state.rot, sx: 4, sy: 4})
+	state.font.set_align(.right_middle)
+	state.font.set_color(math.color_cornflower_blue())
+	state.batch.draw_text(state.font, 'right aligned', {x: 400, y: -400, rot: 0, sx: state.scale, sy: state.scale})
+	state.batch.draw_text(state.font, 'right aligned', {x: -400, y: 400, rot: state.rot, sx: 4, sy: 4})
 
 	state.font.set_color(math.color_orange())
 	state.font.set_size(24)
-	state.font.set_align(.center)
+	state.font.set_align(.center_middle)
 	state.font.set_font(state.roboto)
-	state.batch.draw_text(state.font, 'Rotate me', {x: state.pos.x, y: state.pos.y, rot: state.rot, sx: 4, sy: 4})
+	state.batch.draw_text(state.font, 'centered text', {x: 400, y: 0, rot: 0, sx: state.scale, sy: state.scale})
+	state.batch.draw_text(state.font, 'centered text', {x: -400, y: 0, rot: state.rot, sx: 4, sy: 4})
 	state.batch.end()
 
 	sg_end_pass()

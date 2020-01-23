@@ -51,6 +51,10 @@ mut:
 	mesh &graphics.Mesh = &graphics.Mesh(0)
 	batch &graphics.AtlasBatch = &graphics.AtlasBatch(0)
 	pip sg_pipeline
+	custom_pipe graphics.Pipeline
+	pipe graphics.Pipeline
+	pip_trans_index int
+	pip_screen_index int
 }
 
 fn main() {
@@ -58,14 +62,13 @@ fn main() {
 	via.run(via.ViaConfig{}, mut state)
 }
 
-fn make_pip(via &via.Via) sg_pipeline {
+fn make_pip(via &via.Via) graphics.Pipeline {
 	mut shader_desc := graphics.shader_get_default_desc()
 	shader_desc.set_frag_uniform_block_size(0, sizeof(math.Vec4))
 		.set_frag_uniform(0, 0, 'via_ScreenSize', .float4, 0)
-	shader := via.g.new_shader(graphics.null_str, frag, shader_desc)
+	pip_desc := graphics.pipeline_get_default_desc()
 
-	pip_desc := graphics.pipeline_desc_make_default(shader)
-	return via.g.new_pipeline(pip_desc)
+	return graphics.pipeline(graphics.null_str, frag, shader_desc, mut pip_desc)
 }
 
 fn make_pip_noise(via &via.Via) sg_pipeline {
@@ -90,7 +93,7 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 	s.get_loop_count(&loops)
 	println('sound name: $name, loops: $loops')
 
-	state.pip = make_pip(via)
+	state.custom_pipe = make_pip(via)
 	// state.pip = make_pip_noise(via)
 
 	state.mesh = graphics.mesh_new_quad()
@@ -98,18 +101,21 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 
 	tile := via.g.new_texture('assets/dude.png')
 	state.batch = via.g.new_atlasbatch(tile, 10)
-	state.batch.add(-2, -2)
-	state.batch.add(-1, -1)
-	state.batch.add(0, 0)
-	state.batch.add(1, 1)
-	state.batch.add(-2, -1)
-	state.batch.add(-2, 0)
-	state.batch.add(-2, 1)
+	state.batch.add({x:-2, y:-2})
+	state.batch.add({x:-1, y:-1})
+	state.batch.add({x:0, y:0})
+	state.batch.add({x:1, y:1})
+	state.batch.add({x:-2, y:-1})
+	state.batch.add({x:-2, y:0})
+	state.batch.add({x:-2, y:1})
+
+	state.pipe = graphics.pipeline_new_default()
+	state.pip_trans_index = state.pipe.get_uniform_index(.vs, 0)
+	trans_mat := math.mat44_ortho2d(-2, 2, 2, -2)
+	state.pipe.set_uniform(state.pip_trans_index, &trans_mat)
 }
 
-pub fn (state mut AppState) update(via &via.Via) {
-
-}
+pub fn (state mut AppState) update(via &via.Via) {}
 
 pub fn (state mut AppState) draw(via &via.Via) {
 	for i, _ in state.mesh.verts {
@@ -126,15 +132,23 @@ pub fn (state mut AppState) draw(via &via.Via) {
 
 	sg_begin_default_pass(&pass_action, w, h)
 
-	sg_apply_pipeline(via.g.get_default_pipeline())
-	state.batch.draw(&trans_mat)
+	// FIXME: this doesnt draw anymore
+	// sg_apply_pipeline(via.g.get_default_pipeline())
+	// state.batch.draw(&trans_mat)
 
-	sg_apply_pipeline(state.pip)
+	sg_apply_pipeline(state.custom_pipe.pip)
+	state.custom_pipe.set_uniform_raw(.vs, 0, &trans_mat)
+	state.custom_pipe.set_uniform_raw(.fs, 0, &screen_size)
+	// state.custom_pipe.set_uniform_raw(.fs, 0, &noise) // when using noise_pip
+	state.custom_pipe.apply_uniforms()
 	state.mesh.apply_bindings()
-	state.mesh.apply_uniforms(.vs, 0, &trans_mat, sizeof(math.Mat44))
-	state.mesh.apply_uniforms(.fs, 0, &screen_size, sizeof(math.Vec4))
-	// state.mesh.apply_uniforms(.fs, 0, &noise, sizeof(f32))
 	state.mesh.draw()
+
+
+	// sg_apply_pipeline(state.pipe.pip)
+	// state.pipe.apply_uniforms()
+	// state.mesh.apply_bindings()
+	// state.mesh.draw()
 
 	sg_end_pass()
 	sg_commit()

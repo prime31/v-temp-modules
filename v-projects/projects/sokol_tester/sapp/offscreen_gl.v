@@ -111,39 +111,9 @@ fn init(user_data voidptr) {
 		d3d11_depth_stencil_view_cb: sapp_d3d11_get_depth_stencil_view
 	})
 
-	/* create one color- and one depth-buffer render target image */
-    offscreen_sample_count := if C.sg_query_features().msaa_render_targets { 4 } else { 1 }
-
-    mut img_desc := sg_image_desc{
-        render_target: true
-        width: 512
-        height: 512
-        min_filter: .linear
-        mag_filter: .linear
-        sample_count: offscreen_sample_count
-    }
-    color_img := sg_make_image(&img_desc)
-    img_desc.pixel_format = .depth
-    depth_img := sg_make_image(&img_desc)
-
-	/* an offscreen render pass into those images */
-	mut pass_desc := sg_pass_desc{
-        // depth_stencil_attachment.image: depth_img
-		depth_stencil_attachment: sg_attachment_desc{
-			image: depth_img
-		}
-    }
-	pass_desc.color_attachments[0].image = color_img
-    state.offscreen_pass = sg_make_pass(&pass_desc)
-
-	/* pass action for offscreen pass, clearing to black */
-	mut offscreen_color_action := sg_color_attachment_action {
-		action: C.SG_ACTION_CLEAR
-	}
-	offscreen_color_action.val = [0.0, 0.0, 0.0, 1.0]!!
-
-	state.offscreen_pass_action = sg_pass_action{}
-	state.offscreen_pass_action.colors[0] = offscreen_color_action
+    offscreen_pass, color_img := new_offscreen_pass(512, 512)
+	state.offscreen_pass = offscreen_pass
+	state.offscreen_pass_action = gfx.make_clear_pass(0, 0, 0, 1)
 
 
 	verts := [
@@ -317,6 +287,28 @@ fn init(user_data voidptr) {
 	proj := C.HMM_Perspective(60.0, f32(sapp_width()) / f32(sapp_height()), 0.01, 10.0)
 	view := HMM_LookAt(HMM_Vec3(0.0, 1.5, 6.0), HMM_Vec3(0.0, 0.0, 0.0), HMM_Vec3(0.0, 1.0, 0.0))
 	state.view_proj = HMM_MultiplyMat4(proj, view)
+}
+
+fn new_offscreen_pass(width, height int) (sg_pass, sg_image) {
+    offscreen_sample_count := if C.sg_query_features().msaa_render_targets { 4 } else { 1 }
+
+    mut img_desc := sg_image_desc{
+        render_target: true
+        width: width
+        height: height
+        min_filter: .linear
+        mag_filter: .linear
+        sample_count: offscreen_sample_count
+    }
+    color_img := sg_make_image(&img_desc)
+    img_desc.pixel_format = .depth
+    depth_img := sg_make_image(&img_desc)
+
+	// an offscreen render pass into those images
+	mut pass_desc := sg_pass_desc{}
+	pass_desc.depth_stencil_attachment.image = depth_img
+	pass_desc.color_attachments[0].image = color_img
+    return sg_make_pass(&pass_desc), color_img
 }
 
 fn create_image() C.sg_image {

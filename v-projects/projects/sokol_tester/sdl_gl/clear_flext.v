@@ -1,7 +1,7 @@
-import prime31.sdl2
-import prime31.flextgl
-import via.sokol
-import via.sokol.gfx
+import via.libs.sdl2
+import via.libs.flextgl
+import via.libs.sokol
+import via.libs.sokol.gfx
 
 struct AppState {
 mut:
@@ -36,6 +36,7 @@ fn main() {
 	C.SDL_GL_SetAttribute(C.SDL_GL_DEPTH_SIZE, 24)
 	C.SDL_GL_SetAttribute(C.SDL_GL_STENCIL_SIZE, 8)
 
+	C.SDL_SetHint(C.SDL_HINT_VIDEO_HIGHDPI_DISABLED, c'1')
 	window_flags := C.SDL_WINDOW_OPENGL | C.SDL_WINDOW_RESIZABLE | C.SDL_WINDOW_ALLOW_HIGHDPI
 	state.window = C.SDL_CreateWindow("V SDL2 + OpenGL3 + Sokol demo", C.SDL_WINDOWPOS_CENTERED, C.SDL_WINDOWPOS_CENTERED, 1024, 768, window_flags)
 	gl_context := C.SDL_GL_CreateContext(state.window)
@@ -66,6 +67,10 @@ fn main() {
 		w := 0
 		h := 0
 		SDL_GL_GetDrawableSize(state.window, &w, &h)
+		ww := 0
+		wh := 0
+		SDL_GetWindowSize(state.window, &ww, &wh)
+		println('drawable: $w, $h  win: $ww, $wh')
 
 		sg_begin_default_pass(&state.pass_action, w, h)
 		sg_end_pass()

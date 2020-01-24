@@ -51,7 +51,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 
 	state.batch.begin(trans_mat)
 	state.batch.draw(state.offscreen_pass.color_tex, {x:-w/2+128*3 y:0 sx:3 sy:3 ox:128 oy:128})
-	state.batch.draw(state.offscreen_pass.color_tex, {x:w/2-128, y:-h/2+128, sx:1, sy:1, ox:128, oy:128})
+	state.batch.draw(state.offscreen_pass.color_tex, {x:w/2-128, y:-h/2+128 rot:state.rot sx:1, sy:1, ox:128, oy:128})
 	state.batch.draw(state.offscreen_pass.color_tex, {x:w/2-128*2, y:h/2-128*2, sx:2, sy:2, ox:128, oy:128})
 
 	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-04'), {x: 0, y: 0, sx: 1, sy: 1})

@@ -59,7 +59,8 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	state.font.set_align(.center_middle)
 	state.font.set_font(state.roboto)
 	state.batch.draw_text(state.font, 'centered text', {x: 400, y: 0, rot: 0, sx: state.scale, sy: state.scale})
-	state.batch.draw_text(state.font, 'centered text', {x: -400, y: 0, rot: state.rot, sx: 4, sy: 4})
+	state.font.set_blur(1)
+	state.batch.draw_text(state.font, 'centered BLURRY text', {x: -400, y: 0, rot: state.rot, sx: 4, sy: 4})
 	state.batch.end()
 
 	sg_end_pass()

@@ -36,7 +36,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	os_trans_mat := math.mat44_ortho2d_off_center(256, -256)
 
 	state.offscreen_pass.begin()
-	sg_apply_pipeline(via.g.get_default_pipeline())
+	sg_apply_pipeline(via.g.get_default_pipeline().pip)
 
 	state.batch.begin(os_trans_mat)
 	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-04'), {x: 0, y: 0, sx: 1, sy: 1})
@@ -47,7 +47,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	sg_end_pass()
 
 	sg_begin_default_pass(&pass_action, w, h)
-	sg_apply_pipeline(via.g.get_default_pipeline())
+	sg_apply_pipeline(via.g.get_default_pipeline().pip)
 
 	state.batch.begin(trans_mat)
 	state.batch.draw(state.offscreen_pass.color_tex, {x:-w/2+128*3 y:0 sx:3 sy:3 ox:128 oy:128})

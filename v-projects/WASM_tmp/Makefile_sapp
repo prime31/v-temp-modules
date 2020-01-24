@@ -1,0 +1,24 @@
+# Seems to work with sapp clear.v
+
+VMOD := $${HOME}/.vmodules/
+
+build:
+	emcc wasm.c \
+	-s ERROR_ON_UNDEFINED_SYMBOLS=0 \
+	-s WASM=1 \
+	-s USE_SDL=2 \
+	-s -I$(VMOD)via/libs/flextGL/thirdparty \
+	-s -I$(VMOD)via/libs/sokol/thirdparty \
+	-s -I$(VMOD)prime31/sokol/thirdparty \
+	-DSOKOL_GLES2 \
+	-o wasm.html
+
+run:
+	emrun wasm.html
+
+open:
+	emrun --no_browser --port 8080 .
+
+
+build-and-run: build
+	emrun --no_browser --port 8080 .

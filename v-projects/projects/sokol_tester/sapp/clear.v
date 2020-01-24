@@ -1,5 +1,5 @@
-import via.libs.sokol
 import prime31.sokol.sapp
+import via.libs.sokol
 import via.libs.sokol.gfx
 
 struct AppState {

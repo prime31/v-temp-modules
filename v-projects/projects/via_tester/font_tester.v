@@ -42,7 +42,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	trans_mat := math.mat44_ortho2d_off_center(w, h)
 
 	sg_begin_default_pass(&pass_action, w, h)
-	sg_apply_pipeline(via.g.get_default_text_pipeline())
+	sg_apply_pipeline(via.g.get_default_text_pipeline().pip)
 
 	state.batch.begin(trans_mat)
 	state.font.clear_state()

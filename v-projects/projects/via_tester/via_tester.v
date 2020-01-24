@@ -68,14 +68,14 @@ fn make_pip(via &via.Via) graphics.Pipeline {
 		.set_frag_uniform(0, 0, 'via_ScreenSize', .float4, 0)
 	pip_desc := graphics.pipeline_get_default_desc()
 
-	return graphics.pipeline(graphics.null_str, frag, shader_desc, mut pip_desc)
+	return graphics.pipeline({frag: frag}, shader_desc, mut pip_desc)
 }
 
 fn make_pip_noise(via &via.Via) sg_pipeline {
 	mut shader_desc := graphics.shader_get_default_desc()
 	shader_desc.set_frag_uniform_block_size(0, sizeof(f32))
 		.set_frag_uniform(0, 0, 'noise', .float, 0)
-	shader := via.g.new_shader(graphics.null_str, frag_noise, shader_desc)
+	shader := via.g.new_shader({frag: frag_noise}, shader_desc)
 
 	pip_desc := graphics.pipeline_desc_make_default(shader)
 	return via.g.new_pipeline(pip_desc)

@@ -59,6 +59,7 @@ fn main() {
 	window_flags := C.SDL_WINDOW_OPENGL | C.SDL_WINDOW_RESIZABLE | C.SDL_WINDOW_ALLOW_HIGHDPI
 	state.window = C.SDL_CreateWindow("V SDL2 + OpenGL3 + Sokol demo", C.SDL_WINDOWPOS_CENTERED, C.SDL_WINDOWPOS_CENTERED, 1024, 768, window_flags)
 	gl_context := C.SDL_GL_CreateContext(state.window)
+	C.sokol_sdl_fix_low_dpi()
 
 	C.SDL_GL_MakeCurrent(state.window, gl_context)
 	C.SDL_GL_SetSwapInterval(1) // Enable vsync

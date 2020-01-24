@@ -1,7 +1,7 @@
-import prime31.sdl2
+import via.libs.sdl2
 import prime31.gl3w
-import prime31.sokol
-import prime31.sokol.gfx
+import via.libs.sokol
+import via.libs.sokol.gfx
 
 struct AppState {
 mut:

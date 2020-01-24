@@ -1,5 +1,6 @@
 import via
 import via.math
+import via.time
 import via.graphics
 import via.fonts
 import via.libs.imgui
@@ -32,7 +33,7 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 
 pub fn (state mut AppState) update(via &via.Via) {
 	state.rot += 0.5
-	state.scale = 1.0 + math.ping_pong(via.clock.get_seconds() as f32, 5)
+	state.scale = 1.0 + math.ping_pong(time.get_seconds() as f32, 5)
 }
 
 pub fn (state mut AppState) draw(via &via.Via) {

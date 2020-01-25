@@ -40,7 +40,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	w, h := via.win.get_drawable_size()
 	half_w := int(f32(w) / 2)
 	half_h := int(f32(h) / 2)
-	trans_mat := math.mat44_ortho2d(-half_w, half_w, half_h, -half_h)
+	trans_mat := math.mat44_ortho(-half_w, half_w, half_h, -half_h)
 
 	sg_begin_default_pass(&pass_action, w, h)
 

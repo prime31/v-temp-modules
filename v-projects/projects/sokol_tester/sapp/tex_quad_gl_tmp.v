@@ -1,5 +1,6 @@
 import via.libs.sokol
 import prime31.sokol.sapp
+import via.libs.sdl2
 import via.libs.sokol.gfx
 import via.libs.stb.image
 import via.math
@@ -62,15 +63,16 @@ fn init(user_data voidptr) {
 	state.beach_tex = create_image()
 	state.checker_img = create_checker_image()
 
-	state.bind.set_frag_image(0, state.beach_tex.id)
-	state.pip = graphics.pipeline_make_default()
+	state.bind.set_frag_image(0, state.beach_tex.img)
+	pip, shader := graphics.pipeline_make_default()
+	state.pip = pip
 
 	// view-projection matrix
-	state.trans_mat = math.mat44_ortho2d(-2, 2, 2, -2)
+	state.trans_mat = math.mat44_ortho(-2, 2, 2, -2)
 
 	for i, _ in verts {
-		verts[i].x -= 1
-		verts[i].y -= 1
+		verts[i].x--
+		verts[i].y--
 	}
 	state.mesh = graphics.mesh_new_quad()
 	state.mesh.bind_texture(0, state.beach_tex)
@@ -135,7 +137,7 @@ fn on_event(evt &C.sapp_event, user_data voidptr) {
 		match evt.key_code {
 			.f {
 				mut state := &AppState(user_data)
-				state.bind.set_frag_image(0, state.beach_tex.id)
+				state.bind.set_frag_image(0, state.beach_tex.img)
 			}
 			.g {
 				mut state := &AppState(user_data)

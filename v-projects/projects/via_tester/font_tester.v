@@ -7,8 +7,8 @@ import via.libs.imgui
 
 struct AppState {
 mut:
-	batch &graphics.TextBatch = &graphics.TextBatch(0)
-	font &fonts.FontStash = &fonts.FontStash(0)
+	batch &graphics.TextBatch
+	font &fonts.FontStash
 	proggy int
 	roboto int
 	rot f32
@@ -16,7 +16,10 @@ mut:
 }
 
 fn main() {
-	state := AppState{}
+	state := AppState{
+		batch: 0
+		font: 0
+	}
 	via.run(via.ViaConfig{
 		imgui_enabled: true
 	}, mut state)
@@ -39,7 +42,7 @@ pub fn (state mut AppState) update(via &via.Via) {
 pub fn (state mut AppState) draw(via &via.Via) {
 	pass_action := via.g.make_clear_pass(0.5, 0.4, 0.6, 1.0)
 	w, h := via.win.get_drawable_size()
-	trans_mat := math.mat44_ortho2d_off_center(w, h)
+	trans_mat := math.mat32_ortho_off_center(w, h)
 
 	sg_begin_default_pass(&pass_action, w, h)
 	sg_apply_pipeline(via.g.get_default_text_pipeline().pip)

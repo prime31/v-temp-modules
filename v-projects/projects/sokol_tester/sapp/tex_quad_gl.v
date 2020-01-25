@@ -7,7 +7,7 @@ import rand
 
 const (
 	vert = '#version 330
-uniform vec4 TransformMatrix[2];
+uniform vec3 TransformMatrix[3];
 
 layout (location=0) in vec2 VertPosition;
 layout (location=1) in vec2 VertTexCoord;
@@ -21,8 +21,8 @@ vec4 position(mat3x2 transMat, vec2 localPosition);
 void main() {
 	VaryingTexCoord = VertTexCoord;
 	VaryingColor = VertColor;
-	mat3x2 mat = mat3x2(TransformMatrix[0].xy, TransformMatrix[0].zw, TransformMatrix[1].xy);
-	gl_Position = position(mat, VertPosition + TransformMatrix[1].zw);
+	mat3x2 mat = mat3x2(TransformMatrix[0].x, TransformMatrix[0].y, TransformMatrix[0].z, TransformMatrix[1].x, TransformMatrix[1].y, TransformMatrix[1].z);
+	gl_Position = position(mat, VertPosition);
 }
 
 vec4 position(mat3x2 transMat, vec2 localPosition) {
@@ -31,7 +31,6 @@ vec4 position(mat3x2 transMat, vec2 localPosition) {
 	frag = '#version 330
 uniform sampler2D MainTex;
 
-uniform mat4 TransformProjectionMatrix;
 uniform vec4 via_ScreenSize;
 
 in vec2 VaryingTexCoord;
@@ -129,10 +128,10 @@ fn init(user_data voidptr) {
 		source: vert.str
 	}
 
-	vs_desc.uniform_blocks[0].size = sizeof(f32) * 8
+	vs_desc.uniform_blocks[0].size = sizeof(math.Mat32)
 	vs_desc.uniform_blocks[0].uniforms[0] = sg_shader_uniform_desc{
 		name: 'TransformMatrix'.str
-		@type: .float4
+		@type: .float3
 		array_count: 2
 	}
 
@@ -236,7 +235,7 @@ fn frame(user_data voidptr) {
 	sg_begin_default_pass(&state.pass_action, sapp_width(), sapp_height())
 	sg_apply_pipeline(state.pip)
 	sg_apply_bindings(&state.bind)
-	sg_apply_uniforms(C.SG_SHADERSTAGE_VS, 0, &state.arr, sizeof(f32) * 8)
+	sg_apply_uniforms(C.SG_SHADERSTAGE_VS, 0, &state.trans_mat32, sizeof(math.Mat32))
 	sg_draw(0, 6, 1)
 	sg_end_pass()
 	sg_commit()

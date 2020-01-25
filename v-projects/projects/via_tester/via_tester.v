@@ -48,9 +48,8 @@ const (
 struct AppState {
 mut:
 	data int
-	mesh &graphics.Mesh = &graphics.Mesh(0)
-	batch &graphics.AtlasBatch = &graphics.AtlasBatch(0)
-	pip sg_pipeline
+	mesh &graphics.Mesh
+	batch &graphics.AtlasBatch
 	custom_pipe graphics.Pipeline
 	pipe graphics.Pipeline
 	pip_trans_index int
@@ -58,7 +57,10 @@ mut:
 }
 
 fn main() {
-	state := AppState{}
+	state := AppState{
+		mesh: 0
+		batch: 0
+	}
 	via.run(via.ViaConfig{}, mut state)
 }
 
@@ -111,7 +113,7 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 
 	state.pipe = graphics.pipeline_new_default()
 	state.pip_trans_index = state.pipe.get_uniform_index(.vs, 0)
-	trans_mat := math.mat44_ortho2d(-2, 2, 2, -2)
+	trans_mat := math.mat44_ortho(-2, 2, 2, -2)
 	state.pipe.set_uniform(state.pip_trans_index, &trans_mat)
 }
 
@@ -124,7 +126,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	}
 	state.mesh.update_verts()
 
-	trans_mat := math.mat44_ortho2d(-2, 2, 2, -2)
+	trans_mat := math.mat32_ortho(-2, 2, 2, -2)
 	pass_action := via.g.make_clear_pass(1.0, 0.3, 1.0, 1.0)
 	w, h := via.win.get_drawable_size()
 	screen_size := math.Vec4{w, h, 0, 1}

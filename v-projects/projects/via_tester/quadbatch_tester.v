@@ -28,10 +28,10 @@ pub fn (state mut AppState) update(via &via.Via) {}
 pub fn (state mut AppState) draw(via &via.Via) {
 	pass_action := via.g.make_clear_pass(0.5, 0.4, 0.8, 1.0)
 	w, h := via.win.get_drawable_size()
-	trans_mat := math.mat44_ortho2d_off_center(w, h)
+	trans_mat := math.mat32_ortho_off_center(w, h)
 
 	sg_begin_default_pass(&pass_action, w, h)
-	sg_apply_pipeline(via.g.get_default_pipeline())
+	sg_apply_pipeline(via.g.get_default_pipeline().pip)
 
 	names := state.atlas.get_names()
 

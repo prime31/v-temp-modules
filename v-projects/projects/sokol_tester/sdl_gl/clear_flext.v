@@ -9,6 +9,7 @@ mut:
 	pass_action sg_pass_action
 }
 
+
 fn main() {
 	mut color_action := sg_color_attachment_action {
 		action: C.SG_ACTION_CLEAR
@@ -40,7 +41,6 @@ fn main() {
 	window_flags := C.SDL_WINDOW_OPENGL | C.SDL_WINDOW_RESIZABLE | C.SDL_WINDOW_ALLOW_HIGHDPI
 	state.window = C.SDL_CreateWindow("V SDL2 + OpenGL3 + Sokol demo", C.SDL_WINDOWPOS_CENTERED, C.SDL_WINDOWPOS_CENTERED, 1024, 768, window_flags)
 	gl_context := C.SDL_GL_CreateContext(state.window)
-	C.sokol_sdl_fix_low_dpi()
 
 	C.SDL_GL_MakeCurrent(state.window, gl_context)
 	C.SDL_GL_SetSwapInterval(1) // Enable vsync
@@ -71,7 +71,7 @@ fn main() {
 		ww := 0
 		wh := 0
 		SDL_GetWindowSize(state.window, &ww, &wh)
-		println('drawable: $w, $h  win: $ww, $wh')
+		// println('drawable: $w, $h  win: $ww, $wh')
 
 		sg_begin_default_pass(&state.pass_action, w, h)
 		sg_end_pass()

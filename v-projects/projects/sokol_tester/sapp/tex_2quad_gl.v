@@ -192,7 +192,7 @@ fn init(user_data voidptr) {
 	})
 
 	// view-projection matrix
-	state.trans_mat = math.mat44_ortho2d(-2, 2, 2, -2)
+	state.trans_mat = math.mat44_ortho(-2, 2, 2, -2)
 }
 
 fn create_image() C.sg_image {

@@ -31,9 +31,9 @@ pub fn (state mut AppState) update(via &via.Via) {
 pub fn (state mut AppState) draw(via &via.Via) {
 	pass_action := via.g.make_clear_pass(0.7, 0.4, 0.8, 1.0)
 	w, h := via.win.get_drawable_size()
-	trans_mat := math.mat44_ortho2d_off_center(w, h)
+	trans_mat := math.mat32_ortho_off_center(w, h)
 	// render upside-down for the offscreen buffers
-	os_trans_mat := math.mat44_ortho2d_off_center(256, -256)
+	os_trans_mat := math.mat32_ortho_off_center(256, -256)
 
 	state.offscreen_pass.begin()
 	sg_apply_pipeline(via.g.get_default_pipeline().pip)

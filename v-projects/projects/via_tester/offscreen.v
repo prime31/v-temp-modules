@@ -23,7 +23,7 @@ fn main() {
 
 pub fn (state mut AppState) initialize(via &via.Via) {
 	state.offscreen_pass = via.g.new_offscreen_pass(256, 256, math.color_cornflower_blue())
-	state.atlas = vv.g.new_texture_atlas('assets/adventurer.atlas')
+	state.atlas = via.g.new_texture_atlas('assets/adventurer.atlas')
 	state.batch = graphics.quadbatch(20)
 
 	quad1 := state.atlas.get_quad('adventurer-run-04')
@@ -37,7 +37,7 @@ pub fn (state mut AppState) update(via &via.Via) {
 }
 
 pub fn (state mut AppState) draw(via &via.Via) {
-	pass_action := via.g.make_clear_pass(0.7, 0.4, 0.8, 1.0)
+	pass_action := via.g.make_pass_action({color:math.color_from_floats(0.7, 0.4, 0.8, 1.0)})
 	w, h := via.win.get_drawable_size()
 
 	// render upside-down for the offscreen buffers
@@ -45,7 +45,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	// TODO: shouldnt this be translation * projection?
 	cam_translated := os_proj_mat * math.mat32_translate(-state.x, -state.y)
 
-	vv.g.begin_offscreen_pass(state.offscreen_pass, {})
+	via.g.begin_offscreen_pass(state.offscreen_pass, {})
 
 	state.batch.begin(cam_translated)
 	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-04'), {x: 0, y: 0, sx: 1, sy: 1})
@@ -53,9 +53,9 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-02'), {x: -100, y: -50, sx: 1, sy: 1})
 	state.batch.end()
 
-	vv.g.end_pass()
+	via.g.end_pass()
 
-	vv.g.begin_default_pass(&pass_action, {})
+	via.g.begin_default_pass(&pass_action, {})
 
 	// full screen, untranslated projection for the final render
 	fs_trans_mat := math.mat32_ortho(w, h)
@@ -76,6 +76,6 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	}
 	state.batch.end()
 
-	vv.g.end_pass()
+	via.g.end_pass()
 	sg_commit()
 }

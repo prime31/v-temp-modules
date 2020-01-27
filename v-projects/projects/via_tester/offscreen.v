@@ -1,5 +1,6 @@
 import via
 import via.math
+import via.input
 import via.graphics
 import via.libs.imgui
 
@@ -34,6 +35,24 @@ pub fn (state mut AppState) update(via &via.Via) {
 	igSliderFloat('x'.str, &state.x, -100, 100, C.NULL, 1)
 	igSliderFloat('y'.str, &state.y, -100, 100, C.NULL, 1)
 	igCheckbox(c'No Border', &state.pp_no_border)
+
+	pp_cfg := state.offscreen_pass.get_pixel_perfect_config()
+	sx := f32(state.offscreen_pass.color_tex.width) / pp_cfg.sx
+	sy := f32(state.offscreen_pass.color_tex.height) / pp_cfg.sy
+
+	wx, wy := via.win.get_size()
+	C.igText(c'Win size: %d, %d', wx, wy)
+	rx, ry := via.win.get_drawable_size()
+	C.igText(c'Win draw: %d, %d', rx, ry)
+
+	mut x, mut y := input.mouse_pos_scaled(pp_cfg.sx, pp_cfg.sy, pp_cfg.x, pp_cfg.y)
+	C.igText(c'Mouse Scaled: %d, %d', x, y)
+
+	x, y = input.mouse_pos()
+	C.igText(c'Mouse Raw: %d, %d', x, y)
+
+	C.igText(c'RT Offset: %f, %f', pp_cfg.x, pp_cfg.y)
+	C.igText(c'RT size: %d, %d', state.offscreen_pass.color_tex.width, state.offscreen_pass.color_tex.height)
 }
 
 pub fn (state mut AppState) draw(via &via.Via) {

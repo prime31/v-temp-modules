@@ -126,8 +126,8 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	}
 	state.mesh.update_verts()
 
-	trans_mat := math.mat32_ortho(-2, 2, 2, -2)
-	pass_action := via.g.make_clear_pass(1.0, 0.3, 1.0, 1.0)
+	trans_mat := math.mat32_ortho_off_center(4, 4)
+	pass_action := via.g.make_pass_action({color:math.color_from_floats(1.0, 0.3, 1.0, 1.0)})
 	w, h := via.win.get_drawable_size()
 	screen_size := math.Vec4{w, h, 0, 1}
 	noise := 2.0

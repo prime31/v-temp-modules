@@ -11,18 +11,19 @@ mut:
 	rot f32
 	x f32
 	y f32
+	pp_no_border bool
 }
 
 fn main() {
 	state := AppState{}
 	via.run(via.ViaConfig{
-		imgui_enabled: true
+		imgui: true
 	}, mut state)
 }
 
 pub fn (state mut AppState) initialize(via &via.Via) {
 	state.offscreen_pass = via.g.new_offscreen_pass(256, 256, math.color_cornflower_blue())
-	state.atlas = via.g.new_texture_atlas('assets/adventurer.atlas')
+	state.atlas = vv.g.new_texture_atlas('assets/adventurer.atlas')
 	state.batch = graphics.quadbatch(20)
 
 	quad1 := state.atlas.get_quad('adventurer-run-04')
@@ -32,6 +33,7 @@ pub fn (state mut AppState) update(via &via.Via) {
 	state.rot += 0.5
 	igSliderFloat('x'.str, &state.x, -100, 100, C.NULL, 1)
 	igSliderFloat('y'.str, &state.y, -100, 100, C.NULL, 1)
+	igCheckbox(c'No Border', &state.pp_no_border)
 }
 
 pub fn (state mut AppState) draw(via &via.Via) {
@@ -43,8 +45,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	// TODO: shouldnt this be translation * projection?
 	cam_translated := os_proj_mat * math.mat32_translate(-state.x, -state.y)
 
-	state.offscreen_pass.begin()
-	sg_apply_pipeline(via.g.get_default_pipeline().pip)
+	vv.g.begin_offscreen_pass(state.offscreen_pass, {})
 
 	state.batch.begin(cam_translated)
 	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-04'), {x: 0, y: 0, sx: 1, sy: 1})
@@ -52,10 +53,9 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-02'), {x: -100, y: -50, sx: 1, sy: 1})
 	state.batch.end()
 
-	sg_end_pass()
+	vv.g.end_pass()
 
-	sg_begin_default_pass(&pass_action, w, h)
-	sg_apply_pipeline(via.g.get_default_pipeline().pip)
+	vv.g.begin_default_pass(&pass_action, {})
 
 	// full screen, untranslated projection for the final render
 	fs_trans_mat := math.mat32_ortho(w, h)
@@ -69,9 +69,13 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	// state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-03'), {x: -100, y: 100, sx: 4, sy: 4})
 	// state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-02'), {x: -100, y: -100, sx: 4, sy: 4})
 
-	state.batch.draw(state.offscreen_pass.color_tex, state.offscreen_pass.get_pixel_perfect_config(w, h))
+	if state.pp_no_border {
+		state.batch.draw(state.offscreen_pass.color_tex, state.offscreen_pass.get_pixel_perfect_no_border_config())
+	} else {
+		state.batch.draw(state.offscreen_pass.color_tex, state.offscreen_pass.get_pixel_perfect_config())
+	}
 	state.batch.end()
 
-	sg_end_pass()
+	vv.g.end_pass()
 	sg_commit()
 }

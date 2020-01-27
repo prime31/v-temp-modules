@@ -10,6 +10,26 @@
             },
             "command": "v",
             "args": [
+                "--enable-globals",
+                "run",
+                "${file}"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "v run (show C command)",
+            "type": "shell",
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "command": "v",
+            "args": [
+                "--enable-globals",
+                "-show_c_cmd",
                 "run",
                 "${file}"
             ],
@@ -27,6 +47,7 @@
             },
             "command": "v",
             "args": [
+                "--enable-globals",
                 "-g",
                 "run",
                 "${file}"
@@ -42,6 +63,7 @@
             },
             "command": "v",
             "args": [
+                "--enable-globals",
                 "-g",
                 "-live",
                 "run",
@@ -72,6 +94,7 @@
             },
             "command": "v",
             "args": [
+                "--enable-globals",
                 "-o",
                 "${fileBasenameNoExtension}.c",
                 "${file}"
@@ -85,7 +108,7 @@
             "options": {
                 "cwd": "${fileDirname}"
             },
-            "command": "v -o ${fileBasenameNoExtension}.c ${fileBasename} && clang-format -style=microsoft -i ${fileBasenameNoExtension}.c && code ${fileBasenameNoExtension}.c",
+            "command": "v --enable-globals -o ${fileBasenameNoExtension}.c ${fileBasename} && clang-format -style=microsoft -i ${fileBasenameNoExtension}.c && code ${fileBasenameNoExtension}.c",
             "group": "build",
             "problemMatcher": []
         },
@@ -95,7 +118,7 @@
             "options": {
                 "cwd": "${fileDirname}"
             },
-            "command": "v -d wasm -o ${fileBasenameNoExtension}.c ${fileBasename} && cat <(echo \"#include <emscripten.h>\") ${fileBasenameNoExtension}.c > wasm.c && make build",
+            "command": "v --enable-globals -d wasm -o ${fileBasenameNoExtension}.c ${fileBasename} && cat <(echo \"#include <emscripten.h>\") ${fileBasenameNoExtension}.c > wasm.c && make build",
             "group": "build",
             "problemMatcher": []
         }

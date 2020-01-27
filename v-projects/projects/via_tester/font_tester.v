@@ -1,6 +1,7 @@
 import via
 import via.math
 import via.time
+import via.input
 import via.graphics
 import via.fonts
 import via.libs.imgui
@@ -21,7 +22,7 @@ fn main() {
 		font: 0
 	}
 	via.run(via.ViaConfig{
-		imgui_enabled: true
+		imgui: true
 	}, mut state)
 }
 
@@ -40,7 +41,7 @@ pub fn (state mut AppState) update(via &via.Via) {
 }
 
 pub fn (state mut AppState) draw(via &via.Via) {
-	pass_action := via.g.make_clear_pass(0.5, 0.4, 0.6, 1.0)
+	pass_action := via.g.make_pass_action({color:math.color_from_floats(0.5, 0.4, 0.6, 1.0)})
 	w, h := via.win.get_drawable_size()
 	trans_mat := math.mat32_ortho_off_center(w, h)
 

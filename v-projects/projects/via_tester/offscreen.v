@@ -57,6 +57,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	sg_begin_default_pass(&pass_action, w, h)
 	sg_apply_pipeline(via.g.get_default_pipeline().pip)
 
+	// full screen, untranslated projection for the final render
 	fs_trans_mat := math.mat32_ortho(w, h)
 	state.batch.begin(fs_trans_mat)
 	// state.batch.draw(state.offscreen_pass.color_tex, {x:-w/2+128*3 y:0 sx:3 sy:3 ox:128 oy:128})

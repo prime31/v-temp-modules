@@ -40,11 +40,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	w, h := via.win.get_drawable_size()
 	trans_mat := math.mat32_ortho_off_center(w, h)
 
-	sg_begin_default_pass(&pass_action, w, h)
-
-	sg_apply_pipeline(via.g.get_default_pipeline().pip)
+	via.g.begin_default_pass(&pass_action, {})
 	state.batch.draw(&trans_mat)
-
-	sg_end_pass()
-	sg_commit()
+	via.g.end_pass()
 }

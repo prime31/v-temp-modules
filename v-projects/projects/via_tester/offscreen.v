@@ -101,5 +101,4 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	state.batch.end()
 
 	via.g.end_pass()
-	sg_commit()
 }

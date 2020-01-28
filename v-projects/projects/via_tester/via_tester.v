@@ -152,6 +152,5 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	// state.mesh.apply_bindings()
 	// state.mesh.draw()
 
-	sg_end_pass()
-	sg_commit()
+	via.g.end_pass()
 }

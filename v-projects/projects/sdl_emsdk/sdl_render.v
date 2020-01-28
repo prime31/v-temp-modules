@@ -27,11 +27,11 @@ fn main() {
 	C.IMG_Init(C.IMG_INIT_PNG)
 	state.tv_logo = C.IMG_LoadTexture(state.renderer, '../assets/v-logo_30_30.png')
 
-	$if wasm? {
+	$if webgl? {
 		emscripten_set_main_loop_arg(main_loop, voidptr(state), -1, 0)
 	}
 
-	$if !wasm? {
+	$if !webgl? {
 		for {
 			main_loop(voidptr(state))
 		}
@@ -47,7 +47,7 @@ fn main_loop(context voidptr) {
 	C.SDL_SetRenderDrawColor(state.renderer, 55, 55, 55, 255)
 	C.SDL_RenderClear(state.renderer)
 
-	draw_text(state.renderer, 200, 100, 'TTF in the WASM', SDL_Color{255, 100, 155, 255})
+	draw_text(state.renderer, 200, 100, 'TTF in the WebGL', SDL_Color{255, 100, 155, 255})
 
 	mut rect := SDL_Rect {0, 0, 50, 30}
 	C.SDL_SetRenderDrawColor(state.renderer, 155, 155, 55, 255)

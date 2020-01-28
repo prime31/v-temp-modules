@@ -15,7 +15,7 @@ mut:
 fn init_sdl() &State {
 	C.SDL_Init(C.SDL_INIT_VIDEO)
 
-	$if !wasm? {
+	$if !webgl? {
 		C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_FLAGS, C.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG)
 		C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_PROFILE_MASK, C.SDL_GL_CONTEXT_PROFILE_CORE)
 		C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_MAJOR_VERSION, 3)
@@ -52,11 +52,11 @@ fn init_sdl() &State {
 fn main() {
 	mut state := init_sdl()
 
-	$if wasm? {
+	$if webgl? {
 		emscripten_set_main_loop_arg(main_loop, voidptr(state), -1, 0)
 	}
 
-	$if !wasm? {
+	$if !webgl? {
 		for !state.quit {
 			main_loop(voidptr(state))
 		}

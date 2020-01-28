@@ -110,12 +110,12 @@
             "problemMatcher": []
         },
         {
-            "label": "v generate c (WASM)",
+            "label": "v generate c (WebGL)",
             "type": "shell",
             "options": {
                 "cwd": "${fileDirname}"
             },
-            "command": "v --enable-globals -d wasm -o ${fileBasenameNoExtension}.c ${fileBasename} && cat <(echo \"#include <emscripten.h>\") ${fileBasenameNoExtension}.c > wasm.c && make build",
+            "command": "v --enable-globals -d webgl -o ${fileBasenameNoExtension}.c ${fileBasename} && cat <(echo \"#include <emscripten.h>\") ${fileBasenameNoExtension}.c > wasm.c && make build",
             "group": "build",
             "problemMatcher": []
         }

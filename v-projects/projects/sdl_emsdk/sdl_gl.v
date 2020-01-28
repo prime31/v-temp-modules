@@ -28,11 +28,11 @@ fn init_sdl() &State {
 fn main() {
 	mut state := init_sdl()
 
-	$if wasm? {
+	$if webgl? {
 		emscripten_set_main_loop_arg(main_loop, voidptr(state), -1, 0)
 	}
 
-	$if !wasm? {
+	$if !webgl? {
 		for !state.quit {
 			main_loop(voidptr(state))
 		}
@@ -45,7 +45,7 @@ fn main_loop(context voidptr) {
 		state.quit = true
 		C.SDL_Quit()
 	}
-	
+
 
 	C.glClearColor(0.8, 0.5, 0.6, 1)
     C.glClear(C.GL_COLOR_BUFFER_BIT)

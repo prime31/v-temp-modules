@@ -14,8 +14,8 @@ fn main() {
 		action: C.SG_ACTION_CLEAR
 	}
 	color_action.val[0] = 1.0
-	color_action.val[1] = 1.0
-	color_action.val[2] = 1.0
+	color_action.val[1] = 0.7
+	color_action.val[2] = 0.5
 	color_action.val[3] = 1.0
 
 	mut pass_action := sg_pass_action{}

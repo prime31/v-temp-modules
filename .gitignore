@@ -83,3 +83,9 @@ v-projects/projects/flecs_tester/wasm.js
 v-projects/projects/flecs_tester/wasm.wasm
 v-projects/projects/sokol_tester/sapp/wasm.c
 v-projects/projects/sokol_tester/sdl_gl/wasm.c
+v-projects/projects/sdl_emsdk/sdl_gl
+v-projects/projects/sdl_emsdk/sdl_gl.c
+v-projects/projects/sdl_emsdk/sdl_gl_sokol
+v-projects/projects/sdl_emsdk/sdl_gl_sokol.c
+v-projects/projects/sdl_emsdk/via_clear
+v-projects/projects/sdl_emsdk/via_clear.c

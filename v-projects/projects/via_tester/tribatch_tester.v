@@ -21,14 +21,9 @@ pub fn (state mut AppState) update(via &via.Via) {}
 
 pub fn (state mut AppState) draw(via &via.Via) {
 	pass_action := via.g.make_pass_action({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)})
-	
-	w, h := via.win.get_drawable_size()
-	trans_mat := math.mat32_ortho_off_center(w, h)
+	via.g.begin_default_pass(pass_action, {})
 
-	sg_begin_default_pass(&pass_action, w, h)
-	sg_apply_pipeline(via.g.get_default_pipeline().pip)
-
-	state.batch.begin(trans_mat)
+	state.batch.begin()
 	state.batch.draw_triangle(200, 200, 200, 300, 400, 200)
 	state.batch.draw_rectangle(-500, -500, 200, 100)
 	state.batch.draw_circle(-400, 400, 75, 6)
@@ -36,6 +31,5 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	state.batch.draw_polygon([math.Vec2{0, 0}, math.Vec2{100, -100}, math.Vec2{200, 50}, math.Vec2{50, 200}, math.Vec2{-55, 100}]!)
 	state.batch.end()
 
-	sg_end_pass()
-	sg_commit()
+	via.g.end_pass()
 }

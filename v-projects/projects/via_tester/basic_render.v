@@ -26,12 +26,9 @@ pub fn (state mut AppState) update(via &via.Via) {}
 
 pub fn (state mut AppState) draw(via &via.Via) {
 	pass_action := via.g.make_pass_action({color:math.color_from_floats(0.1, 0.1, 0.1, 1.0)})
-	w, h := via.win.get_drawable_size()
-	trans_mat := math.mat32_ortho_off_center(w, h)
-
 	via.g.begin_default_pass(&pass_action, {})
 
-	state.batch.begin(trans_mat)
+	state.batch.begin()
 	state.batch.draw(state.beach_tex, {x: 0, y: 0})
 	state.batch.draw(state.dude_tex, {x: -300, y: -20, sx: 3, sy: 3})
 	state.batch.draw(state.beach_tex, {x: -600, y: -40, rot: 45})

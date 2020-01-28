@@ -1,9 +1,10 @@
 import via
 import via.math
 import via.time
+import via.fonts
 import via.input
 import via.graphics
-import via.fonts
+import via.filesystem
 import via.libs.imgui
 
 struct AppState {
@@ -27,7 +28,7 @@ fn main() {
 }
 
 pub fn (state mut AppState) initialize(via &via.Via) {
-	via.fs.mount('../assets', 'assets', true)
+	filesystem.mount('../assets', 'assets', true)
 
 	state.batch = graphics.textbatch(2000)
 	state.font = via.g.new_fontstash(512, 512)
@@ -42,13 +43,9 @@ pub fn (state mut AppState) update(via &via.Via) {
 
 pub fn (state mut AppState) draw(via &via.Via) {
 	pass_action := via.g.make_pass_action({color:math.color_from_floats(0.5, 0.4, 0.6, 1.0)})
-	w, h := via.win.get_drawable_size()
-	trans_mat := math.mat32_ortho_off_center(w, h)
+	via.g.begin_default_pass(pass_action, {pipeline:via.g.get_default_text_pipeline()})
 
-	sg_begin_default_pass(&pass_action, w, h)
-	sg_apply_pipeline(via.g.get_default_text_pipeline().pip)
-
-	state.batch.begin(trans_mat)
+	state.batch.begin()
 	state.font.clear_state()
 	state.font.set_size(10)
 	state.font.set_align(.left_middle)
@@ -68,6 +65,5 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	state.batch.draw_text(state.font, 'centered BLURRY text', {x: -400, y: 0, rot: state.rot, sx: 4, sy: 4})
 	state.batch.end()
 
-	sg_end_pass()
-	sg_commit()
+	via.g.end_pass()
 }

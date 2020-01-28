@@ -36,7 +36,11 @@ pub fn (state mut AppState) update(via &via.Via) {
 	igSliderFloat('y'.str, &state.y, -100, 100, C.NULL, 1)
 	igCheckbox(c'No Border', &state.pp_no_border)
 
-	pp_cfg := state.offscreen_pass.get_pixel_perfect_config()
+	pp_cfg := if state.pp_no_border {
+		state.offscreen_pass.get_pixel_perfect_no_border_config()
+	} else {
+		state.offscreen_pass.get_pixel_perfect_config()
+	}
 	sx := f32(state.offscreen_pass.color_tex.width) / pp_cfg.sx
 	sy := f32(state.offscreen_pass.color_tex.height) / pp_cfg.sy
 
@@ -44,6 +48,7 @@ pub fn (state mut AppState) update(via &via.Via) {
 	C.igText(c'Win size: %d, %d', wx, wy)
 	rx, ry := via.win.get_drawable_size()
 	C.igText(c'Win draw: %d, %d', rx, ry)
+	C.igText(c'Scale, Offset: %f, (%f, %f)', pp_cfg.sx, pp_cfg.x, pp_cfg.y)
 
 	mut x, mut y := input.mouse_pos_scaled(pp_cfg.sx, pp_cfg.sy, pp_cfg.x, pp_cfg.y)
 	C.igText(c'Mouse Scaled: %d, %d', x, y)

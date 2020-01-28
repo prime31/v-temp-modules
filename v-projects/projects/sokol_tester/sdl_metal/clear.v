@@ -32,11 +32,12 @@ fn main() {
 
 	sdl_metal_util.init_metal(state.window)
 
-	sg_setup(&sg_desc {
+	desc := sg_desc {
 		mtl_device: sdl_metal_util.get_metal_device()
 		mtl_renderpass_descriptor_cb: C.mu_get_render_pass_descriptor
 		mtl_drawable_cb: C.mu_get_drawable
-	})
+	}
+	sg_setup(&desc)
 
 	mut done := false
 	for !done {

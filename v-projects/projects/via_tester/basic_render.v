@@ -26,7 +26,7 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 
 pub fn (state mut AppState) update(via &via.Via) {}
 
-pub fn (state mut AppState) draw(via &via.Via) {
+pub fn (state mut AppState) draw(via mut via.Via) {
 	w, h := via.win.get_drawable_size()
 	pass_action := via.g.make_pass_action({color:math.color_from_floats(0.1, 0.1, 0.1, 1.0)})
 
@@ -40,6 +40,7 @@ pub fn (state mut AppState) draw(via &via.Via) {
 
 	state.batch.begin()
 	state.batch.draw(state.beach_tex, {x: 0, y: 0})
+	state.batch.flush()
 	state.batch.draw(state.beach_tex, {x: -600, y: -40, rot: 45})
 	state.batch.end()
 

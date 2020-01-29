@@ -2,6 +2,7 @@ import via
 import via.math
 import via.input
 import via.graphics
+import via.components
 import via.libs.imgui
 
 struct AppState {
@@ -10,13 +11,14 @@ mut:
 	batch &graphics.QuadBatch = &graphics.QuadBatch(0)
 	offscreen_pass graphics.OffScreenPass
 	rot f32
-	x f32
-	y f32
 	pp_no_border bool
+	cam components.Camera
 }
 
 fn main() {
-	state := AppState{}
+	state := AppState{
+		cam: components.camera()
+	}
 	via.run(via.ViaConfig{
 		imgui: true
 	}, mut state)
@@ -32,8 +34,6 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 
 pub fn (state mut AppState) update(via &via.Via) {
 	state.rot += 0.5
-	igSliderFloat('x'.str, &state.x, -100, 100, C.NULL, 1)
-	igSliderFloat('y'.str, &state.y, -100, 100, C.NULL, 1)
 	igCheckbox(c'No Border', &state.pp_no_border)
 
 	pp_cfg := if state.pp_no_border {
@@ -58,11 +58,16 @@ pub fn (state mut AppState) update(via &via.Via) {
 
 	C.igText(c'RT Offset: %f, %f', pp_cfg.x, pp_cfg.y)
 	C.igText(c'RT size: %d, %d', state.offscreen_pass.color_tex.width, state.offscreen_pass.color_tex.height)
+
+	C.igText(c'Camera')
+	C.igDragFloat2(c'Position', &state.cam.pos, 1, -200, 200, C.NULL, 1)
+	C.igSliderAngle('Rotation', &state.cam.rot, -360, 360, C.NULL)
+	C.igDragFloat2(c'Scale', &state.cam.scale, 0.01, 0.1, 4, C.NULL, 1)
 }
 
 pub fn (state mut AppState) draw(via &via.Via) {
 	pass_action := via.g.make_pass_action({color:math.color_from_floats(0.7, 0.4, 0.8, 1.0)})
-	trans_mat := math.mat32_translate(-state.x, -state.y)
+	trans_mat := state.cam.get_trans_mat()
 	via.g.begin_offscreen_pass(state.offscreen_pass, {trans_mat:&trans_mat})
 
 	state.batch.begin()

@@ -28,15 +28,14 @@ pub fn (state mut AppState) update(via &via.Via) {}
 
 pub fn (state mut AppState) draw(via mut via.Via) {
 	w, h := via.win.get_drawable_size()
-	pass_action := via.g.make_pass_action({color:math.color_from_floats(0.1, 0.1, 0.1, 1.0)})
-
 	if w == 0 {
-		sg_begin_default_pass(&pass_action.pass, 0, 0)
+		pass_action := sg_pass_action{}
+		sg_begin_default_pass(&pass_action, 0, 0)
 		sg_end_pass()
 		return
 	}
 
-	via.g.begin_default_pass(&pass_action, {})
+	via.g.begin_default_pass({color:math.color_from_floats(0.1, 0.1, 0.1, 1.0)}, {})
 
 	state.batch.begin()
 	state.batch.draw(state.beach_tex, {x: 0, y: 0})

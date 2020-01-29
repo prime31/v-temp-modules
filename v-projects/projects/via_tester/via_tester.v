@@ -119,7 +119,7 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 
 pub fn (state mut AppState) update(via &via.Via) {}
 
-pub fn (state mut AppState) draw(via &via.Via) {
+pub fn (state mut AppState) draw(via mut via.Via) {
 	for i, _ in state.mesh.verts {
 		state.mesh.verts[i].x += math.rand_range(-0.03, 0.03)
 		state.mesh.verts[i].y += math.rand_range(-0.03, 0.03)
@@ -127,11 +127,12 @@ pub fn (state mut AppState) draw(via &via.Via) {
 	state.mesh.update_verts()
 
 	trans_mat := math.mat32_ortho_off_center(4, 4)
-	pass_action := via.g.make_pass_action({color:math.color_from_floats(1.0, 0.3, 1.0, 1.0)})
 	w, h := via.win.get_drawable_size()
 	screen_size := math.Vec4{w, h, 0, 1}
 	noise := 2.0
 
+	mut pass_action := sg_pass_action{}
+	pass_action.colors[0].set_color_values(1.0, 0.3, 1.0, 1.0)
 	sg_begin_default_pass(&pass_action, w, h)
 
 	// FIXME: this doesnt draw anymore

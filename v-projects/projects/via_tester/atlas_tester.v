@@ -35,12 +35,8 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 
 pub fn (state mut AppState) update(via &via.Via) {}
 
-pub fn (state mut AppState) draw(via &via.Via) {
-	pass_action := via.g.make_pass_action({color:math.color_from_floats(1.0, 0.3, 1.0, 1.0)})
-	w, h := via.win.get_drawable_size()
-	trans_mat := math.mat32_ortho_off_center(w, h)
-
-	via.g.begin_default_pass(&pass_action, {})
-	state.batch.draw(&trans_mat)
+pub fn (state mut AppState) draw(via mut via.Via) {
+	via.g.begin_default_pass({color:math.color_from_floats(1.0, 0.3, 1.0, 1.0)}, {})
+	state.batch.draw()
 	via.g.end_pass()
 }

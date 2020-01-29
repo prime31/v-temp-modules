@@ -41,9 +41,8 @@ pub fn (state mut AppState) update(via &via.Via) {
 	state.scale = 1.0 + math.ping_pong(time.get_seconds() as f32, 5)
 }
 
-pub fn (state mut AppState) draw(via &via.Via) {
-	pass_action := via.g.make_pass_action({color:math.color_from_floats(0.5, 0.4, 0.6, 1.0)})
-	via.g.begin_default_pass(pass_action, {pipeline:via.g.get_default_text_pipeline()})
+pub fn (state mut AppState) draw(via mut via.Via) {
+	via.g.begin_default_pass({color:math.color_from_floats(0.5, 0.4, 0.6, 1.0)}, {pipeline:via.g.get_default_text_pipeline()})
 
 	state.batch.begin()
 	state.font.clear_state()

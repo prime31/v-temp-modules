@@ -40,7 +40,6 @@ pub fn (state mut AppState) draw(via mut via.Via) {
 
 	state.batch.begin()
 	state.batch.draw(state.beach_tex, {x: 0, y: 0})
-	state.batch.flush()
 	state.batch.draw(state.beach_tex, {x: -600, y: -40, rot: 45})
 	state.batch.end()
 

@@ -65,7 +65,7 @@ pub fn (state mut AppState) update(via &via.Via) {
 	C.igDragFloat2(c'Scale', &state.cam.scale, 0.01, 0.1, 4, C.NULL, 1)
 }
 
-pub fn (state mut AppState) draw(via &via.Via) {
+pub fn (state mut AppState) draw(via mut via.Via) {
 	pass_action := via.g.make_pass_action({color:math.color_from_floats(0.7, 0.4, 0.8, 1.0)})
 	trans_mat := state.cam.get_trans_mat()
 	via.g.begin_offscreen_pass(state.offscreen_pass, {trans_mat:&trans_mat})

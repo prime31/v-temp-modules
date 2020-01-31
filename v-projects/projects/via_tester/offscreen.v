@@ -1,6 +1,7 @@
 import via
 import via.math
 import via.input
+import via.debug
 import via.graphics
 import via.components
 import via.libs.imgui
@@ -69,6 +70,14 @@ pub fn (state mut AppState) draw(via mut via.Via) {
 	trans_mat := state.cam.get_trans_mat()
 
 	via.g.begin_offscreen_pass(state.offscreen_pass, {color:math.color_cornflower_blue()}, {trans_mat:&trans_mat})
+	debug.set_color(math.color_deep_sky_blue())
+	debug.draw_filled_rect(0, 0, 100, 100)
+	debug.set_color(math.color_yellow())
+	debug.draw_hollow_rect(0, 0, 100, 100)
+	debug.reset_color()
+	debug.draw_filled_rect(0, 0, 25, 25)
+	debug.draw_text(10, 10, 'holy crap does it work?')
+
 	state.batch.begin()
 	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-04'), {x: 0, y: 0, sx: 1, sy: 1})
 	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-03'), {x: -50, y: 50, sx: 1, sy: 1})
@@ -77,7 +86,6 @@ pub fn (state mut AppState) draw(via mut via.Via) {
 	via.g.end_pass()
 
 	via.g.begin_default_pass({color:math.color_from_floats(0.7, 0.4, 0.8, 1.0)}, {blit_pass:true})
-	state.batch.begin()
 	// state.batch.draw(state.offscreen_pass.color_tex, {x:-w/2+128*3 y:0 sx:3 sy:3 ox:128 oy:128})
 	// state.batch.draw(state.offscreen_pass.color_tex, {x:w/2-128, y:-h/2+128 rot:state.rot sx:1, sy:1, ox:128, oy:128})
 	// state.batch.draw(state.offscreen_pass.color_tex, {x:w/2-128*2, y:h/2-128*2, sx:2, sy:2, ox:128, oy:128})

@@ -53,6 +53,23 @@
             "problemMatcher": []
         },
         {
+            "label": "v compile for debugging",
+            "type": "shell",
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "command": "v",
+            "args": [
+                "--enable-globals",
+                "-cg",
+                "-keep_c",
+                "run",
+                "${file}"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
             "label": "v live",
             "type": "shell",
             "options": {

@@ -21,6 +21,22 @@
             "problemMatcher": []
         },
         {
+            "label": "v run prod",
+            "type": "shell",
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "command": "v",
+            "args": [
+                "--enable-globals",
+                "-prod",
+                "run",
+                "${file}"
+            ],
+            "group": "none",
+            "problemMatcher": []
+        },
+        {
             "label": "v run (show C command)",
             "type": "shell",
             "options": {

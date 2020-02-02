@@ -25,33 +25,31 @@ mut:
 	dude_tex graphics.Texture
 	sprites []&Sprite
 	space &collections.SpatialHash = &collections.SpatialHash(0)
-	dude &Sprite
 }
 
 const (
-	width = 1024.0
-	height = 768.0
+	width = 512.0
+	height = 384.0
 )
 
 fn main() {
 	state := AppState{
 		space: collections.spatialhash(150)
 	}
+
 	filesystem.mount('../assets', 'assets', true)
 	via.run(via.ViaConfig{
-		window_resizable: false
+		win_resizable: false
 	}, mut state)
 }
 
 pub fn (state mut AppState) initialize(via &via.Via) {
 	state.dude_tex = via.g.new_texture('assets/dude.png')
-	state.batch = graphics.quadbatch(4001)
-	for i in 0..4000 {
+	state.batch = graphics.quadbatch(100)
+
+	for i in 0..100 {
 		state.add_sprite(math.range(-width, width), math.range(-height, height))
 	}
-
-	state.dude = &Sprite {}
-	state.dude.id = state.space.add(state.dude.col)
 }
 
 fn (state mut AppState) add_sprite(x, y f32) {
@@ -66,7 +64,7 @@ fn (state mut AppState) add_sprite(x, y f32) {
 }
 
 pub fn (state mut AppState) update(via &via.Via) {
-	dt := time.get_dt()
+	dt := time.dt()
 	for i, sprite in state.sprites {
 		mut s := state.sprites[i]
 		s.col.x += s.vx * dt
@@ -87,16 +85,8 @@ pub fn (state mut AppState) update(via &via.Via) {
 			s.col.y = -height
 		}
 
-		// println('---------------- s.id: $s.id')
 		state.space.update(s.id, s.col)
 	}
-
-	mut mx, mut my := input.mouse_pos()
-	mx -= int(width)
-	my -= int(height)
-	state.dude.col.x = mx
-	state.dude.col.y = my
-	state.space.update(state.dude.id, state.dude.col)
 }
 
 pub fn (state mut AppState) draw(via mut via.Via) {
@@ -106,11 +96,9 @@ pub fn (state mut AppState) draw(via mut via.Via) {
 	for s in state.sprites {
 		state.batch.draw(state.dude_tex, {x:s.col.x, y:s.col.y})
 	}
-	state.batch.draw(state.dude_tex, {x:state.dude.col.x, y:state.dude.col.y})
-	debug.draw_text(state.dude.col.x, state.dude.col.y, '$state.dude.col.x,$state.dude.col.y', {scale:3})
 	state.batch.end()
 
 	state.space.debug_draw()
-	debug.draw_text(-width, -height, 'FPS: $time.fps()', {align:.top scale:6 color:math.color_black()})
+	debug.draw_text(-width, -height, 'FPS: $time.fps()', {align:.top scale:3 color:math.color_black()})
 	via.g.end_pass()
 }

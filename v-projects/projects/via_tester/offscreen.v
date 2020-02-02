@@ -2,7 +2,9 @@ import via
 import via.math
 import via.input
 import via.debug
+import via.window
 import via.graphics
+import via.filesystem
 import via.components
 import via.libs.imgui
 
@@ -17,11 +19,13 @@ mut:
 }
 
 fn main() {
+	filesystem.mount('../assets', 'assets', true)
 	state := AppState{
 		cam: components.camera()
 	}
 	via.run(via.ViaConfig{
 		imgui: true
+		win_highdpi: true
 	}, mut state)
 }
 
@@ -42,23 +46,29 @@ pub fn (state mut AppState) update(via &via.Via) {
 	} else {
 		state.offscreen_pass.get_pixel_perfect_config()
 	}
-	sx := f32(state.offscreen_pass.color_tex.width) / pp_cfg.sx
-	sy := f32(state.offscreen_pass.color_tex.height) / pp_cfg.sy
+	sx := f32(state.offscreen_pass.color_tex.w) / pp_cfg.sx
+	sy := f32(state.offscreen_pass.color_tex.h) / pp_cfg.sy
 
-	wx, wy := via.win.get_size()
+	wx, wy := window.size()
 	C.igText(c'Win size: %d, %d', wx, wy)
-	rx, ry := via.win.get_drawable_size()
+	rx, ry := window.drawable_size()
 	C.igText(c'Win draw: %d, %d', rx, ry)
 	C.igText(c'Scale, Offset: %f, (%f, %f)', pp_cfg.sx, pp_cfg.x, pp_cfg.y)
 
-	mut x, mut y := input.mouse_pos_scaled(pp_cfg.sx, pp_cfg.sy, pp_cfg.x, pp_cfg.y)
-	C.igText(c'Mouse Scaled: %d, %d', x, y)
+	msx, msy := input.mouse_pos_scaled(pp_cfg.sx, pp_cfg.sy, pp_cfg.x, pp_cfg.y)
+	C.igText(c'Mouse Scaled: %d, %d', msx, msy)
 
-	x, y = input.mouse_pos()
+	x, y := input.mouse_pos()
 	C.igText(c'Mouse Raw: %d, %d', x, y)
 
+	mut cx, mut cy := state.cam.screen_to_world(x, y)
+	C.igText(c'Mouse World: %d, %d', cx, cy)
+
+	cx, cy = state.cam.screen_to_offscreen_world(msx, msy, 256, 256, pp_cfg.sx, pp_cfg.sy)
+	C.igText(c'Mouse Offscreen World: %d, %d', cx, cy)
+
 	C.igText(c'RT Offset: %f, %f', pp_cfg.x, pp_cfg.y)
-	C.igText(c'RT size: %d, %d', state.offscreen_pass.color_tex.width, state.offscreen_pass.color_tex.height)
+	C.igText(c'RT size: %d, %d', state.offscreen_pass.color_tex.w, state.offscreen_pass.color_tex.h)
 
 	C.igText(c'Camera')
 	C.igDragFloat2(c'Position', &state.cam.pos, 1, -200, 200, C.NULL, 1)
@@ -67,7 +77,7 @@ pub fn (state mut AppState) update(via &via.Via) {
 }
 
 pub fn (state mut AppState) draw(via mut via.Via) {
-	trans_mat := state.cam.get_trans_mat()
+	trans_mat := state.cam.trans_mat()
 
 	via.g.begin_offscreen_pass(state.offscreen_pass, {color:math.color_cornflower_blue()}, {trans_mat:&trans_mat})
 	debug.set_color(math.color_deep_sky_blue())

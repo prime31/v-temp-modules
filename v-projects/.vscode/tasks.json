@@ -69,7 +69,7 @@
             "problemMatcher": []
         },
         {
-            "label": "v compile for debugging",
+            "label": "v compile for c debugging",
             "type": "shell",
             "options": {
                 "cwd": "${fileDirname}"
@@ -77,7 +77,25 @@
             "command": "v",
             "args": [
                 "--enable-globals",
+                "-pretty_c",
                 "-cg",
+                "-keep_c",
+                "run",
+                "${file}"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "v compile for v debugging",
+            "type": "shell",
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "command": "v",
+            "args": [
+                "--enable-globals",
+                "-g",
                 "-keep_c",
                 "run",
                 "${file}"
@@ -122,23 +140,7 @@
             "options": {
                 "cwd": "${fileDirname}"
             },
-            "command": "v",
-            "args": [
-                "--enable-globals",
-                "-o",
-                "${fileBasenameNoExtension}.c",
-                "${file}"
-            ],
-            "group": "build",
-            "problemMatcher": []
-        },
-        {
-            "label": "v generate, format and open c",
-            "type": "shell",
-            "options": {
-                "cwd": "${fileDirname}"
-            },
-            "command": "v --enable-globals -o ${fileBasenameNoExtension}.c ${fileBasename} && clang-format -style=microsoft -i ${fileBasenameNoExtension}.c && code ${fileBasenameNoExtension}.c",
+            "command": "v -g --enable-globals -pretty_c -o ${fileBasenameNoExtension}.c ${fileBasename} && code ${fileBasenameNoExtension}.c",
             "group": "build",
             "problemMatcher": []
         },
@@ -148,7 +150,7 @@
             "options": {
                 "cwd": "${fileDirname}"
             },
-            "command": "v --enable-globals -d webgl -o ${fileBasenameNoExtension}.c ${fileBasename} && cat <(echo \"#include <emscripten.h>\") ${fileBasenameNoExtension}.c > wasm.c && make build",
+            "command": "v --enable-globals -pretty_c -d webgl -o ${fileBasenameNoExtension}.c ${fileBasename} && cat <(echo \"#include <emscripten.h>\") ${fileBasenameNoExtension}.c > wasm.c && make build",
             "group": "build",
             "problemMatcher": []
         }

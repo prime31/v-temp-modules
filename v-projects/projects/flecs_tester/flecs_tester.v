@@ -37,7 +37,10 @@ fn main() {
 	vel_type := vel_entity.type_from_entity()
 	println('pos_type=$pos_type, vel_type=$vel_type')
 
-	sys_entity := world.new_system('MoveSystem', C.EcsOnUpdate, 'Position, !Velocity', move)
+	test := ecs_type_to_entity(world.world, pos_type)
+	println('type_to_entity: $test')
+
+	sys_entity := world.new_system('MoveSystem', .on_update, 'Position, !Velocity', move)
 	println('sys_entity=$sys_entity')
 
 	entity := world.new_entity('My Entity', 'Position')

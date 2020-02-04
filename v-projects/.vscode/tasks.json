@@ -140,7 +140,7 @@
             "options": {
                 "cwd": "${fileDirname}"
             },
-            "command": "v -g --enable-globals -pretty_c -o ${fileBasenameNoExtension}.c ${fileBasename} && code ${fileBasenameNoExtension}.c",
+            "command": "v --enable-globals -pretty_c -o ${fileBasenameNoExtension}.c ${fileBasename} && code ${fileBasenameNoExtension}.c",
             "group": "build",
             "problemMatcher": []
         },

@@ -1,4 +1,4 @@
-import prime31.flecs
+import via.libs.flecs
 
 struct Pos {
 mut:
@@ -28,8 +28,8 @@ pub fn (v Vel) str() string {
 
 fn main() {
 	world := flecs.init_world()
-	pos_entity := world.new_component("Position", sizeof(Pos))
-	vel_entity := world.new_component("Velocity", sizeof(Vel))
+	pos_entity := world.new_component('Position', sizeof(Pos))
+	vel_entity := world.new_component('Velocity', sizeof(Vel))
 
 	println('world=$world, pos_entity=$pos_entity, vel_entity=$vel_entity')
 
@@ -64,7 +64,7 @@ fn move(rows &C.ecs_rows_t) {
 	println('e1=$e1')
 
 	println('column_count=$rows.column_count, column=1, size=${sizeof(Pos)}')
-	mut positions := *Pos(C._ecs_column(rows, sizeof(Pos), 1))
+	mut positions := rows.column<Pos>(1)
 	velocities := *Vel(C._ecs_column(rows, sizeof(Vel), 2))
 
 	for i := 0; i < int(rows.count); i++ {

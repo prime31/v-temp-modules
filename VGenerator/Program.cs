@@ -51,7 +51,8 @@ namespace Generator
 				// Run(GetKincConfig());
 				// Run(GetPhyFSConfig());
 				// Run(GetSDLConfig());
-				Run(GetLuaConfig());
+				// Run(GetLuaConfig());
+				Run(GetFlecsConfig());
 			}
 		}
 
@@ -71,7 +72,7 @@ namespace Generator
 		{
 			var compilation = CppParser.ParseFiles(config.GetFiles(), config.ToParserOptions());
 			VGenerator.Generate(config, compilation);
-			// compilation.Dump();
+			compilation.Dump();
 		}
 
 		static Config GetLuaConfig()
@@ -93,6 +94,35 @@ namespace Generator
 				IncludeFolders = new string[] { "src" },
 				Files = new string[] {
 					"lua.h", "lualib.h", "lauxlib.h"
+				},
+				ExcludedFiles = new string[] {},
+				ExcludedFromVWrapperFiles = new string[] {}
+			};
+		}
+
+		static Config GetFlecsConfig()
+		{
+			return new Config
+			{
+				DstDir = "~/Desktop/flecs/flecs",
+				SrcDir = "/Users/desaro/.vmodules/prime31/flecs/flecs_git/src",
+				BaseSourceFolder = "src",
+				ModuleName = "flecs",
+				VWrapperFileName = "flecs",
+				SingleVFileExport = true,
+				ExcludeFunctionsThatContain = new string[] {},
+				StripPrefixFromFunctionNames = new string[] {},
+				CTypeToVType = {
+					{"__sFILE", "voidptr"}
+				},
+				Defines = new string[] { "FLECS_NO_CPP" },
+				IncludeFolders = new string[] {
+					"/Users/desaro/.vmodules/prime31/flecs/flecs_git/include",
+					"/Users/desaro/.vmodules/prime31/flecs/flecs_git/include/flecs",
+					"/Users/desaro/.vmodules/prime31/flecs/flecs_git/include/flecs/util"
+				},
+				Files = new string[] {
+					"flecs.h"
 				},
 				ExcludedFiles = new string[] {},
 				ExcludedFromVWrapperFiles = new string[] {}

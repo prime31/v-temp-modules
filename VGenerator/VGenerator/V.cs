@@ -247,6 +247,9 @@ namespace Generator
 			if (name == "select")
 				return "sel";
 
+			if (name == "module")
+				return "mod";
+
 			if (reserved.Contains(name))
 				throw new System.Exception($"need escape for {name}");
 			return name;

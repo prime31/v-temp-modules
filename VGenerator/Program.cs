@@ -72,7 +72,7 @@ namespace Generator
 		{
 			var compilation = CppParser.ParseFiles(config.GetFiles(), config.ToParserOptions());
 			VGenerator.Generate(config, compilation);
-			compilation.Dump();
+			// compilation.Dump();
 		}
 
 		static Config GetLuaConfig()
@@ -109,12 +109,10 @@ namespace Generator
 				BaseSourceFolder = "src",
 				ModuleName = "flecs",
 				VWrapperFileName = "flecs",
-				SingleVFileExport = true,
+				SingleVFileExport = false,
 				ExcludeFunctionsThatContain = new string[] {},
 				StripPrefixFromFunctionNames = new string[] {},
-				CTypeToVType = {
-					{"__sFILE", "voidptr"}
-				},
+				CTypeToVType = {},
 				Defines = new string[] { "FLECS_NO_CPP" },
 				IncludeFolders = new string[] {
 					"/Users/desaro/.vmodules/prime31/flecs/flecs_git/include",

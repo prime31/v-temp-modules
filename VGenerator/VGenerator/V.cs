@@ -46,7 +46,7 @@ namespace Generator
 			{"const char**", "&voidptr"}
 		};
 
-		static string[] reserved = new[] { /*"map",*/ "string", "return", "or", "none", "type", "select", "false", "true" };
+		static string[] reserved = new[] { /*"map",*/ "string", "return", "or", "none", "type", "select", "false", "true", "module" };
 
 		public static void AddTypeConversions(Dictionary<string, string> types)
 		{
@@ -57,7 +57,7 @@ namespace Generator
 			}
 		}
 
-		public static void AddTypeConversion(string type) => cTypeToVType[type] = type;
+		public static void AddTypeConversion(string type) => cTypeToVType[type] = "C." + type;
 
 		public static void AddTypeConversion(string type, string toType) => cTypeToVType[type] = toType;
 
@@ -100,7 +100,11 @@ namespace Generator
 
 				// double pointer check
 				if (cppPtrType.ElementType.TypeKind == CppTypeKind.Pointer)
+				{
+					if (cppPtrType.ElementType.TypeKind == CppTypeKind.Pointer)
+						return $"&voidptr /* {cppPtrType.GetDisplayName()} */";
 					return $"&{GetVType(cppPtrType.ElementType)} /* {cppPtrType.GetDisplayName()} */";
+				}
 
 				// unwrap any const vars
 				if (cppPtrType.ElementType.TypeKind == CppTypeKind.Qualified && cppPtrType.ElementType is CppQualifiedType qualType)
@@ -145,6 +149,11 @@ namespace Generator
 					foreach (var p in funcType.Parameters)
 					{
 						var paramType = GetVType(p.Type);
+						if (paramType.Contains("fn"))
+						{
+							// TODO: typedef the function param
+							var typeDef = $"pub type Fn{V.ToPascalCase(p.Name)} {paramType}";
+						}
 						sb.Append(paramType);
 
 						if (funcType.Parameters.Last() != p)
@@ -156,6 +165,10 @@ namespace Generator
 					if (ret != null)
 						sb.Append($" {ret}");
 
+					// check for a function pointer that has a function as a param. This is currently invalid in V.
+					var definition = sb.ToString();
+					if (definition.LastIndexOf("fn") > 2)
+						return $"voidptr /* {definition} */";
 					return sb.ToString();
 				}
 				else if (cppPtrType.ElementType.TypeKind == CppTypeKind.Typedef)

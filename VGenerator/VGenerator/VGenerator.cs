@@ -43,7 +43,7 @@ namespace Generator
 			var parsedFiles = ParsedFile.ParseIntoFiles(comp, config);
 			foreach (var file in parsedFiles)
 				WriteFile(config, file, writer);
-			writer.Dispose();
+			writer?.Dispose();
 
 			// now we write the V wrapper
 			writer = new StreamWriter(File.Open(Path.Combine(config.DstDir, config.VWrapperFileName), FileMode.Create));
@@ -133,7 +133,7 @@ namespace Generator
 
 		static void WriteStruct(StreamWriter writer, CppClass s)
 		{
-			writer.WriteLine($"pub struct C.{V.GetVType(s.Name)} {{");
+			writer.WriteLine($"pub struct {V.GetVType(s.Name)} {{");
 			if (s.Fields.Count > 0)
 				writer.WriteLine("pub:");
 

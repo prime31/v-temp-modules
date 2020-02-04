@@ -29,7 +29,7 @@ namespace Generator
 				{
 					WriteIndented = true
 				};
-				var json = JsonSerializer.Serialize(GetKincConfig(), options);
+				var json = JsonSerializer.Serialize(GetSDLConfig(), options);
 				File.WriteAllText(file, json);
 			}
 			else if (args.Contains("-g"))
@@ -48,18 +48,21 @@ namespace Generator
 			}
 			else
 			{
+				PrintHelp();
+
 				// Run(GetKincConfig());
 				// Run(GetPhyFSConfig());
 				// Run(GetSDLConfig());
 				// Run(GetLuaConfig());
-				Run(GetFlecsConfig());
+				// Run(GetFlecsConfig());
 			}
 		}
 
 		private static void PrintHelp()
 		{
 			Console.WriteLine("VGenerator Help");
-			Console.WriteLine("Standard usage pattern is to first use the '-c' option to create an empty generator JSON file.");
+			Console.WriteLine("Standard usage pattern is to first use the '-c' option to create a template generator JSON file.");
+			Console.WriteLine("The generator JSON file will have SDL2 data in it as an example so that you can see what the params look like.");
 			Console.WriteLine("Fill in the details of the JSON file then use the '-g' option to generate the V bindings.");
 			Console.WriteLine("\nUsage:");
 			Console.WriteLine("\tWrite an empty generator configuration json file:");

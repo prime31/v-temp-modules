@@ -2,20 +2,22 @@ import via
 import via.math
 import via.window
 import via.graphics
-import via.libs.imgui
-import via.libs.sokol.sdl_metal_util
 
 struct AppState {
 mut:
 	atlas graphics.TextureAtlas
-	batch &graphics.QuadBatch = &graphics.QuadBatch(0)
+	batch &graphics.QuadBatch
 	tbatch &graphics.TriangleBatch = &graphics.TriangleBatch(0)
 	beach_tex graphics.Texture
 	dude_tex graphics.Texture
 }
 
 fn main() {
-	state := AppState{}
+	state := AppState{
+		// atlas: &graphics.TextureAtlas(0)
+		batch: 0
+		tbatch: 0
+	}
 	via.run(via.ViaConfig{}, mut state)
 }
 
@@ -25,10 +27,10 @@ pub fn (state mut AppState) initialize() {
 	state.tbatch = graphics.trianglebatch(2000)
 }
 
-pub fn (state mut AppState) update() {}
+pub fn (state &AppState) update() {}
 
 pub fn (state mut AppState) draw() {
-	w, h := window.drawable_size()
+	w, _ := window.drawable_size()
 	if w == 0 {
 		pass_action := sg_pass_action{}
 		sg_begin_default_pass(&pass_action, 0, 0)
@@ -38,13 +40,11 @@ pub fn (state mut AppState) draw() {
 
 	graphics.begin_default_pass({color:math.color_from_floats(0.1, 0.1, 0.4, 1.0)}, {})
 
-	state.batch.begin()
 	state.batch.draw(state.beach_tex, {x: 0, y: 0})
 	state.batch.draw(state.beach_tex, {x: -600, y: -40, rot: 45})
 	state.batch.end()
 
 
-	state.tbatch.begin()
 	state.tbatch.draw_triangle(200, 200, 200, 300, 400, 200)
 	state.tbatch.draw_rectangle(-500, -500, 200, 100)
 	state.tbatch.draw_circle(-400, 400, 75, 6)

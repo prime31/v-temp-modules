@@ -33,7 +33,7 @@ mut:
 const (
 	width = 512.0
 	height = 384.0
-	sprite_cnt = 200
+	sprite_cnt = 100
 )
 
 fn main() {
@@ -77,12 +77,12 @@ pub fn (state mut AppState) initialize() {
 	println('why are these different: state: ${&state} vs ${&tmp}   $tmp.dude_tex.img.id')
 
 
-	for i in 0..sprite_cnt {
+	for _ in 0..sprite_cnt {
 		state.add_sprite(math.range(-width, width), math.range(-height, height))
 	}
 }
 
-fn (state mut AppState) add_sprite(x, y f32) {
+fn (state &AppState) add_sprite(x, y f32) {
 	mut sprite := Sprite {
 		tex: state.dude_tex
 		vx: math.range(-150, 150)
@@ -105,7 +105,7 @@ pub fn (state mut AppState) update() {
 	graphics.end_pass()
 }
 
-pub fn (state mut AppState) draw() {}
+pub fn (state &AppState) draw() {}
 
 fn move_set(rows &C.ecs_rows_t) {
 	mut space := &collections.SpatialHash(C.ecs_get_system_context(rows.world, rows.system))
@@ -118,7 +118,7 @@ fn move_set(rows &C.ecs_rows_t) {
 
 fn move(rows &C.ecs_rows_t) {
 	mut space := &collections.SpatialHash(C.ecs_get_system_context(rows.world, rows.system))
-	mut sprites := flecs.column<Sprite>(rows, 1)
+	sprites := flecs.column<Sprite>(rows, 1)
 
 	dt := time.dt()
 	for i := 0; i < int(rows.count); i++ {

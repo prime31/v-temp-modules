@@ -29,15 +29,15 @@ fn main() {
 	}, mut state)
 }
 
-pub fn (state mut AppState) initialize(via &via.Via) {
-	state.offscreen_pass = via.g.new_offscreen_pass(256, 256)
-	state.atlas = via.g.new_texture_atlas('assets/adventurer.atlas')
+pub fn (state mut AppState) initialize() {
+	state.offscreen_pass = graphics.new_offscreen_pass(256, 256)
+	state.atlas = graphics.new_texture_atlas('assets/adventurer.atlas')
 	state.batch = graphics.quadbatch(20)
 
 	quad1 := state.atlas.get_quad('adventurer-run-04')
 }
 
-pub fn (state mut AppState) update(via mut via.Via) {
+pub fn (state mut AppState) update() {
 	state.rot += 0.5
 	igCheckbox(c'No Border', &state.pp_no_border)
 
@@ -76,10 +76,10 @@ pub fn (state mut AppState) update(via mut via.Via) {
 	C.igDragFloat2(c'Scale', &state.cam.scale, 0.01, 0.1, 4, C.NULL, 1)
 }
 
-pub fn (state mut AppState) draw(via mut via.Via) {
+pub fn (state mut AppState) draw() {
 	trans_mat := state.cam.trans_mat()
 
-	via.g.begin_offscreen_pass(state.offscreen_pass, {color:math.color_cornflower_blue()}, {trans_mat:&trans_mat})
+	graphics.begin_offscreen_pass(state.offscreen_pass, {color:math.color_cornflower_blue()}, {trans_mat:&trans_mat})
 	debug.set_color(math.color_deep_sky_blue())
 	debug.draw_filled_rect(0, 0, 100, 100)
 	debug.set_color(math.color_yellow())
@@ -94,9 +94,9 @@ pub fn (state mut AppState) draw(via mut via.Via) {
 	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-03'), {x: -50, y: 50, sx: 1, sy: 1})
 	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-02'), {x: -100, y: -50, sx: 1, sy: 1})
 	state.batch.end()
-	via.g.end_pass()
+	graphics.end_pass()
 
-	via.g.begin_default_pass({color:math.color_from_floats(0.7, 0.4, 0.8, 1.0)}, {blit_pass:true})
+	graphics.begin_default_pass({color:math.color_from_floats(0.7, 0.4, 0.8, 1.0)}, {blit_pass:true})
 
 	if state.pp_no_border {
 		state.batch.draw(state.offscreen_pass.color_tex, state.offscreen_pass.get_pixel_perfect_no_border_config())
@@ -104,5 +104,5 @@ pub fn (state mut AppState) draw(via mut via.Via) {
 		state.batch.draw(state.offscreen_pass.color_tex, state.offscreen_pass.get_pixel_perfect_config())
 	}
 	state.batch.end()
-	via.g.end_pass()
+	graphics.end_pass()
 }

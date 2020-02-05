@@ -2,6 +2,7 @@ import via
 import via.math
 import via.audio
 import via.graphics
+import via.filesystem
 import via.window
 
 const (
@@ -66,7 +67,7 @@ fn main() {
 	via.run(via.ViaConfig{}, mut state)
 }
 
-fn make_pip(via &via.Via) graphics.Pipeline {
+fn make_pip() graphics.Pipeline {
 	mut shader_desc := graphics.shader_get_default_desc()
 	shader_desc.set_frag_uniform_block_size(0, sizeof(math.Vec4))
 		.set_frag_uniform(0, 0, 'via_ScreenSize', .float4, 0)
@@ -75,18 +76,19 @@ fn make_pip(via &via.Via) graphics.Pipeline {
 	return graphics.pipeline({frag: frag}, shader_desc, mut pip_desc)
 }
 
-fn make_pip_noise(via &via.Via) sg_pipeline {
+fn make_pip_noise() sg_pipeline {
 	mut shader_desc := graphics.shader_get_default_desc()
 	shader_desc.set_frag_uniform_block_size(0, sizeof(f32))
 		.set_frag_uniform(0, 0, 'noise', .float, 0)
-	shader := via.g.new_shader({frag: frag_noise}, shader_desc)
+	shader := graphics.new_shader({frag: frag_noise}, shader_desc)
 
 	pip_desc := graphics.pipeline_desc_make_default(shader)
-	return via.g.new_pipeline(pip_desc)
+	return graphics.new_pipeline(pip_desc)
 }
 
-pub fn (state mut AppState) initialize(via &via.Via) {
-	t := via.g.new_texture('assets/beach.png')
+pub fn (state mut AppState) initialize() {
+	filesystem.mount('../assets', 'assets', true)
+	t := graphics.new_texture('assets/beach.png')
 	println('t: $t')
 
 	s := audio.new_stream('assets/skid.wav')
@@ -97,14 +99,14 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 	s.get_loop_count(&loops)
 	println('sound name: $name, loops: $loops')
 
-	state.custom_pipe = make_pip(via)
+	state.custom_pipe = make_pip()
 	// state.pip = make_pip_noise(via)
 
 	state.mesh = graphics.mesh_new_quad()
 	state.mesh.bind_texture(0, t)
 
-	tile := via.g.new_texture('assets/dude.png')
-	state.batch = via.g.new_atlasbatch(tile, 10)
+	tile := graphics.new_texture('assets/dude.png')
+	state.batch = graphics.new_atlasbatch(tile, 10)
 	state.batch.add({x:-2, y:-2})
 	state.batch.add({x:-1, y:-1})
 	state.batch.add({x:0, y:0})
@@ -119,9 +121,9 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 	state.pipe.set_uniform(state.pip_trans_index, &trans_mat)
 }
 
-pub fn (state mut AppState) update(via mut via.Via) {}
+pub fn (state mut AppState) update() {}
 
-pub fn (state mut AppState) draw(via mut via.Via) {
+pub fn (state mut AppState) draw() {
 	for i, _ in state.mesh.verts {
 		state.mesh.verts[i].x += math.range(-0.03, 0.03)
 		state.mesh.verts[i].y += math.range(-0.03, 0.03)
@@ -155,5 +157,5 @@ pub fn (state mut AppState) draw(via mut via.Via) {
 	// state.mesh.apply_bindings()
 	// state.mesh.draw()
 
-	via.g.end_pass()
+	graphics.end_pass()
 }

@@ -1,5 +1,6 @@
 import via
 import via.math
+import via.window
 import via.graphics
 import via.libs.imgui
 import via.libs.sokol.sdl_metal_util
@@ -18,16 +19,16 @@ fn main() {
 	via.run(via.ViaConfig{}, mut state)
 }
 
-pub fn (state mut AppState) initialize(via &via.Via) {
-	state.beach_tex = via.g.new_texture('assets/beach.png')
+pub fn (state mut AppState) initialize() {
+	state.beach_tex = graphics.new_texture('assets/beach.png')
 	state.batch = graphics.quadbatch(2000)
 	state.tbatch = graphics.trianglebatch(2000)
 }
 
-pub fn (state mut AppState) update(via &via.Via) {}
+pub fn (state mut AppState) update() {}
 
-pub fn (state mut AppState) draw(via mut via.Via) {
-	w, h := via.win.get_drawable_size()
+pub fn (state mut AppState) draw() {
+	w, h := window.drawable_size()
 	if w == 0 {
 		pass_action := sg_pass_action{}
 		sg_begin_default_pass(&pass_action, 0, 0)
@@ -35,7 +36,7 @@ pub fn (state mut AppState) draw(via mut via.Via) {
 		return
 	}
 
-	via.g.begin_default_pass({color:math.color_from_floats(0.1, 0.1, 0.1, 1.0)}, {})
+	graphics.begin_default_pass({color:math.color_from_floats(0.1, 0.1, 0.4, 1.0)}, {})
 
 	state.batch.begin()
 	state.batch.draw(state.beach_tex, {x: 0, y: 0})
@@ -51,5 +52,5 @@ pub fn (state mut AppState) draw(via mut via.Via) {
 	state.tbatch.draw_polygon([math.Vec2{0, 0}, math.Vec2{100, -100}, math.Vec2{200, 50}, math.Vec2{50, 200}, math.Vec2{-55, 100}]!)
 	state.tbatch.end()
 
-	via.g.end_pass()
+	graphics.end_pass()
 }

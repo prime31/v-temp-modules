@@ -13,9 +13,9 @@ fn main() {
 	via.run(via.ViaConfig{}, mut state)
 }
 
-pub fn (state mut AppState) initialize(via &via.Via) {
-	atlas := via.g.new_texture_atlas('assets/adventurer.atlas')
-	state.batch = via.g.new_atlasbatch(atlas.tex, 20)
+pub fn (state mut AppState) initialize() {
+	atlas := graphics.new_texture_atlas('assets/adventurer.atlas')
+	state.batch = graphics.new_atlasbatch(atlas.tex, 20)
 
 	atlas_names := atlas.get_names()
 	for i in 0..10 {
@@ -28,15 +28,15 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 	quad3 := atlas.get_quad('adventurer-run-02')
 	quad4 := atlas.get_quad('adventurer-run-01')
 	for i in 0..10 {
-		q := math.rand_choose4(quad1, quad2, quad3, quad4)
-		state.batch.add_q(q, {x: 8, y: (f32(i) + 2.0) * 24 + 8, rot: math.rand_range(20, 340), sx: 1, sy: 1, ox: 25, oy: 18.5})
+		q := math.choose4(quad1, quad2, quad3, quad4)
+		state.batch.add_q(q, {x: 8, y: (f32(i) + 2.0) * 24 + 8, rot: math.range(20, 340), sx: 1, sy: 1, ox: 25, oy: 18.5})
 	}
 }
 
-pub fn (state mut AppState) update(via &via.Via) {}
+pub fn (state mut AppState) update() {}
 
-pub fn (state mut AppState) draw(via mut via.Via) {
-	via.g.begin_default_pass({color:math.color_from_floats(1.0, 0.3, 1.0, 1.0)}, {})
+pub fn (state mut AppState) draw() {
+	graphics.begin_default_pass({color:math.color_from_floats(1.0, 0.3, 1.0, 1.0)}, {})
 	state.batch.draw()
-	via.g.end_pass()
+	graphics.end_pass()
 }

@@ -13,14 +13,14 @@ fn main() {
 	via.run(via.ViaConfig{}, mut state)
 }
 
-pub fn (state mut AppState) initialize(via &via.Via) {
+pub fn (state mut AppState) initialize() {
 	state.batch = graphics.trianglebatch(2000)
 }
 
-pub fn (state mut AppState) update(via mut via.Via) {}
+pub fn (state mut AppState) update() {}
 
-pub fn (state mut AppState) draw(via mut via.Via) {
-	via.g.begin_default_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)}, {})
+pub fn (state mut AppState) draw() {
+	graphics.begin_default_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)}, {})
 
 	state.batch.begin()
 	state.batch.draw_triangle(200, 200, 200, 300, 400, 200)
@@ -30,5 +30,5 @@ pub fn (state mut AppState) draw(via mut via.Via) {
 	state.batch.draw_polygon([math.Vec2{0, 0}, math.Vec2{100, -100}, math.Vec2{200, 50}, math.Vec2{50, 200}, math.Vec2{-55, 100}]!)
 	state.batch.end()
 
-	via.g.end_pass()
+	graphics.end_pass()
 }

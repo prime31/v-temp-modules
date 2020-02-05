@@ -30,6 +30,7 @@ mut:
 const (
 	width = 512.0
 	height = 384.0
+	sprite_cnt = 200
 )
 
 fn main() {
@@ -43,11 +44,11 @@ fn main() {
 	}, mut state)
 }
 
-pub fn (state mut AppState) initialize(via &via.Via) {
-	state.dude_tex = via.g.new_texture('assets/dude.png')
-	state.batch = graphics.quadbatch(100)
+pub fn (state mut AppState) initialize() {
+	state.dude_tex = graphics.new_texture('assets/dude.png')
+	state.batch = graphics.quadbatch(sprite_cnt)
 
-	for i in 0..100 {
+	for i in 0..sprite_cnt {
 		state.add_sprite(math.range(-width, width), math.range(-height, height))
 	}
 }
@@ -63,7 +64,7 @@ fn (state mut AppState) add_sprite(x, y f32) {
 	state.sprites << sprite
 }
 
-pub fn (state mut AppState) update(via &via.Via) {
+pub fn (state mut AppState) update() {
 	dt := time.dt()
 	for i, sprite in state.sprites {
 		mut s := state.sprites[i]
@@ -89,8 +90,8 @@ pub fn (state mut AppState) update(via &via.Via) {
 	}
 }
 
-pub fn (state mut AppState) draw(via mut via.Via) {
-	via.g.begin_default_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)}, {})
+pub fn (state mut AppState) draw() {
+	graphics.begin_default_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)}, {})
 
 	state.batch.begin()
 	for s in state.sprites {
@@ -100,5 +101,5 @@ pub fn (state mut AppState) draw(via mut via.Via) {
 
 	state.space.debug_draw()
 	debug.draw_text(-width, -height, 'FPS: $time.fps()', {align:.top scale:3 color:math.color_black()})
-	via.g.end_pass()
+	graphics.end_pass()
 }

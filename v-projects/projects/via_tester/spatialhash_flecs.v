@@ -47,8 +47,8 @@ fn main() {
 	}, mut state)
 }
 
-pub fn (state mut AppState) initialize(via &via.Via) {
-	state.dude_tex = via.g.new_texture('assets/dude.png')
+pub fn (state mut AppState) initialize() {
+	state.dude_tex = graphics.new_texture('assets/dude.png')
 	state.batch = graphics.quadbatch(sprite_cnt)
 
 	// setup ecs
@@ -62,7 +62,6 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 	// systems
 	move_set_sys := state.world.new_system('AddMoveSystem', .on_set, 'Sprite', move_set)
 	move_sys := state.world.new_system('MoveSystem', .on_update, 'Sprite', move)
-	state.world.new_system('PreRenderSystem', .on_update, 'AppState', pre_render)
 	state.world.new_system('RenderSystem', .on_update, 'Sprite', render)
 	state.world.new_system('PostRenderSystem', .on_update, 'AppState', post_render)
 
@@ -96,17 +95,17 @@ fn (state mut AppState) add_sprite(x, y f32) {
 	entity.set_ptr_t(state.sprite_entity, sprite)
 }
 
-pub fn (state mut AppState) update(via mut via.Via) {
-	via.g.begin_default_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)}, {})
+pub fn (state mut AppState) update() {
+	graphics.begin_default_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)}, {})
 
 	state.world.progress(time.dt())
 
 	state.space.debug_draw()
-	debug.draw_text(-width, -height, 'FPS: $time.fps(), dt: $time.dt()', {align:.top scale:4 color:math.color_blue()})
-	via.g.end_pass()
+	debug.draw_text(-width, -height, 'FPS: $time.fps()', {align:.top scale:4 color:math.color_blue()})
+	graphics.end_pass()
 }
 
-pub fn (state mut AppState) draw(via mut via.Via) {}
+pub fn (state mut AppState) draw() {}
 
 fn move_set(rows &C.ecs_rows_t) {
 	mut space := &collections.SpatialHash(C.ecs_get_system_context(rows.world, rows.system))
@@ -143,14 +142,6 @@ fn move(rows &C.ecs_rows_t) {
 		}
 
 		space.update(s.id, s.col)
-	}
-}
-
-fn pre_render(rows &C.ecs_rows_t) {
-	appstates := *AppState(C._ecs_column(rows, sizeof(&AppState), 1))
-	for i in 0..int(rows.count) {
-		mut app := appstates[i]
-		app.batch.begin()
 	}
 }
 

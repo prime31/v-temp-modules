@@ -33,6 +33,7 @@ mut:
 const (
 	width = 512.0
 	height = 384.0
+	sprite_cnt = 200
 )
 
 fn main() {
@@ -48,7 +49,7 @@ fn main() {
 
 pub fn (state mut AppState) initialize(via &via.Via) {
 	state.dude_tex = via.g.new_texture('assets/dude.png')
-	state.batch = graphics.quadbatch(1000)
+	state.batch = graphics.quadbatch(sprite_cnt)
 
 	// setup ecs
 	state.world = flecs.init_world()
@@ -77,7 +78,7 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 	println('why are these different: state: ${&state} vs ${&tmp}   $tmp.dude_tex.img.id')
 
 
-	for i in 0..50 {
+	for i in 0..sprite_cnt {
 		state.add_sprite(math.range(-width, width), math.range(-height, height))
 	}
 }
@@ -101,7 +102,7 @@ pub fn (state mut AppState) update(via mut via.Via) {
 	state.world.progress(time.dt())
 
 	state.space.debug_draw()
-	debug.draw_text(-width, -height, 'FPS: $time.fps()', {align:.top scale:3 color:math.color_black()})
+	debug.draw_text(-width, -height, 'FPS: $time.fps(), dt: $time.dt()', {align:.top scale:4 color:math.color_blue()})
 	via.g.end_pass()
 }
 

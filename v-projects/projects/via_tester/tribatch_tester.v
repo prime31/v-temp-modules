@@ -17,7 +17,7 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 	state.batch = graphics.trianglebatch(2000)
 }
 
-pub fn (state mut AppState) update(via &via.Via) {}
+pub fn (state mut AppState) update(via mut via.Via) {}
 
 pub fn (state mut AppState) draw(via mut via.Via) {
 	via.g.begin_default_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)}, {})

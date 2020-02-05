@@ -1,6 +1,8 @@
 import via
 import via.math
+import via.audio
 import via.graphics
+import via.window
 
 const (
 	frag = '
@@ -87,7 +89,7 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 	t := via.g.new_texture('assets/beach.png')
 	println('t: $t')
 
-	s := via.audio.new_stream('assets/skid.wav')
+	s := audio.new_stream('assets/skid.wav')
 	_, channel := s.play(0)
 	s.set_loop_count(4)
 	_, name := s.get_name()
@@ -117,17 +119,17 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 	state.pipe.set_uniform(state.pip_trans_index, &trans_mat)
 }
 
-pub fn (state mut AppState) update(via &via.Via) {}
+pub fn (state mut AppState) update(via mut via.Via) {}
 
 pub fn (state mut AppState) draw(via mut via.Via) {
 	for i, _ in state.mesh.verts {
-		state.mesh.verts[i].x += math.rand_range(-0.03, 0.03)
-		state.mesh.verts[i].y += math.rand_range(-0.03, 0.03)
+		state.mesh.verts[i].x += math.range(-0.03, 0.03)
+		state.mesh.verts[i].y += math.range(-0.03, 0.03)
 	}
 	state.mesh.update_verts()
 
 	trans_mat := math.mat32_ortho_off_center(4, 4)
-	w, h := via.win.get_drawable_size()
+	w, h := window.drawable_size()
 	screen_size := math.Vec4{w, h, 0, 1}
 	noise := 2.0
 

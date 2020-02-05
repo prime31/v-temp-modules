@@ -37,7 +37,7 @@ pub fn (state mut AppState) initialize(via &via.Via) {
 	quad1 := state.atlas.get_quad('adventurer-run-04')
 }
 
-pub fn (state mut AppState) update(via &via.Via) {
+pub fn (state mut AppState) update(via mut via.Via) {
 	state.rot += 0.5
 	igCheckbox(c'No Border', &state.pp_no_border)
 

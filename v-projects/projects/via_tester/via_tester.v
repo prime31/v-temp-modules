@@ -2,7 +2,6 @@ import via
 import via.math
 import via.audio
 import via.graphics
-import via.filesystem
 import via.window
 
 const (
@@ -87,7 +86,6 @@ fn make_pip_noise() sg_pipeline {
 }
 
 pub fn (state mut AppState) initialize() {
-	filesystem.mount('../assets', 'assets', true)
 	t := graphics.new_texture('assets/beach.png')
 	println('t: $t')
 

@@ -4,7 +4,6 @@ import via.time
 import via.input
 import via.debug
 import via.graphics
-import via.filesystem
 import via.collections
 import via.libs.flecs
 import via.libs.imgui
@@ -41,7 +40,6 @@ fn main() {
 		space: collections.spatialhash(150)
 	}
 
-	filesystem.mount('../assets', 'assets', true)
 	via.run(via.ViaConfig{
 		win_resizable: false
 	}, mut state)

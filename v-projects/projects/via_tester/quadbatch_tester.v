@@ -17,7 +17,6 @@ fn main() {
 }
 
 pub fn (state mut AppState) initialize() {
-
 	state.beach_tex = graphics.new_texture('assets/beach.png')
 	state.dude_tex = graphics.new_texture('assets/dude.png')
 	state.atlas = graphics.new_texture_atlas('assets/adventurer.atlas')
@@ -31,7 +30,6 @@ pub fn (state mut AppState) draw() {
 
 	names := state.atlas.get_names()
 
-	state.batch.begin()
 	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad(math.choose_arr(names)), {x: 0, y: -80, sx: 2, sy: 2, ox: 25, oy: 18.5})
 	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad(math.choose_arr(names)), {x: 0, y: -150, sx: 2, sy: 2, rot: 90, ox: 25, oy: 18.5})
 	state.batch.draw(state.beach_tex, {x: 0, y: 0})

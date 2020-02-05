@@ -43,7 +43,6 @@ pub fn (state mut AppState) update() {
 pub fn (state mut AppState) draw() {
 	graphics.begin_default_pass({color:math.color_from_floats(0.5, 0.4, 0.6, 1.0)}, {})
 
-	state.batch.begin()
 	state.font.clear_state()
 	state.font.set_size(10)
 	state.font.set_align(.left_middle)

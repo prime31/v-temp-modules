@@ -4,7 +4,6 @@ import via.input
 import via.debug
 import via.window
 import via.graphics
-import via.filesystem
 import via.components
 import via.libs.imgui
 
@@ -19,7 +18,6 @@ mut:
 }
 
 fn main() {
-	filesystem.mount('../assets', 'assets', true)
 	state := AppState{
 		cam: components.camera()
 	}
@@ -89,7 +87,6 @@ pub fn (state mut AppState) draw() {
 	debug.draw_text(0, 0, 'holy crap does it work?', {color:math.color_red() scale:2.0})
 	debug.draw_text(0, 10, 'holy crap does it work?', {color:math.color_red()})
 
-	state.batch.begin()
 	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-04'), {x: 0, y: 0, sx: 1, sy: 1})
 	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-03'), {x: -50, y: 50, sx: 1, sy: 1})
 	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-02'), {x: -100, y: -50, sx: 1, sy: 1})

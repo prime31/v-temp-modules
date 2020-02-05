@@ -28,8 +28,8 @@ pub fn (v Vel) str() string {
 
 fn main() {
 	world := flecs.init_world()
-	pos_entity := world.new_component('Position', sizeof(Pos))
-	vel_entity := world.new_component('Velocity', sizeof(Vel))
+	pos_entity := world.new_component<Pos>('Position')
+	vel_entity := world.new_component<Vel>('Velocity')
 
 	println('world=$world, pos_entity=$pos_entity, vel_entity=$vel_entity')
 

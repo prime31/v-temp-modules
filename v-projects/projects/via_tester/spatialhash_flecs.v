@@ -22,7 +22,6 @@ pub mut:
 
 struct AppState {
 mut:
-	batch &graphics.QuadBatch = &graphics.QuadBatch(0)
 	dude_tex graphics.Texture
 	space &collections.SpatialHash = &collections.SpatialHash(0)
 	world flecs.World
@@ -47,7 +46,6 @@ fn main() {
 
 pub fn (state mut AppState) initialize() {
 	state.dude_tex = graphics.new_texture('assets/dude.png')
-	state.batch = graphics.quadbatch(sprite_cnt)
 
 	// setup ecs
 	state.world = flecs.init_world()
@@ -55,20 +53,14 @@ pub fn (state mut AppState) initialize() {
 
 	// components
 	state.sprite_entity = state.world.new_component<Sprite>('Sprite')
-	appstate_entity := state.world.new_component_t('AppState', sizeof(&AppState))
 
 	// systems
 	move_set_sys := state.world.new_system('AddMoveSystem', .on_set, 'Sprite', move_set)
 	move_sys := state.world.new_system('MoveSystem', .on_update, 'Sprite', move)
 	state.world.new_system('RenderSystem', .on_update, 'Sprite', render)
-	state.world.new_system('PostRenderSystem', .on_update, 'AppState', post_render)
 
 	state.world.set_system_context(move_set_sys.id, state.space)
 	state.world.set_system_context(move_sys.id, state.space)
-
-	// entities
-	state_entity := state.world.new_entity('state', 'AppState')
-	_ecs_set_ptr(state_entity.world, state_entity.id, appstate_entity.id, sizeof(&AppState), state)
 
 
 	tmp := &AppState(state.world.get_context())
@@ -144,18 +136,10 @@ fn move(rows &C.ecs_rows_t) {
 }
 
 fn render(rows &C.ecs_rows_t) {
-	mut state := &AppState(C.ecs_get_context(rows.world))
+	mut batch := graphics.spritebatch()
 	sprites := flecs.column<Sprite>(rows, 1)
 
 	for i in 0..int(rows.count) {
-		state.batch.draw(sprites[i].tex, {x:sprites[i].col.x, y:sprites[i].col.y})
-	}
-}
-
-fn post_render(rows &C.ecs_rows_t) {
-	appstates := *AppState(C._ecs_column(rows, sizeof(&AppState), 1))
-	for i in 0..int(rows.count) {
-		mut app := appstates[i]
-		app.batch.end()
+		batch.draw(sprites[i].tex, {x:sprites[i].col.x, y:sprites[i].col.y})
 	}
 }

@@ -28,7 +28,7 @@ pub fn (state &AppState) draw() {
 
 	names := state.atlas.get_names()
 
-	mut batch := graphics.g.quad_batch
+	mut batch := graphics.spritebatch()
 	batch.draw_q(state.atlas.tex, state.atlas.get_quad(math.choose_arr(names)), {x: 0, y: -80, sx: 2, sy: 2, ox: 25, oy: 18.5})
 	batch.draw_q(state.atlas.tex, state.atlas.get_quad(math.choose_arr(names)), {x: 0, y: -150, sx: 2, sy: 2, rot: 90, ox: 25, oy: 18.5})
 	batch.draw(state.beach_tex, {x: 0, y: 0})

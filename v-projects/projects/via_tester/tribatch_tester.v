@@ -17,7 +17,7 @@ pub fn (state mut AppState) update() {}
 pub fn (state mut AppState) draw() {
 	graphics.begin_default_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)}, {})
 
-	mut tb := graphics.g.tri_batch
+	mut tb := graphics.tribatch()
 	tb.draw_triangle(200, 200, 200, 300, 400, 200, {color:math.color_red()})
 	tb.draw_rectangle(-100, -300, 200, 100, {x:0})
 	tb.draw_circle(-300, 300, 75, 6, {color:math.color_orange()})

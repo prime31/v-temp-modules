@@ -20,7 +20,6 @@ pub mut:
 
 struct AppState {
 mut:
-	batch &graphics.QuadBatch = &graphics.QuadBatch(0)
 	dude_tex graphics.Texture
 	sprites []&Sprite
 	space &collections.SpatialHash = &collections.SpatialHash(0)
@@ -44,7 +43,6 @@ fn main() {
 
 pub fn (state mut AppState) initialize() {
 	state.dude_tex = graphics.new_texture('assets/dude.png')
-	state.batch = graphics.quadbatch(sprite_cnt)
 
 	for _ in 0..sprite_cnt {
 		state.add_sprite(math.range(-width, width), math.range(-height, height))
@@ -91,10 +89,10 @@ pub fn (state mut AppState) update() {
 pub fn (state mut AppState) draw() {
 	graphics.begin_default_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)}, {})
 
+	mut batch := graphics.spritebatch()
 	for s in state.sprites {
-		state.batch.draw(state.dude_tex, {x:s.col.x, y:s.col.y})
+		batch.draw(state.dude_tex, {x:s.col.x, y:s.col.y})
 	}
-	state.batch.end()
 
 	state.space.debug_draw()
 	debug.draw_text(-width, -height, 'FPS: $time.fps()', {align:.top scale:4 color:math.color_blue()})

@@ -53,7 +53,7 @@ pub fn (state mut AppState) initialize() {
 	state.world.set_context(state)
 
 	// components
-	state.sprite_entity = state.world.new_component<Sprite>('Sprite')
+	state.sprite_entity = flecs.new_comp<Sprite>(state.world)
 
 	// systems
 	move_set_sys := state.world.new_system('AddMoveSystem', .on_set, 'Sprite', move_set)
@@ -62,11 +62,6 @@ pub fn (state mut AppState) initialize() {
 
 	state.world.set_system_context(move_set_sys.id, state.space)
 	state.world.set_system_context(move_sys.id, state.space)
-
-
-	tmp := &AppState(state.world.get_context())
-	println('why are these different: state: ${&state} vs ${&tmp}   $tmp.dude_tex.img.id')
-
 
 	for _ in 0..sprite_cnt {
 		state.add_sprite(math.range(-width, width), math.range(-height, height))

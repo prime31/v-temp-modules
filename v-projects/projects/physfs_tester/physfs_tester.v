@@ -63,9 +63,7 @@ fn read_txt_file() {
 	len := physfs.file_length(fp)
 	println('json file len=$len')
 
-	// buf := [len]byte // doesnt work
-	buf := utils.make_array<int>(int(len), int(len))
-	physfs.read_bytes(fp, buf.data, u64(len))
+	buf := physfs.read_bytes('assets/json.json')
 	println('file contents: ${tos(buf.data, buf.len)}')
 	physfs.close(fp)
 }

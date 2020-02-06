@@ -31,7 +31,7 @@ mut:
 const (
 	width = 512.0
 	height = 384.0
-	sprite_cnt = 100
+	sprite_cnt = 200
 )
 
 fn main() {
@@ -40,6 +40,7 @@ fn main() {
 	}
 
 	via.run(via.ViaConfig{
+		max_quads: sprite_cnt
 		win_resizable: false
 	}, mut state)
 }

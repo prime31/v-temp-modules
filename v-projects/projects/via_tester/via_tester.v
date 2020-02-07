@@ -89,8 +89,9 @@ pub fn (state mut AppState) initialize() {
 	t := graphics.new_texture('assets/beach.png')
 	println('t: $t')
 
-	s := audio.new_stream('assets/skid.wav')
+	s := audio.new_sound('assets/skid.wav')
 	_, channel := s.play(0)
+	channel.set_volume(0.5)
 	s.set_loop_count(4)
 	_, name := s.get_name()
 	loops := 0
@@ -100,7 +101,7 @@ pub fn (state mut AppState) initialize() {
 	state.custom_pipe = make_pip()
 	// state.pip = make_pip_noise(via)
 
-	state.mesh = graphics.mesh_new_quad()
+	state.mesh = graphics.mesh_new_quad(.dynamic)
 	state.mesh.bind_texture(0, t)
 
 	tile := graphics.new_texture('assets/dude.png')
@@ -138,8 +139,8 @@ pub fn (state mut AppState) draw() {
 	sg_begin_default_pass(&pass_action, w, h)
 
 	// FIXME: this doesnt draw anymore
-	// sg_apply_pipeline(via.g.get_default_pipeline())
-	// state.batch.draw(&trans_mat)
+	sg_apply_pipeline(graphics.get_default_pipeline().pip)
+	state.batch.draw()
 
 	sg_apply_pipeline(state.custom_pipe.pip)
 	state.custom_pipe.set_uniform_raw(.vs, 0, &trans_mat)

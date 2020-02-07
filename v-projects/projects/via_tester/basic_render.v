@@ -30,6 +30,7 @@ pub fn (state mut AppState) initialize() {
 pub fn (state &AppState) update() {}
 
 pub fn (state mut AppState) draw() {
+	// hack when testing metal which has 0 size for a frame
 	w, _ := window.drawable_size()
 	if w == 0 {
 		pass_action := sg_pass_action{}

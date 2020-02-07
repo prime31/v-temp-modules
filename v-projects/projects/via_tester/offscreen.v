@@ -94,9 +94,5 @@ pub fn (state mut AppState) draw() {
 	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-02'), {x: -100, y: -50, sx: 1, sy: 1})
 	graphics.end_pass()
 
-	// clear color here is the letterbox color
-	graphics.begin_default_pass({color:math.color_from_floats(0.0, 0.0, 0.0, 1.0)}, {blit_pass:true})
-	scaler := graphics.get_resolution_scaler()
-	batch.draw(graphics.g.def_pass.offscreen_pass.color_tex, {x:scaler.x y:scaler.y sx:scaler.scale sy:scaler.scale})
-	graphics.end_pass()
+	graphics.blit_default_offscreen(math.color_from_floats(0.0, 0.0, 0.0, 1.0))
 }

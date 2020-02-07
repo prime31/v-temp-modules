@@ -18,9 +18,7 @@ mut:
 }
 
 fn main() {
-	state := AppState{
-		cam: components.camera()
-	}
+	state := AppState{}
 	via.run(via.ViaConfig{
 		imgui: true
 		win_highdpi: true
@@ -28,6 +26,7 @@ fn main() {
 }
 
 pub fn (state mut AppState) initialize() {
+	state.cam = components.camera()
 	state.offscreen_pass = graphics.new_offscreen_pass(256, 256)
 	state.atlas = graphics.new_texture_atlas('assets/adventurer.atlas')
 	state.batch = graphics.quadbatch(20)
@@ -53,7 +52,7 @@ pub fn (state mut AppState) update() {
 	C.igText(c'Win draw: %d, %d', rx, ry)
 	C.igText(c'Scale, Offset: %f, (%f, %f)', pp_cfg.sx, pp_cfg.x, pp_cfg.y)
 
-	msx, msy := input.mouse_pos_scaled(pp_cfg.sx, pp_cfg.sy, pp_cfg.x, pp_cfg.y)
+	msx, msy := input.mouse_pos_scaled()
 	C.igText(c'Mouse Scaled: %d, %d', msx, msy)
 
 	x, y := input.mouse_pos()
@@ -62,7 +61,7 @@ pub fn (state mut AppState) update() {
 	mut cx, mut cy := state.cam.screen_to_world(x, y)
 	C.igText(c'Mouse World: %d, %d', cx, cy)
 
-	cx, cy = state.cam.screen_to_offscreen_world(msx, msy, 256, 256, pp_cfg.sx, pp_cfg.sy)
+	cx, cy = state.cam.screen_to_offscreen_world(msx, msy)
 	C.igText(c'Mouse Offscreen World: %d, %d', cx, cy)
 
 	C.igText(c'RT Offset: %f, %f', pp_cfg.x, pp_cfg.y)

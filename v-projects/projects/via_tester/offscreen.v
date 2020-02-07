@@ -10,7 +10,6 @@ import via.libs.imgui
 struct AppState {
 mut:
 	atlas graphics.TextureAtlas
-	batch &graphics.QuadBatch = &graphics.QuadBatch(0)
 	offscreen_pass graphics.OffScreenPass
 	rot f32
 	pp_no_border bool
@@ -22,6 +21,9 @@ fn main() {
 	via.run(via.ViaConfig{
 		imgui: true
 		win_highdpi: true
+		resolution_policy: .show_all_pixel_perfect // .no_border_pixel_perfect
+		design_width: 256
+		design_height: 256
 	}, mut state)
 }
 
@@ -29,7 +31,6 @@ pub fn (state mut AppState) initialize() {
 	state.cam = components.camera()
 	state.offscreen_pass = graphics.new_offscreen_pass(256, 256)
 	state.atlas = graphics.new_texture_atlas('assets/adventurer.atlas')
-	state.batch = graphics.quadbatch(20)
 
 	quad1 := state.atlas.get_quad('adventurer-run-04')
 }
@@ -52,6 +53,7 @@ pub fn (state mut AppState) update() {
 	C.igText(c'Win draw: %d, %d', rx, ry)
 	C.igText(c'Scale, Offset: %f, (%f, %f)', pp_cfg.sx, pp_cfg.x, pp_cfg.y)
 
+	C.igText(c'Mouse')
 	msx, msy := input.mouse_pos_scaled()
 	C.igText(c'Mouse Scaled: %d, %d', msx, msy)
 
@@ -76,7 +78,7 @@ pub fn (state mut AppState) update() {
 pub fn (state mut AppState) draw() {
 	trans_mat := state.cam.trans_mat()
 
-	graphics.begin_offscreen_pass(state.offscreen_pass, {color:math.color_cornflower_blue()}, {trans_mat:&trans_mat})
+	graphics.begin_default_offscreen_pass({color:math.color_cornflower_blue()}, {trans_mat:&trans_mat})
 	debug.set_color(math.color_deep_sky_blue())
 	debug.draw_filled_rect(0, 0, 100, 100)
 	debug.set_color(math.color_yellow())
@@ -86,19 +88,15 @@ pub fn (state mut AppState) draw() {
 	debug.draw_text(0, 0, 'holy crap does it work?', {color:math.color_red() scale:2.0})
 	debug.draw_text(0, 10, 'holy crap does it work?', {color:math.color_red()})
 
-	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-04'), {x: 0, y: 0, sx: 1, sy: 1})
-	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-03'), {x: -50, y: 50, sx: 1, sy: 1})
-	state.batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-02'), {x: -100, y: -50, sx: 1, sy: 1})
-	state.batch.end()
+	mut batch := graphics.spritebatch()
+	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-04'), {x: 0, y: 0, sx: 1, sy: 1})
+	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-03'), {x: -50, y: 50, sx: 1, sy: 1})
+	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-02'), {x: -100, y: -50, sx: 1, sy: 1})
 	graphics.end_pass()
 
-	graphics.begin_default_pass({color:math.color_from_floats(0.7, 0.4, 0.8, 1.0)}, {blit_pass:true})
-
-	if state.pp_no_border {
-		state.batch.draw(state.offscreen_pass.color_tex, state.offscreen_pass.get_pixel_perfect_no_border_config())
-	} else {
-		state.batch.draw(state.offscreen_pass.color_tex, state.offscreen_pass.get_pixel_perfect_config())
-	}
-	state.batch.end()
+	// clear color here is the letterbox color
+	graphics.begin_default_pass({color:math.color_from_floats(0.0, 0.0, 0.0, 1.0)}, {blit_pass:true})
+	scaler := graphics.get_resolution_scaler()
+	batch.draw(graphics.g.def_pass.offscreen_pass.color_tex, {x:scaler.x y:scaler.y sx:scaler.scale sy:scaler.scale})
 	graphics.end_pass()
 }

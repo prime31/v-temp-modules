@@ -2,30 +2,36 @@ import via
 import via.math
 import via.audio
 import via.graphics
+import via.filesystem
 import via.window
 
 struct AppState {
 mut:
-	fsquad &graphics.FullscreenQuad
+	t graphics.Texture
+	tex graphics.Texture
 }
 
 fn main() {
-	state := AppState{
-		fsquad: 0
-	}
-	via.run(via.ViaConfig{}, mut state)
+	state := AppState{}
+	via.run(via.ViaConfig{
+		win_highdpi: true
+	}, mut state)
 }
 
 pub fn (state mut AppState) initialize() {
-	t := graphics.new_texture('assets/beach.png')
-	state.fsquad = graphics.fullscreenquad()
-	state.fsquad.bind_texture(0, t)
+	filesystem.mount('../assets', 'assets', true)
+
+	state.tex = graphics.new_texture('assets/v-logo_30_30.png')
+	state.t = graphics.new_texture('assets/beach.png')
 }
 
 pub fn (state mut AppState) update() {}
 
 pub fn (state mut AppState) draw() {
-	graphics.begin_default_pass({color:math.color_from_floats(0.1, 0.1, 0.4, 1.0)}, {})
-	state.fsquad.draw()
+	graphics.begin_default_offscreen_pass({color:math.color_from_floats(0.1, 0.1, 0.4, 1.0)}, {})
+	graphics.spritebatch().draw(state.t, {x:0 y:0 ox:205/2 oy:122/2 sx:9 sy:9})
+	graphics.flush()
 	graphics.end_pass()
+
+	graphics.blit_default_offscreen(math.color_from_floats(0.3, 0.0, 0.3, 1.0))
 }

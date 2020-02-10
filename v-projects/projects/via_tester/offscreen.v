@@ -55,12 +55,36 @@ mut:
 	rot f32
 	pp_no_border bool
 	cam components.Camera
-	pip_noise graphics.Pipeline
-	pip_vignette graphics.Pipeline
+
+	pp_stack &graphics.PostProcessStack
+	vig BasicPP
+	noise BasicPP
 }
 
+//#region Post processors
+
+struct BasicPP {
+	pip graphics.Pipeline
+}
+
+fn basicpp(frag string) BasicPP {
+	shader_desc := graphics.shader_get_default_desc()
+	pip_desc := graphics.pipeline_get_default_desc()
+	return BasicPP{
+		pip: graphics.pipeline({frag:frag}, shader_desc, mut pip_desc)
+	}
+}
+
+fn basicpp_process(vig &BasicPP, tex &graphics.Texture, stack &graphics.PostProcessStack) {
+	stack.blit(tex, mut vig.pip)
+}
+
+//#endregion
+
 fn main() {
-	state := AppState{}
+	state := AppState{
+		pp_stack: 0
+	}
 
 	via.run(via.ViaConfig{
 		imgui: true
@@ -71,24 +95,16 @@ fn main() {
 	}, mut state)
 }
 
-fn make_pip_noise() graphics.Pipeline {
-	shader_desc := graphics.shader_get_default_desc()
-	pip_desc := graphics.pipeline_get_default_desc()
-	return graphics.pipeline({frag:frag_noise}, shader_desc, mut pip_desc)
-}
-
-fn make_pip_vignette() graphics.Pipeline {
-	shader_desc := graphics.shader_get_default_desc()
-	pip_desc := graphics.pipeline_get_default_desc()
-	return graphics.pipeline({frag:frag_vignette}, shader_desc, mut pip_desc)
-}
-
 pub fn (state mut AppState) initialize() {
 	state.cam = components.camera()
 	state.offscreen_pass = graphics.new_offscreen_pass(256, 256)
-	state.pip_noise = make_pip_noise()
-	state.pip_vignette = make_pip_vignette()
 	state.atlas = graphics.new_texture_atlas('assets/adventurer.atlas')
+
+	state.pp_stack = graphics.postprocessstack()
+	state.noise = basicpp(frag_noise)
+	state.vig = basicpp(frag_vignette)
+	state.pp_stack.add(state.noise, basicpp_process)
+	state.pp_stack.add(state.vig, basicpp_process)
 }
 
 pub fn (state mut AppState) update() {
@@ -140,25 +156,6 @@ pub fn (state mut AppState) draw() {
 	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-crnr-grb-02'), {x:-100 y:-100 sx:1 sy:1})
 	graphics.end_pass()
 
-	// take the default offscreen RT and blit it with a pipeline
-	graphics.begin_offscreen_pass(graphics.g.def_pass.offscreen_pass, {color_action:.dontcare}, {pipeline:&state.pip_noise})
-	batch.draw(graphics.g.def_pass.offscreen_pass.color_tex, {x:0 y:0})
-	graphics.end_pass()
-
-	// and do it again
-	graphics.begin_offscreen_pass(graphics.g.def_pass.offscreen_pass, {color_action:.dontcare}, {pipeline:&state.pip_vignette})
-	batch.draw(graphics.g.def_pass.offscreen_pass.color_tex, {x:0 y:0})
-	graphics.end_pass()
-
-	// test if we can render a texture to itself
-	// graphics.begin_offscreen_pass(state.offscreen_pass, {color_action:.dontcare}, {})
-	// batch.draw(state.offscreen_pass.color_tex, {x:50 y:50 color:math.color_orange()})
-	// graphics.end_pass()
-
-	// graphics.begin_default_pass({color:math.color_yellow()}, {})
-	// scaler := graphics.g.def_pass.scaler
-	// batch.draw(graphics.g.def_pass.offscreen_pass.color_tex, {x:scaler.x y:scaler.y sx:scaler.scale sy:scaler.scale})
-	// graphics.end_pass()
-
+	graphics.postprocess_default_offscreen(state.pp_stack)
 	graphics.blit_default_offscreen(math.color_from_floats(0.0, 0.0, 0.0, 1.0))
 }

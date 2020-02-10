@@ -7,6 +7,47 @@ import via.graphics
 import via.components
 import via.libs.imgui
 
+const (
+	frag_noise = '
+	float rand(vec2 co){
+		return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+	}
+
+	vec4 effect(vec4 vcolor, sampler2D tex, vec2 texcoord) {
+		vec4 color = texture(tex, texcoord);
+		float diff = (rand(texcoord) - 0.5) * 0.3;
+
+		color.r += diff;
+		color.g += diff;
+		color.b += diff;
+
+		return color;
+	}'
+	frag_vignette = '
+	vec4 effect(vec4 vcolor, sampler2D tex, vec2 texcoord) {
+		vec4 color = texture(tex, texcoord);
+
+		float _radius = 1.25;
+		float _power = 1.0;
+		vec2 dist = (texcoord - 0.5f) * _radius;
+		dist.x = 1 - dot(dist, dist) * _power;
+		color.rgb *= dist.x;
+
+		return color;
+	}'
+	frag_sepia = '
+	vec4 effect(vec4 vcolor, sampler2D tex, vec2 texcoord) {
+		vec4 color = texture(tex, texcoord);
+
+		vec3 _sepia_tone = vec3(1.2, 1.0, 0.8);
+		// first we need to convert to greyscale
+		float gray_scale = dot(color.rgb, vec3(0.3, 0.59, 0.11));
+		color.rgb = gray_scale * _sepia_tone;
+
+		return color;
+	}'
+)
+
 struct AppState {
 mut:
 	atlas graphics.TextureAtlas
@@ -14,10 +55,16 @@ mut:
 	rot f32
 	pp_no_border bool
 	cam components.Camera
+	quad &graphics.FullscreenQuad
+	pip_noise graphics.Pipeline
+	pip_vignette graphics.Pipeline
 }
 
 fn main() {
-	state := AppState{}
+	state := AppState{
+		quad: 0
+	}
+
 	via.run(via.ViaConfig{
 		imgui: true
 		win_highdpi: true
@@ -27,9 +74,24 @@ fn main() {
 	}, mut state)
 }
 
+fn make_pip_noise() graphics.Pipeline {
+	mut shader_desc := graphics.shader_get_default_desc()
+	pip_desc := graphics.pipeline_get_default_desc()
+	return graphics.pipeline({frag:frag_noise}, shader_desc, mut pip_desc)
+}
+
+fn make_pip_vignette() graphics.Pipeline {
+	mut shader_desc := graphics.shader_get_default_desc()
+	pip_desc := graphics.pipeline_get_default_desc()
+	return graphics.pipeline({frag:frag_vignette}, shader_desc, mut pip_desc)
+}
+
 pub fn (state mut AppState) initialize() {
 	state.cam = components.camera()
 	state.offscreen_pass = graphics.new_offscreen_pass(256, 256)
+	state.quad = graphics.fullscreenquad()
+	state.pip_noise = make_pip_noise()
+	state.pip_vignette = make_pip_vignette()
 	state.atlas = graphics.new_texture_atlas('assets/adventurer.atlas')
 
 	quad1 := state.atlas.get_quad('adventurer-run-04')
@@ -39,19 +101,15 @@ pub fn (state mut AppState) update() {
 	state.rot += 0.5
 	igCheckbox(c'No Border', &state.pp_no_border)
 
-	pp_cfg := if state.pp_no_border {
-		state.offscreen_pass.get_pixel_perfect_no_border_config()
-	} else {
-		state.offscreen_pass.get_pixel_perfect_config()
-	}
-	sx := f32(state.offscreen_pass.color_tex.w) / pp_cfg.sx
-	sy := f32(state.offscreen_pass.color_tex.h) / pp_cfg.sy
+	scaler := graphics.get_resolution_scaler()
+	sx := f32(state.offscreen_pass.color_tex.w) / scaler.scale
+	sy := f32(state.offscreen_pass.color_tex.h) / scaler.scale
 
 	wx, wy := window.size()
 	C.igText(c'Win size: %d, %d', wx, wy)
 	rx, ry := window.drawable_size()
 	C.igText(c'Win draw: %d, %d', rx, ry)
-	C.igText(c'Scale, Offset: %f, (%f, %f)', pp_cfg.sx, pp_cfg.x, pp_cfg.y)
+	C.igText(c'RT Scale, Offset: %f, (%d, %d)', scaler.scale, scaler.x, scaler.y)
 
 	C.igText(c'Mouse')
 	msx, msy := input.mouse_pos_scaled()
@@ -66,7 +124,6 @@ pub fn (state mut AppState) update() {
 	cx, cy = state.cam.screen_to_offscreen_world(msx, msy)
 	C.igText(c'Mouse Offscreen World: %d, %d', cx, cy)
 
-	C.igText(c'RT Offset: %f, %f', pp_cfg.x, pp_cfg.y)
 	C.igText(c'RT size: %d, %d', state.offscreen_pass.color_tex.w, state.offscreen_pass.color_tex.h)
 
 	C.igText(c'Camera')
@@ -89,10 +146,32 @@ pub fn (state mut AppState) draw() {
 	debug.draw_text(0, 10, 'holy crap does it work?', {color:math.color_red()})
 
 	mut batch := graphics.spritebatch()
-	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-04'), {x: 0, y: 0, sx: 1, sy: 1})
-	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-03'), {x: -50, y: 50, sx: 1, sy: 1})
-	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-02'), {x: -100, y: -50, sx: 1, sy: 1})
+	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-04'), {x:0 y:-50 sx:1 sy:1})
+	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-attack2-01'), {x:-50 y:50 sx:1 sy:1})
+	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-crnr-grb-02'), {x:-100 y:-100 sx:1 sy:1})
 	graphics.end_pass()
+
+	// take the default offscreen RT and blit it with a pipeline
+	graphics.begin_offscreen_pass(graphics.g.def_pass.offscreen_pass, {color_action:.dontcare}, {blit_pass:true pipeline:&state.pip_noise})
+	state.quad.bind_texture(0, graphics.g.def_pass.offscreen_pass.color_tex)
+	state.quad.draw()
+	graphics.end_pass()
+
+	// and do it again
+	graphics.begin_offscreen_pass(graphics.g.def_pass.offscreen_pass, {color_action:.dontcare}, {blit_pass:true pipeline:&state.pip_vignette})
+	state.quad.bind_texture(0, graphics.g.def_pass.offscreen_pass.color_tex)
+	state.quad.draw()
+	graphics.end_pass()
+
+	// test if we can render a texture to itself
+	// graphics.begin_offscreen_pass(state.offscreen_pass, {color_action:.dontcare}, {blit_pass:true})
+	// batch.draw(state.offscreen_pass.color_tex, {x:50 y:50 color:math.color_orange()})
+	// graphics.end_pass()
+
+	// graphics.begin_default_pass({color:math.color_yellow()}, {blit_pass:true})
+	// scaler := graphics.g.def_pass.scaler
+	// batch.draw(graphics.g.def_pass.offscreen_pass.color_tex, {x:scaler.x y:scaler.y sx:scaler.scale sy:scaler.scale})
+	// graphics.end_pass()
 
 	graphics.blit_default_offscreen(math.color_from_floats(0.0, 0.0, 0.0, 1.0))
 }

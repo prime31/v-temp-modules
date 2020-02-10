@@ -29,7 +29,7 @@ pub fn (state mut AppState) update() {}
 
 pub fn (state mut AppState) draw() {
 	graphics.begin_default_offscreen_pass({color:math.color_from_floats(0.1, 0.1, 0.4, 1.0)}, {})
-	graphics.spritebatch().draw(state.t, {x:0 y:0 ox:205/2 oy:122/2 sx:9 sy:9})
+	graphics.spritebatch().draw(state.t, {x:0 y:0 sx:9 sy:9})
 	graphics.flush()
 	graphics.end_pass()
 

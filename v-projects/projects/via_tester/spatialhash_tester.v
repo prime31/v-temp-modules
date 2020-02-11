@@ -87,8 +87,7 @@ pub fn (state mut AppState) update() {
 }
 
 pub fn (state mut AppState) draw() {
-
-	graphics.begin_default_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)}, {})
+	graphics.begin_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)})
 
 	mut batch := graphics.spritebatch()
 	for s in state.sprites {
@@ -98,4 +97,6 @@ pub fn (state mut AppState) draw() {
 	state.space.debug_draw()
 	debug.draw_text(-width, -height, 'FPS: $time.fps()', {align:.top scale:4 color:math.color_blue()})
 	graphics.end_pass()
+
+	graphics.blit_to_screen(math.color_from_floats(0.0, 0.0, 0.0, 1.0))
 }

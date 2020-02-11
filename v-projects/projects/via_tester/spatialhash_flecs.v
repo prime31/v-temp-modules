@@ -41,7 +41,7 @@ fn main() {
 	}
 
 	via.run(via.ViaConfig{
-		max_quads: sprite_cnt
+		max_quads: sprite_cnt + 1
 		win_resizable: false
 	}, mut state)
 }
@@ -85,13 +85,15 @@ fn (state &AppState) add_sprite(x, y f32) {
 pub fn (state mut AppState) update() {
 	w, h := window.drawable_size()
 	trans_mat := math.mat32_translate(w/2, h/2)
-	graphics.begin_default_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)}, {trans_mat:&trans_mat})
+	graphics.begin_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0) trans_mat:&trans_mat})
 
 	state.world.progress(time.dt())
 
 	state.space.debug_draw()
 	debug.draw_text(-width, -height, 'FPS: $time.fps()', {align:.top scale:4 color:math.color_blue()})
 	graphics.end_pass()
+
+	graphics.blit_to_screen(math.color_from_floats(0.0, 0.0, 0.0, 1.0))
 }
 
 pub fn (state &AppState) draw() {}

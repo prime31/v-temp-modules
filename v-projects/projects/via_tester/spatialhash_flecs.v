@@ -3,6 +3,7 @@ import via.math
 import via.time
 import via.input
 import via.debug
+import via.window
 import via.graphics
 import via.collections
 import via.libs.flecs
@@ -82,7 +83,9 @@ fn (state &AppState) add_sprite(x, y f32) {
 }
 
 pub fn (state mut AppState) update() {
-	graphics.begin_default_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)}, {})
+	w, h := window.drawable_size()
+	trans_mat := math.mat32_translate(w/2, h/2)
+	graphics.begin_default_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)}, {trans_mat:&trans_mat})
 
 	state.world.progress(time.dt())
 

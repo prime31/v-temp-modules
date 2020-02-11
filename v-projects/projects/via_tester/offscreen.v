@@ -140,7 +140,8 @@ pub fn (state mut AppState) update() {
 pub fn (state mut AppState) draw() {
 	trans_mat := state.cam.trans_mat()
 
-	graphics.begin_default_offscreen_pass({color:math.color_cornflower_blue()}, {trans_mat:&trans_mat})
+	// render pass to the default offscreen pass
+	graphics.begin_pass({color:math.color_cornflower_blue() trans_mat:&trans_mat})
 	debug.set_color(math.color_deep_sky_blue())
 	debug.draw_filled_rect(0, 0, 100, 100)
 	debug.set_color(math.color_yellow())
@@ -156,6 +157,14 @@ pub fn (state mut AppState) draw() {
 	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-crnr-grb-02'), {x:-100 y:-100 sx:1 sy:1})
 	graphics.end_pass()
 
-	graphics.postprocess_default_offscreen(state.pp_stack)
-	graphics.blit_default_offscreen(math.color_from_floats(0.0, 0.0, 0.0, 1.0))
+	// optional post processing and blit to the backbuffer
+	graphics.postprocess(state.pp_stack)
+	graphics.blit_to_screen(math.color_from_floats(0.0, 0.0, 0.0, 1.0))
+
+	// screenspace, full resolution rendering directly to the backbuffer
+	graphics.begin_pass({color_action:.dontcare})
+	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-04'), {x:0 y:0 sx:1 sy:1})
+	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-attack2-01'), {x:50 y:50 sx:1 sy:1})
+	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-crnr-grb-02'), {x:100 y:100 sx:1 sy:1})
+	graphics.end_pass()
 }

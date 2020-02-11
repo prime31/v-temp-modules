@@ -26,8 +26,8 @@ mut:
 }
 
 const (
-	width = 512.0
-	height = 384.0
+	width = 1024.0
+	height = 768.0
 	sprite_cnt = 100
 )
 
@@ -45,7 +45,7 @@ pub fn (state mut AppState) initialize() {
 	state.dude_tex = graphics.new_texture('assets/dude.png')
 
 	for _ in 0..sprite_cnt {
-		state.add_sprite(math.range(-width, width), math.range(-height, height))
+		state.add_sprite(math.range(0, width), math.range(0, height))
 	}
 }
 
@@ -70,16 +70,16 @@ pub fn (state mut AppState) update() {
 		if s.col.x + s.col.w > width {
 			s.vx *= -1
 			s.col.x = width - s.col.w
-		} else 	if s.col.x < -width {
+		} else 	if s.col.x < 0 {
 			s.vx *= -1
-			s.col.x = -width
+			s.col.x = 0
 		}
 		if s.col.y + s.col.h > height {
 			s.vy *= -1
 			s.col.y = height - s.col.h
-		} else if s.col.y < -height {
+		} else if s.col.y < 0 {
 			s.vy *= -1
-			s.col.y = -height
+			s.col.y = 0
 		}
 
 		state.space.update(s.id, s.col)
@@ -87,6 +87,7 @@ pub fn (state mut AppState) update() {
 }
 
 pub fn (state mut AppState) draw() {
+
 	graphics.begin_default_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)}, {})
 
 	mut batch := graphics.spritebatch()

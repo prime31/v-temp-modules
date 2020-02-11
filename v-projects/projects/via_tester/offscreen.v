@@ -5,36 +5,10 @@ import via.debug
 import via.window
 import via.graphics
 import via.components
+import via.components.posteffects
 import via.libs.imgui
 
 const (
-	frag_noise = '
-	float rand(vec2 co){
-		return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-	}
-
-	vec4 effect(vec4 vcolor, sampler2D tex, vec2 texcoord) {
-		vec4 color = texture(tex, texcoord);
-		float diff = (rand(texcoord) - 0.5) * 0.3;
-
-		color.r += diff;
-		color.g += diff;
-		color.b += diff;
-
-		return color;
-	}'
-	frag_vignette = '
-	vec4 effect(vec4 vcolor, sampler2D tex, vec2 texcoord) {
-		vec4 color = texture(tex, texcoord);
-
-		float _radius = 1.25;
-		float _power = 1.0;
-		vec2 dist = (texcoord - 0.5f) * _radius;
-		dist.x = 1 - dot(dist, dist) * _power;
-		color.rgb *= dist.x;
-
-		return color;
-	}'
 	frag_sepia = '
 	vec4 effect(vec4 vcolor, sampler2D tex, vec2 texcoord) {
 		vec4 color = texture(tex, texcoord);
@@ -57,29 +31,9 @@ mut:
 	cam components.Camera
 
 	pp_stack &graphics.EffectStack
-	vig BasicPP
-	noise BasicPP
+	vig posteffects.Vignette
+	noise posteffects.Noise
 }
-
-//#region Post processors
-
-struct BasicPP {
-	pip graphics.Pipeline
-}
-
-fn basicpp(frag string) BasicPP {
-	shader_desc := graphics.shader_get_default_desc()
-	pip_desc := graphics.pipeline_get_default_desc()
-	return BasicPP{
-		pip: graphics.pipeline({frag:frag}, shader_desc, mut pip_desc)
-	}
-}
-
-fn basicpp_process(vig &BasicPP, tex &graphics.Texture, stack &graphics.EffectStack) {
-	stack.blit(tex, mut vig.pip)
-}
-
-//#endregion
 
 fn main() {
 	state := AppState{
@@ -102,10 +56,10 @@ pub fn (state mut AppState) initialize() {
 	state.atlas = graphics.new_texture_atlas('assets/adventurer.atlas')
 
 	state.pp_stack = graphics.new_effectstack()
-	state.noise = basicpp(frag_noise)
-	state.vig = basicpp(frag_vignette)
-	state.pp_stack.add(state.noise, basicpp_process)
-	state.pp_stack.add(state.vig, basicpp_process)
+	state.noise = posteffects.noise()
+	state.noise.add_to_stack(mut state.pp_stack)
+	state.vig = posteffects.vignette()
+	state.vig.add_to_stack(mut state.pp_stack)
 }
 
 pub fn (state mut AppState) update() {
@@ -136,6 +90,9 @@ pub fn (state mut AppState) update() {
 	C.igDragFloat2(c'Position', &state.cam.pos, 1, -200, 200, C.NULL, 1)
 	C.igSliderAngle('Rotation', &state.cam.rot, -360, 360, C.NULL)
 	C.igDragFloat2(c'Scale', &state.cam.scale, 0.01, 0.1, 4, C.NULL, 1)
+
+	state.vig.imgui()
+	state.noise.imgui()
 }
 
 pub fn (state mut AppState) draw() {

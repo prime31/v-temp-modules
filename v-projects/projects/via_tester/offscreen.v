@@ -4,6 +4,7 @@ import via.input
 import via.debug
 import via.window
 import via.graphics
+import via.physics
 import via.components
 import via.components.posteffects
 import via.libs.imgui
@@ -29,7 +30,6 @@ fn main() {
 
 	via.run(via.ViaConfig{
 		imgui: true
-		imgui_gfx_debug: true
 		win_highdpi: true
 		resolution_policy: .show_all_pixel_perfect // .no_border_pixel_perfect
 		design_width: 256

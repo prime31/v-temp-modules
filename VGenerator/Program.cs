@@ -50,7 +50,8 @@ namespace Generator
 			{
 				PrintHelp();
 
-				Run(GetImGuiConfig());
+				Run(GetCuteC2Config());
+				// Run(GetImGuiConfig());
 				// Run(GetKincConfig());
 				// Run(GetPhyFSConfig());
 				// Run(GetSDLConfig());
@@ -79,12 +80,35 @@ namespace Generator
 			// compilation.Dump();
 		}
 
+		static Config GetCuteC2Config()
+		{
+			return new Config
+			{
+				DstDir = "~/Desktop/c2",
+				SrcDir = "~/Desktop/",
+				BaseSourceFolder = "",
+				ModuleName = "c2",
+				VWrapperFileName = "c2",
+				SingleVFileExport = true,
+				ExcludeFunctionsThatContain = new string[] {},
+				StripPrefixFromFunctionNames = new string[] { "c2" },
+				CTypeToVType = {},
+				Defines = new string[] {},
+				IncludeFolders = new string[] {
+					"~/"
+				},
+				Files = new string[] { "cute_c2.h" },
+				ExcludedFiles = new string[] {},
+				ExcludedFromVWrapperFiles = new string[] {}
+			};
+		}
+
 		static Config GetImGuiConfig()
 		{
 			return new Config
 			{
 				DstDir = "~/Desktop/imgui",
-				SrcDir = "~/Desktop/lua-5.3.5/src",
+				SrcDir = "",
 				BaseSourceFolder = "src",
 				ModuleName = "imgui",
 				VWrapperFileName = "imgui",

@@ -50,6 +50,7 @@ namespace Generator
 			{
 				PrintHelp();
 
+				Run(GetImGuiConfig());
 				// Run(GetKincConfig());
 				// Run(GetPhyFSConfig());
 				// Run(GetSDLConfig());
@@ -76,6 +77,30 @@ namespace Generator
 			var compilation = CppParser.ParseFiles(config.GetFiles(), config.ToParserOptions());
 			VGenerator.Generate(config, compilation);
 			// compilation.Dump();
+		}
+
+		static Config GetImGuiConfig()
+		{
+			return new Config
+			{
+				DstDir = "~/Desktop/imgui",
+				SrcDir = "~/Desktop/lua-5.3.5/src",
+				BaseSourceFolder = "src",
+				ModuleName = "imgui",
+				VWrapperFileName = "imgui",
+				SingleVFileExport = true,
+				ExcludeFunctionsThatContain = new string[] {},
+				StripPrefixFromFunctionNames = new string[] { "ig"},
+				CTypeToVType = {},
+				Defines = new string[] {},
+				IncludeFolders = new string[] {
+					"/Users/desaro/.vmodules/via/libs/imgui/cimgui_git/imgui",
+					"/Users/desaro/.vmodules/via/libs/imgui/cimgui_git"
+				},
+				Files = new string[] { "imgui.h", "cimgui.h" },
+				ExcludedFiles = new string[] {},
+				ExcludedFromVWrapperFiles = new string[] {}
+			};
 		}
 
 		static Config GetLuaConfig()

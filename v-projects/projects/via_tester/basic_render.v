@@ -15,7 +15,6 @@ mut:
 
 fn main() {
 	state := AppState{
-		// atlas: &graphics.TextureAtlas(0)
 		batch: 0
 		tbatch: 0
 	}
@@ -42,8 +41,10 @@ pub fn (state mut AppState) draw() {
 		return
 	}
 
-	trans_mat := math.mat32_translate(w/2, h/2)
-	graphics.begin_default_pass({color:math.color_from_floats(0.1, 0.1, 0.4, 1.0)}, {trans_mat:&trans_mat})
+	scaler := graphics.get_resolution_scaler()
+
+	trans_mat := math.mat32_translate(scaler.w/2, scaler.h/2)
+	graphics.begin_pass({color:math.color_from_floats(0.1, 0.1, 0.4, 1.0) trans_mat:&trans_mat})
 
 	state.batch.draw(state.beach_tex, {x: 0, y: 0})
 	state.batch.draw(state.beach_tex, {x: -600, y: -40, rot: 45})
@@ -58,4 +59,5 @@ pub fn (state mut AppState) draw() {
 	state.tbatch.end()
 
 	graphics.end_pass()
+	graphics.blit_to_screen(math.color_red())
 }

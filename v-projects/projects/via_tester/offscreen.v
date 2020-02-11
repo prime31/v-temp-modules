@@ -56,7 +56,7 @@ mut:
 	pp_no_border bool
 	cam components.Camera
 
-	pp_stack &graphics.PostProcessStack
+	pp_stack &graphics.EffectStack
 	vig BasicPP
 	noise BasicPP
 }
@@ -75,7 +75,7 @@ fn basicpp(frag string) BasicPP {
 	}
 }
 
-fn basicpp_process(vig &BasicPP, tex &graphics.Texture, stack &graphics.PostProcessStack) {
+fn basicpp_process(vig &BasicPP, tex &graphics.Texture, stack &graphics.EffectStack) {
 	stack.blit(tex, mut vig.pip)
 }
 
@@ -88,6 +88,7 @@ fn main() {
 
 	via.run(via.ViaConfig{
 		imgui: true
+		imgui_gfx_debug: true
 		win_highdpi: true
 		resolution_policy: .show_all_pixel_perfect // .no_border_pixel_perfect
 		design_width: 256
@@ -97,10 +98,10 @@ fn main() {
 
 pub fn (state mut AppState) initialize() {
 	state.cam = components.camera()
-	state.offscreen_pass = graphics.new_offscreen_pass(256, 256)
+	state.offscreen_pass = graphics.new_offscreenpass(256, 256)
 	state.atlas = graphics.new_texture_atlas('assets/adventurer.atlas')
 
-	state.pp_stack = graphics.postprocessstack()
+	state.pp_stack = graphics.new_effectstack()
 	state.noise = basicpp(frag_noise)
 	state.vig = basicpp(frag_vignette)
 	state.pp_stack.add(state.noise, basicpp_process)

@@ -8,20 +8,6 @@ import via.components
 import via.components.posteffects
 import via.libs.imgui
 
-const (
-	frag_sepia = '
-	vec4 effect(vec4 vcolor, sampler2D tex, vec2 texcoord) {
-		vec4 color = texture(tex, texcoord);
-
-		vec3 _sepia_tone = vec3(1.2, 1.0, 0.8);
-		// first we need to convert to greyscale
-		float gray_scale = dot(color.rgb, vec3(0.3, 0.59, 0.11));
-		color.rgb = gray_scale * _sepia_tone;
-
-		return color;
-	}'
-)
-
 struct AppState {
 mut:
 	atlas graphics.TextureAtlas
@@ -33,6 +19,7 @@ mut:
 	pp_stack &graphics.EffectStack
 	vig posteffects.Vignette
 	noise posteffects.Noise
+	sepia posteffects.Sepia
 }
 
 fn main() {
@@ -60,6 +47,8 @@ pub fn (state mut AppState) initialize() {
 	state.noise.add_to_stack(mut state.pp_stack)
 	state.vig = posteffects.vignette()
 	state.vig.add_to_stack(mut state.pp_stack)
+	state.sepia = posteffects.sepia()
+	state.sepia.add_to_stack(mut state.pp_stack)
 }
 
 pub fn (state mut AppState) update() {
@@ -93,6 +82,7 @@ pub fn (state mut AppState) update() {
 
 	state.vig.imgui()
 	state.noise.imgui()
+	state.sepia.imgui()
 }
 
 pub fn (state mut AppState) draw() {

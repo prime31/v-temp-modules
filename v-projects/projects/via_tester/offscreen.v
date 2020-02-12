@@ -30,7 +30,7 @@ fn main() {
 
 	via.run(via.ViaConfig{
 		imgui: true
-		win_highdpi: true
+		win_highdpi: false
 		resolution_policy: .show_all_pixel_perfect // .no_border_pixel_perfect
 		design_width: 256
 		design_height: 256

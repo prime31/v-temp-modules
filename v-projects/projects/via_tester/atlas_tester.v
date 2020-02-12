@@ -20,7 +20,7 @@ pub fn (state mut AppState) initialize() {
 	atlas_names := atlas.get_names()
 	for i in 0..10 {
 		q := atlas.get_quad(atlas_names[i])
-		state.batch.add_q(q, {x: i * 32, y: 0})
+		state.batch.add_q(q, {x:i * 32 + 500 y:300})
 	}
 
 	quad1 := atlas.get_quad('adventurer-run-04')
@@ -29,14 +29,14 @@ pub fn (state mut AppState) initialize() {
 	quad4 := atlas.get_quad('adventurer-run-01')
 	for i in 0..10 {
 		q := math.choose4(quad1, quad2, quad3, quad4)
-		state.batch.add_q(q, {x: 8, y: (f32(i) + 2.0) * 24 + 8, rot: math.range(20, 340), sx: 1, sy: 1, ox: 25, oy: 18.5})
+		state.batch.add_q(q, {x:8 + 500 y: (f32(i) + 2.0) * 24 + 308 rot:math.range(20, 340) ox:25 oy:18.5})
 	}
 }
 
 pub fn (state mut AppState) update() {}
 
 pub fn (state mut AppState) draw() {
-	graphics.begin_default_pass({color:math.color_from_floats(1.0, 0.3, 1.0, 1.0)}, {})
+	graphics.begin_pass({color:math.color_from_floats(1.0, 0.3, 1.0, 1.0)})
 	state.batch.draw()
 	graphics.end_pass()
 }

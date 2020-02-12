@@ -46,18 +46,17 @@ pub fn (state mut AppState) draw() {
 	trans_mat := math.mat32_translate(scaler.w/2, scaler.h/2)
 	graphics.begin_pass({color:math.color_from_floats(0.1, 0.1, 0.4, 1.0) trans_mat:&trans_mat})
 
-	state.batch.draw(state.beach_tex, {x: 0, y: 0})
-	state.batch.draw(state.beach_tex, {x: -600, y: -40, rot: 45})
+	state.batch.draw(state.beach_tex, {x:0 y:0})
+	state.batch.draw(state.beach_tex, {x: 200, y: -240, rot: 45})
 	state.batch.end()
 
 
 	state.tbatch.draw_triangle(200, 200, 200, 300, 400, 200, {x:0})
 	state.tbatch.draw_rectangle(-500, -500, 200, 100, {x:0})
-	state.tbatch.draw_circle(-400, 400, 75, 6, {x:0})
-	state.tbatch.draw_circle(-500, 200, 75, 16, {x:0})
+	state.tbatch.draw_circle(-200, 400, 75, 6, {x:0})
+	state.tbatch.draw_circle(-100, 200, 75, 16, {x:0})
 	state.tbatch.draw_polygon([math.Vec2{0, 0}, math.Vec2{100, -100}, math.Vec2{200, 50}, math.Vec2{50, 200}, math.Vec2{-55, 100}]!, {x:0})
 	state.tbatch.end()
 
 	graphics.end_pass()
-	graphics.blit_to_screen(math.color_red())
 }

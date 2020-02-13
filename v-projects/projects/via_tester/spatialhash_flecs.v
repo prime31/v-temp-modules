@@ -2,7 +2,6 @@ import via
 import via.math
 import via.time
 import via.input
-import via.debug
 import via.window
 import via.graphics
 import via.collections
@@ -41,7 +40,7 @@ fn main() {
 	}
 
 	via.run(via.ViaConfig{
-		max_quads: sprite_cnt + 1
+		max_quads: sprite_cnt + 200
 		win_resizable: false
 	}, mut state)
 }
@@ -90,7 +89,7 @@ pub fn (state mut AppState) update() {
 	state.world.progress(time.dt())
 
 	state.space.debug_draw()
-	debug.draw_text(-width, -height, 'FPS: $time.fps()', {align:.top scale:4 color:math.color_blue()})
+	graphics.spritebatch().draw_text('FPS: $time.fps()', {x:-width y:-height align:.top sx:4 sy:4 color:math.color_blue()})
 	graphics.end_pass()
 
 	graphics.blit_to_screen(math.color_from_floats(0.0, 0.0, 0.0, 1.0))

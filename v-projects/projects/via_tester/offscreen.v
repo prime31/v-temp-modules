@@ -1,7 +1,6 @@
 import via
 import via.math
 import via.input
-import via.debug
 import via.window
 import via.graphics
 import via.physics
@@ -90,14 +89,6 @@ pub fn (state mut AppState) draw() {
 
 	// render pass to the default offscreen pass
 	graphics.begin_pass({color:math.color_cornflower_blue() trans_mat:&trans_mat})
-	debug.set_color(math.color_deep_sky_blue())
-	debug.draw_filled_rect(0, 0, 100, 100)
-	debug.set_color(math.color_yellow())
-	debug.draw_hollow_rect(0, 0, 100, 100)
-	debug.reset_color()
-	debug.draw_filled_rect(0, 0, 25, 25)
-	debug.draw_text(0, 0, 'holy crap does it work?', {color:math.color_red() scale:2.0})
-	debug.draw_text(0, 10, 'holy crap does it work?', {color:math.color_red()})
 
 	mut batch := graphics.spritebatch()
 	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-04'), {x:0 y:-50 sx:1 sy:1})

@@ -4,8 +4,9 @@ import via.input
 import via.window
 import via.graphics
 import via.physics
-import via.components
-import via.components.posteffects
+import via.comps
+import via.comps.tilemaps
+import via.comps.posteffects
 import via.libs.imgui
 
 struct AppState {
@@ -14,7 +15,7 @@ mut:
 	offscreen_pass graphics.OffScreenPass
 	rot f32
 	pp_no_border bool
-	cam components.Camera
+	cam comps.Camera
 
 	pp_stack &graphics.EffectStack
 	vig posteffects.Vignette
@@ -37,7 +38,7 @@ fn main() {
 }
 
 pub fn (state mut AppState) initialize() {
-	state.cam = components.camera()
+	state.cam = comps.camera()
 	state.offscreen_pass = graphics.new_offscreenpass(256, 256)
 	state.atlas = graphics.new_texture_atlas('assets/adventurer.atlas')
 

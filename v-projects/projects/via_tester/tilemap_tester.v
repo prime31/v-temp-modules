@@ -34,7 +34,7 @@ pub fn (state mut AppState) initialize() {
 	state.renderer = tilemap.maprenderer(map)
 	state.layer_batch = state.renderer.tilelayer_atlasbatch(map.tile_layers[0])
 
-	t1 := map.tilesets[0].tileset_tile_for_tile_id(2)
+	t1 := map.tilesets[0].tileset_tile(2)
 	for p in t1.props {
 		println('$p.key -> $p.value')
 	}

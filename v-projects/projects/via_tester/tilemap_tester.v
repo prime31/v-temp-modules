@@ -51,7 +51,7 @@ pub fn (state mut AppState) initialize() {
 
 	jsmnt := now0e - now0s
 	jst := now1e - now1s
-	debug.warn('-- jsmn: ${f32(jsmnt) / 1000}, jst: ${f32(jst) / 1000}, $map.width --')
+	debug.warn('-- jsmn: ${f32(jsmnt) / 1000}, jst: ${f32(jst) / 1000} --')
 }
 
 pub fn (state &AppState) update() {}

@@ -21,26 +21,24 @@ fn main() {
 	}
 
 	via.run({
-		win_highdpi: false
+		win_highdpi: true
 		resolution_policy: .show_all_pixel_perfect
 		design_width: 640
 		design_height: 480
-		win_width: 640 * 2
-		win_height: 480 * 2
+		win_width: 640
+		win_height: 480
 	}, mut state)
 }
 
 pub fn (state mut AppState) initialize() {
 	filesystem.mount('assets', '', true)
 
-	js_bytes := filesystem.read_bytes_c(c'assets/platformer.json')
 	now0s := time.now()
-	map0 := tilemap.load(js_bytes)
+	map0 := tilemap.load(filesystem.read_bytes_c(c'assets/platformer.json'))
 	now0e := time.now()
 
-	js_txt := filesystem.read_text_c(c'assets/platformer.json')
 	now1s := time.now()
-	map := json.decode(tilemap.Map, js_txt) or { panic('could not load map') }
+	map := json.decode(tilemap.Map, filesystem.read_text_c(c'assets/platformer.json')) or { panic('could not load map') }
 	now1e := time.now()
 
 	state.renderer = tilemap.maprenderer(map0)
@@ -53,7 +51,7 @@ pub fn (state mut AppState) initialize() {
 
 	jsmnt := now0e - now0s
 	jst := now1e - now1s
-	debug.warn('-- jsmn: ${f32(jsmnt) / 1000}, jst: ${f32(jst) / 1000} --')
+	debug.warn('-- jsmn: ${f32(jsmnt) / 1000}, jst: ${f32(jst) / 1000}, $map.width --')
 }
 
 pub fn (state &AppState) update() {}

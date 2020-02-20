@@ -4,6 +4,7 @@ import via.time
 import via.debug
 import via.window
 import via.graphics
+import via.physics.gjk
 import via.filesystem
 import via.comps
 import via.comps.tilemap

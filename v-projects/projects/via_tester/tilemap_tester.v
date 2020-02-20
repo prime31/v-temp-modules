@@ -8,7 +8,7 @@ import via.graphics
 import via.physics.gjk
 import via.filesystem
 import via.comps
-import via.comps.tilemap
+import via.tilemap
 import json
 
 struct AppState {
@@ -54,9 +54,7 @@ pub fn (state mut AppState) initialize() {
 	state.square = math.Rect{int(spawn.x), int(spawn.y), int(spawn.w), int(spawn.h)}
 
 	// t1 := state.map.tilesets[0].tileset_tile(2)
-	// for p in t1.props {
-	// 	println('$p.key -> $p.value')
-	// }
+	// println('$t1.props')
 
 	jsmnt := now0e - now0s
 	jst := now1e - now1s

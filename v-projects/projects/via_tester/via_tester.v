@@ -151,10 +151,10 @@ pub fn (state mut AppState) draw() {
 	state.mesh.draw()
 
 
-	// sg_apply_pipeline(state.pipe.pip)
-	// state.pipe.apply_uniforms()
-	// state.mesh.apply_bindings()
-	// state.mesh.draw()
+	sg_apply_pipeline(state.pipe.pip)
+	state.pipe.apply_uniforms()
+	state.mesh.apply_bindings()
+	state.mesh.draw()
 
 	graphics.end_pass()
 }

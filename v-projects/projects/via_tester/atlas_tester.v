@@ -10,7 +10,7 @@ mut:
 
 fn main() {
 	state := AppState{}
-	via.run(via.ViaConfig{}, mut state)
+	via.run({}, mut state)
 }
 
 pub fn (state mut AppState) initialize() {

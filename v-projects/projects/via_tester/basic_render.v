@@ -2,7 +2,7 @@ import via
 import via.math
 import via.window
 import via.graphics
-import via.components
+import via.comps
 
 struct AppState {
 mut:
@@ -52,9 +52,9 @@ pub fn (state mut AppState) draw() {
 
 
 	state.tbatch.draw_triangle(200, 200, 200, 300, 400, 200, {x:0})
-	state.tbatch.draw_rectangle(-500, -500, 200, 100, {x:0})
-	state.tbatch.draw_circle(-200, 400, 75, 6, {x:0})
-	state.tbatch.draw_circle(-100, 200, 75, 16, {x:0})
+	state.tbatch.draw_rectangle(200, 100, {x:-500 y:-500})
+	state.tbatch.draw_circle(75, 6, {x:-200 y:400})
+	state.tbatch.draw_circle(75, 16, {x:-100 y:200})
 	state.tbatch.draw_polygon([math.Vec2{0, 0}, math.Vec2{100, -100}, math.Vec2{200, 50}, math.Vec2{50, 200}, math.Vec2{-55, 100}]!, {x:0})
 	state.tbatch.end()
 

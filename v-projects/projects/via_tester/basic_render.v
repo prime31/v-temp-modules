@@ -44,7 +44,7 @@ pub fn (state mut AppState) draw() {
 	scaler := graphics.get_resolution_scaler()
 
 	trans_mat := math.mat32_translate(scaler.w/2, scaler.h/2)
-	graphics.begin_pass({color:math.color_from_floats(0.1, 0.1, 0.4, 1.0) trans_mat:&trans_mat})
+	graphics.begin_pass({color:math.rgba(0.1, 0.1, 0.4, 1.0) trans_mat:&trans_mat})
 
 	state.batch.draw(state.beach_tex, {x:0 y:0})
 	state.batch.draw(state.beach_tex, {x: 200, y: -240, rot: 45})

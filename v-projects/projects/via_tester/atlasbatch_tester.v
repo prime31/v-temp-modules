@@ -36,7 +36,7 @@ pub fn (state mut AppState) initialize() {
 pub fn (state mut AppState) update() {}
 
 pub fn (state mut AppState) draw() {
-	graphics.begin_pass({color:math.color_from_floats(1.0, 0.3, 1.0, 1.0)})
+	graphics.begin_pass({color:math.rgba(1.0, 0.3, 1.0, 1.0)})
 	state.batch.draw()
 	graphics.end_pass()
 }

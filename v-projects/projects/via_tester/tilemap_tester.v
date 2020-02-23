@@ -89,9 +89,9 @@ pub fn (state mut AppState) update() {
 
 pub fn (state mut AppState) draw() {
 	mut tribatch := graphics.tribatch()
-	graphics.begin_pass({color:math.color_from_floats(0.3, 0.1, 0.4, 1.0)})
+	graphics.begin_pass({color:math.rgba(0.3, 0.1, 0.4, 1.0)})
 	// state.renderer.render()
-	tribatch.draw_hollow_rect(state.square.x, state.square.y, state.square.w, state.square.h, 1, math.color_red())
+	tribatch.draw_hollow_rect(state.square.x, state.square.y, state.square.w, state.square.h, 1, math.red())
 	state.layer_batch.draw()
 	graphics.end_pass()
 }

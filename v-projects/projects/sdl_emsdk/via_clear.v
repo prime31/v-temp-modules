@@ -32,7 +32,7 @@ pub fn (state mut AppState) update(via &via.Via) {}
 
 pub fn (state mut AppState) draw(via &via.Via) {
 	trans_mat := math.mat32_ortho_off_center(4, 4)
-	pass_action := via.g.make_pass_action({color:math.color_from_floats(0.7, 0.3, 0.7, 1.0)})
+	pass_action := via.g.make_pass_action({color:math.rgba(0.7, 0.3, 0.7, 1.0)})
 	w, h := via.win.get_drawable_size()
 	screen_size := math.Vec4{w, h, 0, 1}
 	noise := 2.0

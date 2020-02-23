@@ -15,10 +15,10 @@ pub fn (state &AppState) initialize() {}
 pub fn (state &AppState) update() {}
 
 pub fn (state &AppState) draw() {
-	graphics.begin_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0)})
+	graphics.begin_pass({color:math.rgba(0.5, 0.4, 0.8, 1.0)})
 
 	mut tb := graphics.tribatch()
-	tb.draw_triangle(200, 200, 200, 300, 400, 200, {color:math.color_red()})
+	tb.draw_triangle(200, 200, 200, 300, 400, 200, {color:math.red()})
 	tb.draw_rectangle(200, 100, {x:150 y:100})
 	tb.draw_circle(75, 6, {x:100 y:600 color:math.color_orange()})
 	tb.draw_circle(75, 16, {x:400 y:500})

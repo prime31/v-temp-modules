@@ -98,7 +98,7 @@ pub fn (state mut AppState) draw() {
 
 	// optional post processing and blit to the backbuffer
 	graphics.postprocess(state.pp_stack)
-	graphics.blit_to_screen(math.color_from_floats(0.0, 0.0, 0.0, 1.0))
+	graphics.blit_to_screen(math.rgba(0.0, 0.0, 0.0, 1.0))
 
 	// screenspace, full resolution rendering directly to the backbuffer
 	graphics.begin_pass({color_action:.dontcare})

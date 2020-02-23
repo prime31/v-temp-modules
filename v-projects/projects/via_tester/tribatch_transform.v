@@ -16,10 +16,10 @@ pub fn (state mut AppState) initialize() {}
 pub fn (state mut AppState) update() {}
 
 pub fn (state mut AppState) draw() {
-	graphics.begin_pass({color:math.color_from_floats(0.5, 0.4, 0.6, 1.0)})
+	graphics.begin_pass({color:math.rgba(0.5, 0.4, 0.6, 1.0)})
 
 	mut tb := graphics.tribatch()
-	tb.draw_triangle(-50, 50, 0, -170, 50, 50, {x:800 y:600 rot:-f32(time.ticks() / 12) color:math.color_red()})
+	tb.draw_triangle(-50, 50, 0, -170, 50, 50, {x:800 y:600 rot:-f32(time.ticks() / 12) color:math.red()})
 	tb.draw_rectangle(200, 100, {x:150 y:150 rot:-f32(time.ticks() / 10)})
 	tb.draw_circle(75, 6, {x:512 y:384 rot:f32(time.ticks() / 10) color:math.color_orange()})
 	tb.draw_circle(75, 16, {x:800 y:150})

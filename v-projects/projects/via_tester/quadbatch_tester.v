@@ -27,7 +27,7 @@ pub fn (state &AppState) update() {}
 pub fn (state &AppState) draw() {
 	w, h := window.drawable_size()
 	trans_mat := math.mat32_translate(w/2, h/2)
-	graphics.begin_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0) trans_mat:&trans_mat})
+	graphics.begin_pass({color:math.rgba(0.5, 0.4, 0.8, 1.0) trans_mat:&trans_mat})
 
 	names := state.atlas.get_names()
 

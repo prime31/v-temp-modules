@@ -84,7 +84,7 @@ fn (state &AppState) add_sprite(x, y f32) {
 pub fn (state mut AppState) update() {
 	w, h := window.drawable_size()
 	trans_mat := math.mat32_translate(w/2, h/2)
-	graphics.begin_pass({color:math.color_from_floats(0.5, 0.4, 0.8, 1.0) trans_mat:&trans_mat})
+	graphics.begin_pass({color:math.rgba(0.5, 0.4, 0.8, 1.0) trans_mat:&trans_mat})
 
 	state.world.progress(time.dt())
 
@@ -92,7 +92,7 @@ pub fn (state mut AppState) update() {
 	graphics.spritebatch().draw_text('FPS: $time.fps()', {x:-width y:-height align:.top sx:4 sy:4 color:math.color_blue()})
 	graphics.end_pass()
 
-	graphics.blit_to_screen(math.color_from_floats(0.0, 0.0, 0.0, 1.0))
+	graphics.blit_to_screen(math.rgba(0.0, 0.0, 0.0, 1.0))
 }
 
 pub fn (state &AppState) draw() {}

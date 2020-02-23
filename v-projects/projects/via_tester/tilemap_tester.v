@@ -17,7 +17,7 @@ mut:
 	layer_batch &graphics.AtlasBatch
 	square math.Rect
 	map tilemap.Map
-	speed int = 2
+	speed int = 3
 }
 
 fn main() {
@@ -63,7 +63,7 @@ pub fn (state mut AppState) initialize() {
 }
 
 pub fn (state mut AppState) update() {
-	C.igDragInt(c'Speed', &state.speed, 1, 1, 7, C.NULL)
+	C.igSliderInt(c'Speed', &state.speed, 1, 17, C.NULL)
 	mut move := math.Vec2{}
 
 	if input.is_key_down(.right) {

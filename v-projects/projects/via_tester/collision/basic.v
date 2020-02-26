@@ -50,7 +50,7 @@ pub fn (state mut AppState) update() {
 
 	if move.x != 0 || move.y != 0 {
 		mut mani := arcade.collide(state.box.collider, state.box2.collider, move)
-		if mani.count == 1 {
+		if mani.collided {
 			move = move - mani.normal.scale(mani.depth)
 			debug.draw_point(mani.contact_pt.x, mani.contact_pt.y, 6, math.white())
 		}
@@ -58,7 +58,7 @@ pub fn (state mut AppState) update() {
 		// invert move because we want aabb-to-circle
 		//mani = arcade.collide(state.circle.collider, state.box.collider, move.scale(-1))
 		mani = arcade.collide(state.box.collider, state.circle.collider, move)
-		if mani.count == 1 {
+		if mani.collided {
 			// invert normal because we want aabb-to-circle
 			// mani.normal = mani.normal.scale(-1)
 			move = move - mani.normal.scale(mani.depth)
@@ -75,7 +75,7 @@ pub fn (state mut AppState) update() {
 	state.circle2.y = f32(my)
 
 	mut mani := arcade.collide(state.circle2.collider, state.circle.collider, math.Vec2{0, 0})
-	if mani.count == 1 {
+	if mani.collided {
 		debug.draw_point(mani.contact_pt.x, mani.contact_pt.y, 6, math.white())
 		move_back := mani.normal.scale(mani.depth)
 		state.circle2.x -= move_back.x
@@ -83,7 +83,7 @@ pub fn (state mut AppState) update() {
 	}
 
 	mani = arcade.collide(state.circle2.collider, state.box2.collider, math.Vec2{0, 0})
-	if mani.count == 1 {
+	if mani.collided {
 		debug.draw_point(mani.contact_pt.x, mani.contact_pt.y, 6, math.white())
 		move_back := mani.normal.scale(mani.depth)
 		state.circle2.x -= move_back.x

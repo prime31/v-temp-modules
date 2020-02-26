@@ -52,6 +52,9 @@ v-projects/projects/sokol_tester/sdl_metal/*
 v-projects/projects/via_tester/*
 !v-projects/projects/via_tester/*.*
 !v-projects/projects/via_tester/*/
+v-projects/projects/via_tester/collision/*
+!v-projects/projects/via_tester/collision/*.*
+!v-projects/projects/via_tester/collision/*/
 flextgl/thirdparty/flextGL.o
 a.out
 sokol/generator/obj

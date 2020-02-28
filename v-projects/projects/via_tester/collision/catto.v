@@ -3,7 +3,7 @@ import via.math
 import via.input
 import via.debug
 import via.physics
-import via.physics.catto
+import catto
 import via.physics.arcade
 import via.graphics
 

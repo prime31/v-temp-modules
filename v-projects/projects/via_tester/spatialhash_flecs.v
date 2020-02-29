@@ -31,7 +31,7 @@ mut:
 const (
 	width = 512.0
 	height = 384.0
-	sprite_cnt = 200
+	sprite_cnt = 100
 )
 
 fn main() {
@@ -39,9 +39,10 @@ fn main() {
 		space: collections.spatialhash(150)
 	}
 
-	via.run(via.ViaConfig{
-		max_quads: sprite_cnt + 200
+	via.run({
+		max_quads: sprite_cnt + 1000
 		win_resizable: false
+		win_highdpi: true
 	}, mut state)
 }
 
@@ -82,7 +83,7 @@ fn (state &AppState) add_sprite(x, y f32) {
 }
 
 pub fn (state mut AppState) update() {
-	w, h := window.drawable_size()
+	w, h := window.size()
 	trans_mat := math.mat32_translate(w/2, h/2)
 	graphics.begin_pass({color:math.rgba(0.5, 0.4, 0.8, 1.0) trans_mat:&trans_mat})
 
@@ -140,10 +141,9 @@ fn move(rows &C.ecs_rows_t) {
 }
 
 fn render(rows &C.ecs_rows_t) {
-	mut batch := graphics.spritebatch()
 	sprites := flecs.column<Sprite>(rows, 1)
 
 	for i in 0..int(rows.count) {
-		batch.draw(sprites[i].tex, {x:sprites[i].col.x, y:sprites[i].col.y})
+		graphics.draw(sprites[i].tex, {x:sprites[i].col.x, y:sprites[i].col.y})
 	}
 }

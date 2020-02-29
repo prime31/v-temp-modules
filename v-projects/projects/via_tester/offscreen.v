@@ -88,7 +88,7 @@ pub fn (state mut AppState) draw() {
 	trans_mat := state.cam.trans_mat()
 
 	// render pass to the default offscreen pass
-	graphics.begin_pass({color:math.color_cornflower_blue() trans_mat:&trans_mat})
+	graphics.begin_pass({color:math.cornflower_blue() trans_mat:&trans_mat})
 
 	mut batch := graphics.spritebatch()
 	batch.draw_q(state.atlas.tex, state.atlas.get_quad('adventurer-run-04'), {x:0 y:-50 sx:1 sy:1})

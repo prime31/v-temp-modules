@@ -89,7 +89,7 @@ pub fn (state mut AppState) update() {
 	state.world.progress(time.dt())
 
 	state.space.debug_draw()
-	graphics.spritebatch().draw_text('FPS: $time.fps()', {x:-width y:-height align:.top sx:4 sy:4 color:math.color_blue()})
+	graphics.spritebatch().draw_text('FPS: $time.fps()', {x:-width y:-height align:.top sx:4 sy:4 color:math.blue()})
 	graphics.end_pass()
 
 	graphics.blit_to_screen(math.rgba(0.0, 0.0, 0.0, 1.0))
@@ -106,8 +106,12 @@ fn move_set(rows &C.ecs_rows_t) {
 	}
 }
 
+// shouldnt be necessary but it is for now
+type Poop collections.SpatialHash
+
 fn move(rows &C.ecs_rows_t) {
-	mut space := &collections.SpatialHash(C.ecs_get_system_context(rows.world, rows.system))
+	// mut space := &collections.SpatialHash(C.ecs_get_system_context(rows.world, rows.system))
+	mut space := flecs.get_system_context<Poop>(rows.world, rows.system)
 	sprites := flecs.column<Sprite>(rows, 1)
 
 	dt := time.dt()

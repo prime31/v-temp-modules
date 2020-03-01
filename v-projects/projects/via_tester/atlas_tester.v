@@ -1,16 +1,24 @@
 import via
 import via.math
+import via.time
+import via.debug
 import via.graphics
 import via.libs.imgui
+import via.tweens
 
 struct AppState {
 mut:
 	batch &graphics.AtlasBatch = &graphics.AtlasBatch(0)
+	tween tweens.Tween
 }
 
 fn main() {
-	state := AppState{}
-	via.run(via.ViaConfig{}, mut state)
+	state := AppState{
+		tween: tweens.tween(0, 100, 5, .back_in_out)
+	}
+	via.run(via.ViaConfig{
+		imgui: true
+	}, mut state)
 }
 
 pub fn (state mut AppState) initialize() {
@@ -33,7 +41,24 @@ pub fn (state mut AppState) initialize() {
 	}
 }
 
-pub fn (state mut AppState) update() {}
+pub fn (state mut AppState) update() {
+	state.tween.tick(time.dt())
+	C.igText(c'Tween: %f, %f  current: %f', state.tween.start, state.tween.end, state.tween.value())
+	debug.draw_hollow_rect(state.tween.value(), 10, 50, 50, 2, math.yellow())
+
+	if C.igSmallButton(c'Start sin') {
+		state.tween = tweens.tween(0, 100, 2, .sin_in_out)
+		state.tween.set_cb(state, tween_cb)
+	}
+
+	if C.igSmallButton(c'Start back_in_out') {
+		state.tween = tweens.tween(0, 100, 2, .back_in_out)
+	}
+}
+
+fn tween_cb(state &AppState, tween &tweens.Tween) {
+	println('all done')
+}
 
 pub fn (state mut AppState) draw() {
 	graphics.begin_pass({color:math.rgba(1.0, 0.3, 1.0, 1.0)})

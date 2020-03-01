@@ -1,7 +1,7 @@
 module sapp
 
-#flag -I @VMOD/prime31/sokol/thirdparty
-#flag -I @VMOD/prime31/sokol/thirdparty/util
+#flag -I @VROOT/sokol/thirdparty
+#flag -I @VROOT/sokol/thirdparty/util
 #flag darwin -fobjc-arc
 #flag darwin -framework OpenGL -framework Cocoa
 

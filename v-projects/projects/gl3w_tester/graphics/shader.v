@@ -1,6 +1,6 @@
 module graphics
 import strings
-import prime31.math
+import via.math
 import prime31.gl3w.gl41 as gl
 
 // TODO: after setup gl context set these, create 1px white texture. do what OpenGL.cpp in Love does

@@ -4,11 +4,12 @@ import via.libs.physfs
 import via.libs.sdl2
 import time
 import os
+import filepath
 
 
 fn main() {
 	physfs.initialize()
-	physfs.mount(os.dir(os.realpath(os.executable())), '', true)
+	physfs.mount(filepath.dir(os.realpath(os.executable())), '', true)
 
 	sys := fmod.create(32, C.FMOD_INIT_NORMAL)
 

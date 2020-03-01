@@ -4,7 +4,7 @@ import via.libs.fontstash
 
 pub const ( used_import = sgl.used_import + fontstash.used_import )
 
-#flag -I @VMOD/via/libs/fontstash/thirdparty
+#flag -I @VROOT/libs/fontstash/thirdparty
 
 // this doesnt quite work due to sokol import order stuff and we have it imported elsewhere
 // #include "fontstash.h"

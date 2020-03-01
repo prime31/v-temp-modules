@@ -1,7 +1,7 @@
-import prime31.sdl2
+import via.libs.sdl2
 import prime31.gl3w.gl41 as gl
 import prime31.gl3w
-import prime31.stb.image
+import via.libs.stb.image
 import graphics
 import time
 import os

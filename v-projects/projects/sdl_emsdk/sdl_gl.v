@@ -6,6 +6,7 @@ struct State{
 mut:
 	window voidptr
 	quit bool
+	r f32
 }
 
 
@@ -46,8 +47,12 @@ fn main_loop(context voidptr) {
 		C.SDL_Quit()
 	}
 
+	state.r += 0.01
+	if state.r > 1.0 {
+		state.r = 0
+	}
 
-	C.glClearColor(0.8, 0.5, 0.6, 1)
+	C.glClearColor(state.r, 0.5, 0.6, 1)
     C.glClear(C.GL_COLOR_BUFFER_BIT)
 	C.SDL_GL_SwapWindow(state.window)
 }

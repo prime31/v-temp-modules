@@ -7,13 +7,13 @@ VMOD := $${HOME}/.vmodules/
 
 build:
 	emcc wasm.c \
-	$(VMOD)via/libs/flextGL/thirdparty/ES30/flextGL.c \
+	$(VMOD)via/libs/flextGL/thirdparty/ES20/flextGL.c \
 	-s ERROR_ON_UNDEFINED_SYMBOLS=0 \
 	-s WASM=1 \
 	-s USE_SDL=2 \
-	-s -I$(VMOD)via/libs/flextGL/thirdparty/ES30 \
+	-s -I$(VMOD)via/libs/flextGL/thirdparty/ES20 \
 	-s -I$(VMOD)via/libs/sokol/thirdparty \
-	-DSOKOL_GLES3 \
+	-DSOKOL_GLES2 \
 	-o wasm.html
 
 run:

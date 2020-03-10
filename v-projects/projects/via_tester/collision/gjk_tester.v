@@ -48,15 +48,15 @@ pub fn (state mut AppState) update() {
 	C.igSliderInt(c'Speed', &state.speed, 1, 17, C.NULL)
 	mut move := math.Vec2{}
 
-	if input.is_key_down(.right) {
+	if input.key_down(.right) {
 		move.x = state.speed
-	} else if input.is_key_down(.left) {
+	} else if input.key_down(.left) {
 		move.x = -state.speed
 	}
 
-	if input.is_key_down(.up) {
+	if input.key_down(.up) {
 		move.y = -state.speed
-	} else if input.is_key_down(.down) {
+	} else if input.key_down(.down) {
 		move.y = state.speed
 	}
 

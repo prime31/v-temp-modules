@@ -18,7 +18,7 @@ fn main() {
 		batch: 0
 		tbatch: 0
 	}
-	via.run(via.ViaConfig{
+	via.run({
 		win_highdpi: true
 	}, mut state)
 }

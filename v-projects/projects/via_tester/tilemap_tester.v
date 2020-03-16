@@ -39,9 +39,10 @@ fn main() {
 pub fn (state mut AppState) initialize() {
 	filesystem.mount('assets', '', true)
 
-	now0s := time.now()
+	timer := u64(0)
+	time.laptime(&timer)
 	state.map = tilemap.load(filesystem.read_bytes_c(c'assets/platformer.json'))
-	now0e := time.now()
+	tilemap_load_time := time.laptime(&timer)
 
 	now1s := time.now()
 	map := json.decode(tilemap.Map, filesystem.read_text_c(c'assets/platformer.json')) or { panic('could not load map') }
@@ -56,10 +57,10 @@ pub fn (state mut AppState) initialize() {
 
 	// t1 := state.map.tilesets[0].tileset_tile(2)
 	// println('$t1.props')
+	println('${map.tilesets[0]}')
 
-	jsmnt := now0e - now0s
 	jst := now1e - now1s
-	debug.warn('-- jsmn: ${f32(jsmnt) / 1000}, jst: ${f32(jst) / 1000} --')
+	debug.warn('-- jsmn: ${tilemap_load_time}, jst: ${f32(jst) / 1000} --')
 }
 
 pub fn (state mut AppState) update() {

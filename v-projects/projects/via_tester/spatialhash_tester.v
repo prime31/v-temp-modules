@@ -95,8 +95,10 @@ pub fn (state mut AppState) draw() {
 	}
 
 	state.space.debug_draw()
-	batch.draw_text('FPS: $time.fps()', {x:-width y:-height align:.top sx:4 sy:4 color:math.color_blue()})
+	batch.draw_text('FPS: $time.fps()', {x:0 y:0 align:.top sx:4 sy:4 color:math.blue()})
 	graphics.end_pass()
+
+	debug.draw_text('shit', 0, 40, math.red())
 
 	graphics.blit_to_screen(math.rgba(0.0, 0.0, 0.0, 1.0))
 }

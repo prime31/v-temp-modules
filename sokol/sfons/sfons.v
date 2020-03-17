@@ -1,5 +1,5 @@
 module sfons
-import via.libs.sokol.sgl
+import prime31.sokol.sgl
 import via.libs.fontstash
 
 pub const ( used_import = sgl.used_import + fontstash.used_import )
